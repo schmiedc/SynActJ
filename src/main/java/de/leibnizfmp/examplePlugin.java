@@ -6,10 +6,9 @@
  *     http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-package com.mycompany.imagej;
+package de.leibnizfmp;
 
 import ij.IJ;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
 import ij.plugin.filter.PlugInFilter;
@@ -21,7 +20,9 @@ import ij.process.ImageProcessor;
  *
  * @author Johannes Schindelin
  */
-public class Process_Pixels implements PlugInFilter {
+public class examplePlugin implements PlugInFilter {
+
+
 	protected ImagePlus image;
 
 	// image property members
@@ -76,13 +77,13 @@ public class Process_Pixels implements PlugInFilter {
 	/**
 	 * Process an image.
 	 * <p>
-	 * Please provide this method even if {@link ij.plugin.filter.PlugInFilter} does require it;
-	 * the method {@link ij.plugin.filter.PlugInFilter#run(ij.process.ImageProcessor)} can only
+	 * Please provide this method even if {@link PlugInFilter} does require it;
+	 * the method {@link PlugInFilter#run(ImageProcessor)} can only
 	 * handle 2-dimensional data.
 	 * </p>
 	 * <p>
 	 * If your plugin does not change the pixels in-place, make this method return the results and
-	 * change the {@link #setup(java.lang.String, ij.ImagePlus)} method to return also the
+	 * change the {@link #setup(String, ImagePlus)} method to return also the
 	 * <i>DOES_NOTHING</i> flag.
 	 * </p>
 	 *
@@ -171,19 +172,20 @@ public class Process_Pixels implements PlugInFilter {
 	public static void main(String[] args) throws Exception {
 		// set the plugins.dir property to make the plugin appear in the Plugins menu
 		// see: https://stackoverflow.com/a/7060464/1207769
-		Class<?> clazz = Process_Pixels.class;
+		Class<?> clazz = examplePlugin.class;
+
 		java.net.URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
 		java.io.File file = new java.io.File(url.toURI());
 		System.setProperty("plugins.dir", file.getAbsolutePath());
 
 		// start ImageJ
-		new ImageJ();
+		//new ImageJ();
 
 		// open the Clown sample
-		ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
+		ImagePlus image = IJ.openImage("/home/schmiedc/Desktop/Projects/pHlorinPlugin_TS/Input/Downsampled_1_Syp-pH_DMSO_10hz5s_2_MMImages.ome.tif");
 		image.show();
 
 		// run the plugin
-		IJ.runPlugIn(clazz.getName(), "");
+		//IJ.runPlugIn(clazz.getName(), "");
 	}
 }
