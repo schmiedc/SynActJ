@@ -95,26 +95,16 @@ public class PreviewGui {
         boxSpotSeg.add(spinSpot5);
 
         textSizeFilterSpot = new JTextField("0-Infinity");
-        JLabel textSpotLabel1  = new JLabel("Set size filter: ");
-        JLabel textSpotUnit1  = new JLabel("µm²");
-        textSpotUnit1.setPreferredSize(new Dimension(30, textSpotUnit1.getMinimumSize().height));
-        Box textSpotBox1 = new Box(BoxLayout.X_AXIS);
-        textSizeFilterSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, textSizeFilterSpot.getMinimumSize().height));
-        textSpotBox1.add(textSpotLabel1);
-        textSpotBox1.add(textSizeFilterSpot);
-        textSpotBox1.add(textSpotUnit1);
+        String labelSpot1 = "Set size filter: ";
+        String unitSpot1 = "µm²";
+        Box textSpotBox1 = (Box) addLabeledTextField(labelSpot1,textSizeFilterSpot ,unitSpot1);
         boxSpotSeg.add(textSpotBox1);
 
         textCircFilterSpot = new JTextField("0-1.00");
-        JLabel textLabelSpot2  = new JLabel("Set circ. filter: ");
-        JLabel textSpotUnit2  = new JLabel("");
-        textSpotUnit2.setPreferredSize(new Dimension(30, textSpotUnit1.getMinimumSize().height));
-        Box textBoxSpot2 = new Box(BoxLayout.X_AXIS);
-        textCircFilterSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, textCircFilterSpot.getMinimumSize().height));
-        textBoxSpot2.add(textLabelSpot2);
-        textBoxSpot2.add(textCircFilterSpot);
-        textBoxSpot2.add(textSpotUnit2);
-        boxSpotSeg.add(textBoxSpot2);
+        String labelSpot2 = "Set circ. filter: ";
+        String unitSpot2 = "";
+        Box textSpotBox2 = (Box) addLabeledTextField(labelSpot2, textCircFilterSpot,unitSpot2);
+        boxSpotSeg.add(textSpotBox2);
 
         // Preview Button for Spot segmentation
         JButton previewSpot = new JButton("Preview");
@@ -152,25 +142,15 @@ public class PreviewGui {
         boxBackground.add(thresholdListBackBox);
 
         textBack1 = new JTextField("0-Infinity");
-        JLabel textBack1Label  = new JLabel("Set size filter: ");
-        JLabel textBackUnit1  = new JLabel("µm²");
-        textBackUnit1 .setPreferredSize(new Dimension(30, textBackUnit1.getMinimumSize().height));
-        Box textBack1Box = new Box(BoxLayout.X_AXIS);
-        textBack1.setMaximumSize(new Dimension(Integer.MAX_VALUE, textBack1.getMinimumSize().height));
-        textBack1Box.add(textBack1Label);
-        textBack1Box.add(textBack1);
-        textBack1Box.add(textBackUnit1);
+        String labelBack1 = "Set size filter: ";
+        String unitBack1 = "µm²";
+        Box textBack1Box = (Box) addLabeledTextField(labelBack1,textBack1,unitBack1);
         boxBackground.add(textBack1Box);
 
         textBack2 = new JTextField("0-1.00");
-        JLabel textBack2Label  = new JLabel("Set circ. filter: ");
-        JLabel textBackUnit2  = new JLabel("");
-        textBackUnit2 .setPreferredSize(new Dimension(30, textBackUnit2.getMinimumSize().height));
-        Box textBack2Box = new Box(BoxLayout.X_AXIS);
-        textBack2.setMaximumSize(new Dimension(Integer.MAX_VALUE, textBack2.getMinimumSize().height));
-        textBack2Box.add(textBack2Label);
-        textBack2Box.add(textBack2 );
-        textBack2Box.add(textBackUnit2);
+        String labelBack2 = "Set circ. filter: ";
+        String unitBack2  = "";
+        Box textBack2Box = (Box) addLabeledTextField(labelBack2, textBack2, unitBack2 );
         boxBackground.add(textBack2Box);
 
         // setup Buttons
@@ -189,7 +169,8 @@ public class PreviewGui {
 
         SpinnerModel spinSettings1 = new SpinnerNumberModel(0.1620, 0.0000,1.0000, 0.0001);
         String spinSettingsLabel1 = "Pixel size: ";
-        Box spinSettingsBox1 = (Box) addLabeledSpinner(spinSettingsLabel1,spinSettings1);
+        String spinSettingsunit1 = "µm";
+        Box spinSettingsBox1 = (Box) addLabeledSpinnerUnit(spinSettingsLabel1,spinSettings1, spinSettingsunit1);
         boxSettings.add(spinSettingsBox1);
 
         tabbedPane.addTab("Settings", boxSettings);
@@ -263,6 +244,22 @@ public class PreviewGui {
 
     }
 
+    static protected Box addLabeledTextField(String label, JTextField field, String unit) {
+
+        Box textBox = new Box(BoxLayout.X_AXIS);
+
+        JLabel labelLabel  = new JLabel(label);
+        field.setMaximumSize(new Dimension(Integer.MAX_VALUE, field.getMinimumSize().height));
+        JLabel unitLabel  = new JLabel(unit);
+        unitLabel.setPreferredSize(new Dimension(30, unitLabel.getMinimumSize().height));
+
+        textBox.add(labelLabel);
+        textBox.add(field);
+        textBox.add(unitLabel);
+
+        return textBox;
+    }
+
     static protected Box addLabeledSpinnerUnit(String label,
                                            SpinnerModel model,
                                            String unit) {
@@ -279,21 +276,6 @@ public class PreviewGui {
         JLabel l2 = new JLabel(unit);
         l2.setPreferredSize(new Dimension(30, l2.getMinimumSize().height));
         spinnerLabelBox.add(l2);
-
-        return spinnerLabelBox;
-    }
-
-    static protected Box addLabeledSpinner(String label,
-                                           SpinnerModel model) {
-
-        Box spinnerLabelBox = new Box(BoxLayout.X_AXIS);
-        JLabel l1 = new JLabel(label);
-        spinnerLabelBox.add(l1);
-
-        JSpinner spinner = new JSpinner(model);
-        l1.setLabelFor(spinner);
-        spinnerLabelBox.add(spinner);
-        spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, spinner.getMinimumSize().height));
 
         return spinnerLabelBox;
     }
@@ -427,8 +409,6 @@ public class PreviewGui {
             System.out.println("Please choose a file in the file list!");
 
             }
-
-
 
         }
 
