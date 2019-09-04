@@ -17,12 +17,19 @@ import java.util.ArrayList;
 
 public class PreviewGui {
 
-    String[] thresholdString = { "Default", "Huang", "Huang2", "Intermodes",
-            "Li", "MaxEntropy", "Mean", "MinError(I)",
-            "Moments", "Otsu", "Percentile", "RenyiEntropy",
+    String[] thresholdString = { "Default", "Huang", "IJ_IsoData", "Intermodes",
+            "IsoData ", "Li", "MaxEntropy", "Mean", "MinError", "Minimum",
+            "Moments", "Otsu", "Percentile", "RenyiEntropy", "Shanbhag",
             "Triangle","Yen",
     };
 
+    // creates the panel that contains the buttons boxlayout vertical aligned
+    Box buttonBox = new Box(BoxLayout.Y_AXIS);
+
+    // tabbed pane
+    JTabbedPane tabbedPane = new JTabbedPane();
+
+    // settings for spot segmentation
     JList list;
     SpinnerModel doubleSpinnerLoGSpot;
     SpinnerModel doubleSpinnerProminenceSpot;
@@ -33,11 +40,13 @@ public class PreviewGui {
     JTextField textSizeFilterSpot;
     JTextField textCircFilterSpot;
 
-    // creates the panel that contains the buttons boxlayout vertical aligned
-    Box buttonBox = new Box(BoxLayout.Y_AXIS);
+    // settings for background segmentation
+    SpinnerModel intSpinBack1;
+    SpinnerModel intSpinBack2;
+    JComboBox thresholdListBack;
+    JTextField textBack1;
+    JTextField textBack2;
 
-    // tabbed pane
-    JTabbedPane tabbedPane = new JTabbedPane();
 
     public void setUpSpotTab() {
 
@@ -47,53 +56,64 @@ public class PreviewGui {
         // Spinner for some number input
         doubleSpinnerLoGSpot = new SpinnerNumberModel(0.5, 0.0,5.0, 0.1);
         String spinLabelSpot1 = "LoG sigma: ";
-        Box spinSpot1 = (Box) addLabeledSpinner(spinLabelSpot1, doubleSpinnerLoGSpot);
+        String spinUnitSpot1 = "µm";
+        Box spinSpot1 = (Box) addLabeledSpinnerUnit(spinLabelSpot1, doubleSpinnerLoGSpot, spinUnitSpot1);
         boxSpotSeg.add(spinSpot1);
 
 
         doubleSpinnerProminenceSpot = new SpinnerNumberModel(0.005, 0.0,1.000, 0.001);
-        String spinLabelSpot2 = "Prominence: ";
-        Box spinSpot2 = (Box) addLabeledSpinner(spinLabelSpot2, doubleSpinnerProminenceSpot);
+        String spinLabelSpot2 = "Prominence - grayValue: ";
+        String spinUnitSpot2 = "";
+        Box spinSpot2 = (Box) addLabeledSpinnerUnit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
         boxSpotSeg.add(spinSpot2);
 
         doubleSpinnerGaussSpot = new SpinnerNumberModel(1.0, 0.0,10.0, 0.1);
-        String spinLabelSpot3 = "Gaussian blur sigma: ";
-        Box spinSpot3 = (Box) addLabeledSpinner(spinLabelSpot3, doubleSpinnerGaussSpot);
+        String spinLabelSpot3 = "Gauss sigma (px): ";
+        String spinUnitSpot3 = "px";
+        Box spinSpot3 = (Box) addLabeledSpinnerUnit(spinLabelSpot3, doubleSpinnerGaussSpot, spinUnitSpot3);
         boxSpotSeg.add(spinSpot3);
 
         intSpinnerRollingBallSpot = new SpinnerNumberModel(30, 0,100, 1);
-        String spinLabelSpot4 = "Rolling Ball Radius: ";
-        Box spinSpot4 = (Box) addLabeledSpinner(spinLabelSpot4, intSpinnerRollingBallSpot);
+        String spinLabelSpot4 = "RollingBall Radius: ";
+        String spinUnitSpot4 = "px";
+        Box spinSpot4 = (Box) addLabeledSpinnerUnit(spinLabelSpot4, intSpinnerRollingBallSpot, spinUnitSpot4);
         boxSpotSeg.add(spinSpot4);
 
         thresholdListSpot = new JComboBox(thresholdString);
         JLabel thresholdListSpotLabel  = new JLabel("Select threshold: ");
         Box thresholdListSpotBox= new Box(BoxLayout.X_AXIS);
         thresholdListSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListSpot.getMinimumSize().height));
-        thresholdListSpot.setSelectedIndex(12);
+        thresholdListSpot.setSelectedIndex(15);
         thresholdListSpotBox.add(thresholdListSpotLabel);
         thresholdListSpotBox.add(thresholdListSpot);
         boxSpotSeg.add(thresholdListSpotBox);
 
         intSpinnerGradient = new SpinnerNumberModel(3,0,10,1);
         String spinLabelSpot5 = "Gradient radius: ";
-        Box spinSpot5 = (Box) addLabeledSpinner(spinLabelSpot5, intSpinnerGradient);
+        String spinUnitSpot5 = "px";
+        Box spinSpot5 = (Box) addLabeledSpinnerUnit(spinLabelSpot5, intSpinnerGradient, spinUnitSpot5);
         boxSpotSeg.add(spinSpot5);
 
         textSizeFilterSpot = new JTextField("0-Infinity");
         JLabel textSpotLabel1  = new JLabel("Set size filter: ");
+        JLabel textSpotUnit1  = new JLabel("µm²");
+        textSpotUnit1.setPreferredSize(new Dimension(30, textSpotUnit1.getMinimumSize().height));
         Box textSpotBox1 = new Box(BoxLayout.X_AXIS);
         textSizeFilterSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, textSizeFilterSpot.getMinimumSize().height));
         textSpotBox1.add(textSpotLabel1);
         textSpotBox1.add(textSizeFilterSpot);
+        textSpotBox1.add(textSpotUnit1);
         boxSpotSeg.add(textSpotBox1);
 
         textCircFilterSpot = new JTextField("0-1.00");
         JLabel textLabelSpot2  = new JLabel("Set circ. filter: ");
+        JLabel textSpotUnit2  = new JLabel("");
+        textSpotUnit2.setPreferredSize(new Dimension(30, textSpotUnit1.getMinimumSize().height));
         Box textBoxSpot2 = new Box(BoxLayout.X_AXIS);
         textCircFilterSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, textCircFilterSpot.getMinimumSize().height));
         textBoxSpot2.add(textLabelSpot2);
         textBoxSpot2.add(textCircFilterSpot);
+        textBoxSpot2.add(textSpotUnit2);
         boxSpotSeg.add(textBoxSpot2);
 
         // Preview Button for Spot segmentation
@@ -110,39 +130,47 @@ public class PreviewGui {
         // Setup Interactions for Segment Background
         Box boxBackground = new Box(BoxLayout.Y_AXIS);
 
-        SpinnerModel intSpinBack1 = new SpinnerNumberModel(4, 0,20, 1);
-        String spinBackLabel1 = "Gaussian blur sigma: ";
-        Box spinnerBack1 = (Box) addLabeledSpinner(spinBackLabel1,intSpinBack1);
+        intSpinBack1 = new SpinnerNumberModel(4.0, 0.0,20.0, 1.0);
+        String spinBackLabel1 = "Gauss sigma: ";
+        String spinBackUnit1 = "px";
+        Box spinnerBack1 = (Box) addLabeledSpinnerUnit(spinBackLabel1,intSpinBack1, spinBackUnit1);
         boxBackground.add(spinnerBack1);
 
-        SpinnerModel intSpinBack2 = new SpinnerNumberModel(20, 0,100, 1);
-        String spinBackLabel2 = "Rolling Ball radius: ";
-        Box spinnerBack2 = (Box) addLabeledSpinner(spinBackLabel2,intSpinBack2);
+        intSpinBack2 = new SpinnerNumberModel(30.0, 0.0,100.0, 1.0);
+        String spinBackLabel2 = "RollingBall radius: ";
+        String spinBackUnit2 = "px";
+        Box spinnerBack2 = (Box) addLabeledSpinnerUnit(spinBackLabel2,intSpinBack2, spinBackUnit2);
         boxBackground.add(spinnerBack2);
 
-        JComboBox thresholdListBack = new JComboBox(thresholdString);
+        thresholdListBack = new JComboBox(thresholdString);
         JLabel thresholdListBackLabel  = new JLabel("Select threshold: ");
         Box thresholdListBackBox= new Box(BoxLayout.X_AXIS);
         thresholdListBack.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListBack.getMinimumSize().height));
-        thresholdListBack.setSelectedIndex(7);
+        thresholdListBack.setSelectedIndex(8);
         thresholdListBackBox.add(thresholdListBackLabel);
         thresholdListBackBox.add(thresholdListBack);
         boxBackground.add(thresholdListBackBox);
 
-        JTextField textBack1 = new JTextField("0-Infinity");
+        textBack1 = new JTextField("0-Infinity");
         JLabel textBack1Label  = new JLabel("Set size filter: ");
+        JLabel textBackUnit1  = new JLabel("µm²");
+        textBackUnit1 .setPreferredSize(new Dimension(30, textBackUnit1.getMinimumSize().height));
         Box textBack1Box = new Box(BoxLayout.X_AXIS);
         textBack1.setMaximumSize(new Dimension(Integer.MAX_VALUE, textBack1.getMinimumSize().height));
         textBack1Box.add(textBack1Label);
         textBack1Box.add(textBack1);
+        textBack1Box.add(textBackUnit1);
         boxBackground.add(textBack1Box);
 
-        JTextField textBack2 = new JTextField("0-1.00");
+        textBack2 = new JTextField("0-1.00");
         JLabel textBack2Label  = new JLabel("Set circ. filter: ");
+        JLabel textBackUnit2  = new JLabel("");
+        textBackUnit2 .setPreferredSize(new Dimension(30, textBackUnit2.getMinimumSize().height));
         Box textBack2Box = new Box(BoxLayout.X_AXIS);
         textBack2.setMaximumSize(new Dimension(Integer.MAX_VALUE, textBack2.getMinimumSize().height));
         textBack2Box.add(textBack2Label);
         textBack2Box.add(textBack2 );
+        textBack2Box.add(textBackUnit2);
         boxBackground.add(textBack2Box);
 
         // setup Buttons
@@ -235,15 +263,35 @@ public class PreviewGui {
 
     }
 
+    static protected Box addLabeledSpinnerUnit(String label,
+                                           SpinnerModel model,
+                                           String unit) {
+
+        Box spinnerLabelBox = new Box(BoxLayout.X_AXIS);
+        JLabel l1 = new JLabel(label);
+        spinnerLabelBox.add(l1);
+
+        JSpinner spinner = new JSpinner(model);
+        l1.setLabelFor(spinner);
+        spinnerLabelBox.add(spinner);
+        spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, spinner.getMinimumSize().height));
+
+        JLabel l2 = new JLabel(unit);
+        l2.setPreferredSize(new Dimension(30, l2.getMinimumSize().height));
+        spinnerLabelBox.add(l2);
+
+        return spinnerLabelBox;
+    }
+
     static protected Box addLabeledSpinner(String label,
                                            SpinnerModel model) {
 
         Box spinnerLabelBox = new Box(BoxLayout.X_AXIS);
-        JLabel l = new JLabel(label);
-        spinnerLabelBox.add(l);
+        JLabel l1 = new JLabel(label);
+        spinnerLabelBox.add(l1);
 
         JSpinner spinner = new JSpinner(model);
-        l.setLabelFor(spinner);
+        l1.setLabelFor(spinner);
         spinnerLabelBox.add(spinner);
         spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, spinner.getMinimumSize().height));
 
@@ -254,7 +302,7 @@ public class PreviewGui {
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
-            System.out.println("Starting preview");
+            System.out.println("Starting preview for spot segmentation");
 
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
@@ -303,7 +351,7 @@ public class PreviewGui {
 
                 ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-                ImagePlus projectedImage = previewImage.projectImage(originalImage);
+                ImagePlus projectedImage = previewImage.projectImage(originalImage, "max");
 
                 ImageProcessor projectedImage8Bit = projectedImage.getProcessor().convertToByteProcessor();
                 ImagePlus projectedImage8Bit2 = new ImagePlus("projected", projectedImage8Bit);
@@ -315,8 +363,6 @@ public class PreviewGui {
                 composite.setDisplayRange(0,100);
                 composite.show();
 
-
-
             } else {
                 System.out.println("Please choose a file in the file list!");
             }
@@ -327,8 +373,63 @@ public class PreviewGui {
 
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewBackListener implements ActionListener {
+
         public void actionPerformed(ActionEvent a) {
-            System.out.println("Starting preview");
+
+            // test settings
+            String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+
+            System.out.println("Starting preview for background segmentation");
+
+            int selectionChecker = list.getSelectedIndex();
+
+            if (selectionChecker != -1){
+
+                // get values from fields
+                String selectedFile = (String) list.getSelectedValue();
+                System.out.println("Selected File: " + selectedFile);
+
+                Double sigmaBackground = (Double) intSpinBack1.getValue();
+
+                Double rollingBackground = (Double) intSpinBack2.getValue();
+
+                String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+
+                String sizeBack1 = (String) textBack1.getText();
+                String circBack2 = (String) textBack2.getText();
+
+                // segment background and show for validation
+                // start preview
+                Image previewImage = new Image(testDir);
+                ImagePlus originalImage = previewImage.openImage(selectedFile);
+
+                ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+
+                BackgroundSegmenter back = new BackgroundSegmenter();
+                ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, rollingBackground, thresholdBackground);
+
+                ImagePlus testBack = new ImagePlus("test", background);
+                testBack.show();
+
+                ImagePlus projectedImage = previewImage.projectImage(originalImage, "max");
+                ImageProcessor projectedImage8Bit = projectedImage.getProcessor().convertToByteProcessor();
+                ImagePlus projectedImage8Bit2 = new ImagePlus("projected", projectedImage8Bit);
+
+                Concatenator add = new Concatenator();
+                ImagePlus result = add.concatenate(testBack, projectedImage8Bit2,false);
+                result.setDimensions(2,1,1);
+                CompositeImage composite = new CompositeImage(result, CompositeImage.COMPOSITE);
+                composite.setDisplayRange(0,100);
+                composite.show();
+
+            } else {
+
+            System.out.println("Please choose a file in the file list!");
+
+            }
+
+
+
         }
 
     } // close inner class

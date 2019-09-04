@@ -52,14 +52,19 @@ public class WorkflowTester {
 
         ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-        //BackgroundSegmenter back = new BackgroundSegmenter();
-        //ByteProcessor background = back.segmentBackground(fileToProcess, back.sigmaBackground, back.rollingBackground, back.thresholdBackground);
+        ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "avg");
 
+        // segment background
+        double sigmaBackground = 4;
+        double rollingBackground = 30;
+        String thresholdBackground = "Mean";
 
+        BackgroundSegmenter back = new BackgroundSegmenter();
+        ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, rollingBackground, thresholdBackground);
 
-        //ImagePlus testBack = new ImagePlus("test", background);
-        //testBack.show();
-        //watershed.show();
+        ImagePlus testBack = new ImagePlus("test", background);
+        testBack.show();
+        watershed.show();
 
 
     }

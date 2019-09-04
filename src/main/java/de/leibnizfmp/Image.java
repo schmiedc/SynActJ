@@ -17,9 +17,9 @@ public class Image {
         return image;
     }
 
-    public ImagePlus projectImage(ImagePlus image) {
+    public ImagePlus projectImage(ImagePlus image, String method) {
 
-        ImagePlus maxProjectImage = ZProjector.run(image,"max");
+        ImagePlus maxProjectImage = ZProjector.run(image, method);
 
         return maxProjectImage;
 

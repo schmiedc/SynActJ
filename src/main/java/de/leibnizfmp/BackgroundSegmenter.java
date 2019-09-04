@@ -8,15 +8,9 @@ import ij.process.ImageProcessor;
 
 public class BackgroundSegmenter {
 
-    // segment background
-    double sigmaBackground = 4;
-    double rollingBackground = 30;
-    String thresholdBackground = "Mean";
-
     public ByteProcessor segmentBackground(ImagePlus image, double gauss, double rolling, String threshold){
 
-        ImagePlus projImage = ZProjector.run(image, "max" );
-        ImageProcessor processImage = projImage.getProcessor();
+        ImageProcessor processImage = image.getProcessor();
         processImage.blurGaussian(gauss);
 
         BackgroundSubtracter backSubtract = new BackgroundSubtracter();
