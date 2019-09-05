@@ -1,10 +1,8 @@
 package de.leibnizfmp;
 
 import ij.CompositeImage;
-import ij.ImageJ;
 import ij.ImagePlus;
 import ij.plugin.Concatenator;
-import ij.plugin.RGBStackMerge;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
