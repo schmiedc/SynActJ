@@ -2,7 +2,12 @@ package de.leibnizfmp;
 
 import ij.CompositeImage;
 import ij.ImagePlus;
+import ij.gui.Overlay;
+import ij.plugin.Commands;
 import ij.plugin.Concatenator;
+import ij.plugin.PlugIn;
+import ij.plugin.filter.ParticleAnalyzer;
+import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 
@@ -11,6 +16,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import static ij.plugin.filter.ParticleAnalyzer.ADD_TO_MANAGER;
 
 
 public class PreviewGui {
@@ -282,6 +289,8 @@ public class PreviewGui {
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
+            Commands.closeAll();
+
             System.out.println("Starting preview for spot segmentation");
 
             // test settings
@@ -331,20 +340,23 @@ public class PreviewGui {
 
                 ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-                ImagePlus projectedImage = previewImage.projectImage(originalImage, "max");
+                RoiManager manager = new RoiManager();
+                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null,0,1000000);
+                analyzer.analyze(watershed);
 
-                ImageProcessor projectedImage8Bit = projectedImage.getProcessor().convertToByteProcessor();
-                ImagePlus projectedImage8Bit2 = new ImagePlus("projected", projectedImage8Bit);
+                manager.moveRoisToOverlay(watershed);
+                Overlay overlay = watershed.getOverlay();
+                overlay.drawLabels(false);
+                originalImage.setOverlay(overlay);
+                originalImage.show();
 
-                Concatenator add = new Concatenator();
-                ImagePlus result = add.concatenate(watershed, projectedImage8Bit2,false);
-                result.setDimensions(2,1,1);
-                CompositeImage composite = new CompositeImage(result, CompositeImage.COMPOSITE);
-                composite.setDisplayRange(0,100);
-                composite.show();
+                manager.reset();
+                manager.close();
 
             } else {
+
                 System.out.println("Please choose a file in the file list!");
+
             }
 
         }
@@ -355,6 +367,8 @@ public class PreviewGui {
     public class MyPreviewBackListener implements ActionListener {
 
         public void actionPerformed(ActionEvent a) {
+
+            Commands.closeAll();
 
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";

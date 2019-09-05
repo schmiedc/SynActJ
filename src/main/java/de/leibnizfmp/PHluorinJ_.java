@@ -40,11 +40,6 @@ public class PHluorinJ_ implements PlugIn {
 
 	}
 
-	public void askInputOutputSettings() {
-		// gui that asks input, output, settings and how to process
-
-	}
-
 	/**
 	 * Main method for debugging.
 	 *
@@ -60,7 +55,11 @@ public class PHluorinJ_ implements PlugIn {
 		java.net.URL url = main_class.getProtectionDomain().getCodeSource().getLocation();
 		java.io.File fileDir = new java.io.File(url.toURI());
 		System.setProperty("plugins.dir", fileDir.getAbsolutePath());
-		IJ.runPlugIn(PHluorinJ_.class.getName(),"");
+		//IJ.runPlugIn(PHluorinJ_.class.getName(),"");
+
+
+		//InputGui start = new InputGui();
+		//start.createWindow();
 
 		// start imageJ
 		new ImageJ();
@@ -78,7 +77,6 @@ public class PHluorinJ_ implements PlugIn {
 		}
 
 		guiTest.setUpGui(fileList);
-
 
 	}
 }
