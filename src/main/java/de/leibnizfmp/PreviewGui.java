@@ -318,7 +318,7 @@ public class PreviewGui {
                 Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
                 System.out.println("Gradient Radius: " + Integer.toString(radiusGradient));
 
-                // start preview
+                // start preview for spot segmentation
                 Image previewImage = new Image(testDir);
                 ImagePlus originalImage = previewImage.openImage(selectedFile);
 

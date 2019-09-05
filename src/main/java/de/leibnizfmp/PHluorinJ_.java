@@ -9,20 +9,34 @@
 package de.leibnizfmp;
 import java.util.ArrayList;
 
+import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 
 
 /**
- * A template for processing each pixel of either
- * GRAY8, GRAY16, GRAY32 or COLOR_RGB images.
+ * pHluorin image analysis workflow
  *
- * @author Johannes Schindelin
+ * @author Christopher Schmied
  */
-public class WorkflowStarter implements PlugIn {
+public class PHluorinJ_ implements PlugIn {
 
 	@Override
 	public void run(String s) {
+
+		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+
+		PreviewGui guiTest = new PreviewGui();
+
+		FileList getFileList = new FileList();
+
+		ArrayList<String> fileList = getFileList.getFileList(testDir);
+
+		for (String file : fileList) {
+			System.out.println(file);
+		}
+
+		guiTest.setUpGui(fileList);
 
 	}
 
@@ -42,7 +56,13 @@ public class WorkflowStarter implements PlugIn {
 	public static void main(String[] args) throws Exception {
 		// set the plugins.dir property to make the plugin appear in the Plugins menu
 		// see: https://stackoverflow.com/a/7060464/1207769
+		Class <?> main_class = PHluorinJ_.class;
+		java.net.URL url = main_class.getProtectionDomain().getCodeSource().getLocation();
+		java.io.File fileDir = new java.io.File(url.toURI());
+		System.setProperty("plugins.dir", fileDir.getAbsolutePath());
+		IJ.runPlugIn(PHluorinJ_.class.getName(),"");
 
+		// start imageJ
 		new ImageJ();
 
 		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
@@ -50,6 +70,7 @@ public class WorkflowStarter implements PlugIn {
 		PreviewGui guiTest = new PreviewGui();
 
 		FileList getFileList = new FileList();
+
 		ArrayList<String> fileList = getFileList.getFileList(testDir);
 
 		for (String file : fileList) {
@@ -57,6 +78,7 @@ public class WorkflowStarter implements PlugIn {
 		}
 
 		guiTest.setUpGui(fileList);
+
 
 	}
 }

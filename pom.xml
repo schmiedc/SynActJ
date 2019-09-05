@@ -13,10 +13,10 @@
 	</parent>
 
 	<groupId>de.leibniz-fmp</groupId>
-	<artifactId>pHluorin_Workflow</artifactId>
+	<artifactId>PHluorinJ_</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 
-	<name>pHlorin</name>
+	<name>pHlorin workflow</name>
 	<description>A Maven project implementing an ImageJ 1.x plugin.</description>
 	<url>https://www.leibniz-fmp.de/core-facilities/cellular-imaging/lehmann/research.html</url>
 	<inceptionYear>2019</inceptionYear>
@@ -73,7 +73,7 @@
 
 	<properties>
 		<package-name>de.leibnizfmp</package-name>
-		<main-class>de.leibnizfmp.WorkflowStarter</main-class>
+		<main-class>de.leibnizfmp.PHluorinJ_</main-class>
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>FMP-Berlin</license.copyrightOwners>
 		<imagej.app.directory>/data1/FMP_Docs/DevelopmentEnv/Fiji/Fiji.app</imagej.app.directory>
@@ -98,6 +98,12 @@
 			<artifactId>ij</artifactId>
 			<version>1.52p</version>
 		</dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej-legacy</artifactId>
+			<version>0.29.0</version>
+		</dependency>
+
 		<!-- Image Science dependencies -->
 		<dependency>
 			<groupId>sc.fiji</groupId>
