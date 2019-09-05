@@ -412,12 +412,12 @@ public class PreviewGui {
 
     } // close inner class
 
-    public class MySaveListener implements ActionListener {
+    public static class MySaveListener implements ActionListener {
         public void actionPerformed(ActionEvent a) { System.out.println("Saving settings");}
     }
 
     // upon pressing the stop button call sequencer.stop() method
-    public class MyBatchListener implements ActionListener {
+    public static class MyBatchListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
             System.out.println("Starting batch");
         }
