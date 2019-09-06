@@ -8,13 +8,10 @@ import ij.process.ImageProcessor;
 
 public class BackgroundSegmenter {
 
-    public ByteProcessor segmentBackground(ImagePlus image, double gauss, double rolling, String threshold){
+    public ByteProcessor segmentBackground(ImagePlus image, double gauss, String threshold){
 
         ImageProcessor processImage = image.getProcessor();
         processImage.blurGaussian(gauss);
-
-        BackgroundSubtracter backSubtract = new BackgroundSubtracter();
-        backSubtract.rollingBallBackground(processImage, rolling, false, false, true, false, false);
 
         processImage.setAutoThreshold(threshold, true, 1);
         ByteProcessor result = processImage.createMask();
