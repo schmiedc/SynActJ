@@ -1,7 +1,9 @@
 package de.leibnizfmp;
 
 import ij.ImagePlus;
+import ij.WindowManager;
 import ij.gui.Overlay;
+import ij.measure.Calibration;
 import ij.plugin.Commands;
 
 import ij.plugin.filter.ParticleAnalyzer;
@@ -22,6 +24,8 @@ public class PreviewGui {
             "Moments", "Otsu", "Percentile", "RenyiEntropy", "Shanbhag",
             "Triangle","Yen",
     };
+
+    public ArrayList<String> aListOfFiles;
 
     // creates the panel that contains the buttons boxlayout vertical aligned
     Box buttonBox = new Box(BoxLayout.Y_AXIS);
@@ -50,7 +54,7 @@ public class PreviewGui {
 
     // experimental settings
     SpinnerModel doubleSpinnerPixelSize;
-    SpinnerModel integerSpinnerFrameRate;
+    SpinnerModel doubleSpinnerFrameRate;
     SpinnerModel integerSpinnerStimulationFrame;
 
 
@@ -184,16 +188,16 @@ public class PreviewGui {
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
         boxSettings.add(boxPixelSize);
 
-        integerSpinnerFrameRate = new SpinnerNumberModel(2, 0,10, 1);
+        doubleSpinnerFrameRate = new SpinnerNumberModel(2.0, 0.0,10.0, 1.0);
         String frameRateLabel = "Frame rate: ";
         String frameRateUnit = "s";
-        Box boxFrameRate = addLabeledSpinnerUnit(frameRateLabel,integerSpinnerFrameRate, frameRateUnit);
+        Box boxFrameRate = addLabeledSpinnerUnit(frameRateLabel, doubleSpinnerFrameRate, frameRateUnit);
         boxSettings.add(boxFrameRate);
 
         integerSpinnerStimulationFrame = new SpinnerNumberModel(5, 0,10, 1);
         String stimulationFrameLabel = "Stimulation Frame: ";
         String stimulationFrameUnit = "";
-        Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel,integerSpinnerStimulationFrame, stimulationFrameUnit);
+        Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
         boxSettings.add(boxStimulationFrame);
 
         tabbedPane.addTab("Settings", boxSettings);
@@ -228,7 +232,7 @@ public class PreviewGui {
         buttonBox.add(batchButton);
     }
 
-    public void setUpGui(ArrayList<String> aListOfFiles) {
+    public void setUpGui() {
 
         JFrame theFrame;
 
@@ -306,21 +310,30 @@ public class PreviewGui {
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
-
-            Commands.closeAll();
-
-            System.out.println("Starting preview for spot segmentation");
-
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
             String projMethod = "median";
 
-            // get values in gui fields
+            System.out.println("Starting preview for spot segmentation");
+
+            // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
+
+            // if a file for preview is selected then proceed with preview
             if (selectionChecker != -1){
 
                 String selectedFile = (String) list.getSelectedValue();
                 System.out.println("Selected File: " + selectedFile);
+
+                String[] openImage = WindowManager.getImageTitles();
+
+                for (String image : openImage) {
+
+
+
+                    System.out.println("Open image: " + image);
+
+                }
 
                 Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
                 System.out.println("LoG sigma: " + sigmaLoG);
@@ -354,13 +367,15 @@ public class PreviewGui {
                 Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
                 System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
 
+                Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
                 Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
                 System.out.println("Stimulation frame: " + stimFrame);
 
                 // start preview for spot segmentation
-                Image previewImage = new Image(testDir);
+                Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
                 ImagePlus originalImage = previewImage.openImage(selectedFile);
+                Calibration calibration = previewImage.calibrate();
 
                 DifferenceImage processImage = new DifferenceImage(projMethod);
                 ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
@@ -379,7 +394,8 @@ public class PreviewGui {
                 Overlay overlay = watershed.getOverlay();
                 overlay.drawLabels(false);
                 originalImage.setOverlay(overlay);
-
+                originalImage.setCalibration(calibration);
+                originalImage.setDisplayRange(100,200);
                 originalImage.show();
 
                 manager.reset();
@@ -429,9 +445,12 @@ public class PreviewGui {
                 Integer minSizePx = (int)Math.round(minSizeBack / pxArea);
                 Integer maxSizePx = (int)Math.round(maxSizeBack  / pxArea);
 
+                Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+
                 // segment background and show for validation
-                Image previewImage = new Image(testDir);
+                Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
                 ImagePlus originalImage = previewImage.openImage(selectedFile);
+                Calibration calibration = previewImage.calibrate();
                 String titleOriginal = originalImage.getTitle();
 
                 ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
@@ -452,6 +471,8 @@ public class PreviewGui {
                 ImagePlus showBack = previewImage.projectImage(originalImage, "max");
                 showBack.setOverlay(overlay);
                 showBack.setTitle(titleOriginal);
+                showBack.setCalibration(calibration);
+                showBack.setDisplayRange(100,200);
                 showBack.show();
 
                 manager.reset();
@@ -477,5 +498,13 @@ public class PreviewGui {
             System.out.println("Starting batch");
         }
     } // close inner class
+
+    public PreviewGui (ArrayList<String> filesSelected){
+
+        aListOfFiles = filesSelected;
+
+    }
+
+
 
 }

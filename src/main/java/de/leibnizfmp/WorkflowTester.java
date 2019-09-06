@@ -11,6 +11,8 @@ public class WorkflowTester {
 
         String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
         String projMethod = "median";
+        double pixelSize = 0.162;
+        double frameRate = 2;
 
         FileList getFileList = new FileList();
         ArrayList<String> fileList = getFileList.getFileList(testDir);
@@ -19,7 +21,7 @@ public class WorkflowTester {
             System.out.println(file);
         }
 
-        Image previewImage = new Image(testDir);
+        Image previewImage = new Image(testDir, pixelSize, frameRate);
         ImagePlus originalImage = previewImage.openImage(fileList.get(0));
 
         DifferenceImage processImage = new DifferenceImage(projMethod);

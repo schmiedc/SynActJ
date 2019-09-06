@@ -26,7 +26,7 @@ public class PHluorinJ_ implements PlugIn {
 
 		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
 
-		PreviewGui guiTest = new PreviewGui();
+
 
 		FileList getFileList = new FileList();
 
@@ -36,7 +36,8 @@ public class PHluorinJ_ implements PlugIn {
 			System.out.println(file);
 		}
 
-		guiTest.setUpGui(fileList);
+		PreviewGui guiTest = new PreviewGui(fileList);
+		guiTest.setUpGui();
 
 	}
 
@@ -66,8 +67,6 @@ public class PHluorinJ_ implements PlugIn {
 
 		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
 
-		PreviewGui guiTest = new PreviewGui();
-
 		FileList getFileList = new FileList();
 
 		ArrayList<String> fileList = getFileList.getFileList(testDir);
@@ -76,7 +75,8 @@ public class PHluorinJ_ implements PlugIn {
 			System.out.println(file);
 		}
 
-		guiTest.setUpGui(fileList);
+		PreviewGui guiTest = new PreviewGui(fileList);
+		guiTest.setUpGui();
 
 	}
 }

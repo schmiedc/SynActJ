@@ -2,11 +2,16 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.measure.Calibration;
 import ij.plugin.ZProjector;
 
 public class Image {
 
     String directory;
+    String sizeUnit;
+    String timeUnit;
+    double pxSizeCalib;
+    double frameRateCalib;
 
     public ImagePlus openImage(String inputFile) {
 
@@ -17,6 +22,21 @@ public class Image {
         return image;
     }
 
+    public Calibration calibrate(){
+
+        Calibration imageScale = new Calibration();
+        imageScale.setTimeUnit(timeUnit);
+        imageScale.setXUnit(sizeUnit);
+        imageScale.setYUnit(sizeUnit);
+
+        imageScale.pixelHeight = pxSizeCalib;
+        imageScale.pixelWidth = pxSizeCalib;
+        imageScale.frameInterval = frameRateCalib;
+
+        return imageScale;
+
+    }
+
     public ImagePlus projectImage(ImagePlus image, String method) {
 
         ImagePlus maxProjectImage = ZProjector.run(image, method);
@@ -25,8 +45,14 @@ public class Image {
 
     }
 
-    public Image(String inputDir){
+    public Image(String inputDir, double pxSize, double frameRate){
+
         directory = inputDir;
+        sizeUnit = "micron";
+        timeUnit = "sec";
+        pxSizeCalib = pxSize;
+        frameRateCalib = frameRate;
+
     }
 
 }
