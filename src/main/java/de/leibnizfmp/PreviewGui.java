@@ -73,7 +73,7 @@ public class PreviewGui {
         boxSpotSeg.add(spinSpot2);
 
         doubleSpinnerGaussSpot = new SpinnerNumberModel(1.0, 0.0,10.0, 0.1);
-        String spinLabelSpot3 = "Gauss sigma (px): ";
+        String spinLabelSpot3 = "Gauss sigma: ";
         String spinUnitSpot3 = "px";
         Box spinSpot3 = addLabeledSpinnerUnit(spinLabelSpot3, doubleSpinnerGaussSpot, spinUnitSpot3);
         boxSpotSeg.add(spinSpot3);
@@ -158,7 +158,7 @@ public class PreviewGui {
         Box spinnerBack2 = addLabeledSpinnerUnit(minSizeLabel, doubleSpinBack2, minUnitLabel );
         boxBackground.add(spinnerBack2);
 
-        doubleSpinBack3 = new SpinnerNumberModel(1000000,0.0,1000000,10.0);
+        doubleSpinBack3 = new SpinnerNumberModel(10000,0.0,1000000,10.0);
         String maxSizeLabel = "Select maximum size: ";
         String maxUnitLabel = "µm²";
         Box spinnerBack3 = addLabeledSpinnerUnit(maxSizeLabel, doubleSpinBack3, maxUnitLabel);
@@ -340,13 +340,20 @@ public class PreviewGui {
                 Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
                 System.out.println("Gradient Radius: " + radiusGradient);
 
-                Double minSize = (Double) doubleSpinnerMinSize.getValue();
-                Double maxSize = (Double) doubleSpinnerMaxSize.getValue();
-                System.out.println("Spots size from: " + minSize + " to " + maxSize + " µm²" );
+                Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
+                Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
+                System.out.println("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
+
+                // calculate size in pixel
+                Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+                Double pxArea = pxSizeMicron * pxSizeMicron;
+                Integer minSizePx = (int)Math.round(minSizeMicron / pxArea);
+                Integer maxSizePx = (int)Math.round(maxSizeMicron  / pxArea);
 
                 Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
                 Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
                 System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
+
 
                 Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
                 System.out.println("Stimulation frame: " + stimFrame);
@@ -365,7 +372,7 @@ public class PreviewGui {
                 ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
                 RoiManager manager = new RoiManager();
-                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSize, maxSize, lowCirc, highCirc );
+                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx, lowCirc, highCirc );
                 analyzer.analyze(watershed);
 
                 manager.moveRoisToOverlay(watershed);
@@ -414,6 +421,13 @@ public class PreviewGui {
 
                 Double minSizeBack = (Double) doubleSpinBack2.getValue();
                 Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
+                System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+
+                // calculate size in pixel
+                Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+                Double pxArea = pxSizeMicron * pxSizeMicron;
+                Integer minSizePx = (int)Math.round(minSizeBack / pxArea);
+                Integer maxSizePx = (int)Math.round(maxSizeBack  / pxArea);
 
                 // segment background and show for validation
                 Image previewImage = new Image(testDir);
@@ -426,7 +440,7 @@ public class PreviewGui {
                 ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
 
                 RoiManager manager = new RoiManager();
-                ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizeBack, maxSizeBack);
+                ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx);
 
                 ImagePlus testBack = new ImagePlus("test", background);
                 backAnalyzer.analyze(testBack);
