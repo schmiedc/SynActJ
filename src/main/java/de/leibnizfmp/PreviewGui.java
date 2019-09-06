@@ -329,8 +329,6 @@ public class PreviewGui {
 
                 for (String image : openImage) {
 
-
-
                     System.out.println("Open image: " + image);
 
                 }
@@ -468,12 +466,12 @@ public class PreviewGui {
                 Overlay overlay = testBack.getOverlay();
                 overlay.drawLabels(false);
 
-                ImagePlus showBack = previewImage.projectImage(originalImage, "max");
-                showBack.setOverlay(overlay);
-                showBack.setTitle(titleOriginal);
-                showBack.setCalibration(calibration);
-                showBack.setDisplayRange(100,200);
-                showBack.show();
+
+                originalImage.setOverlay(overlay);
+                originalImage.setTitle(titleOriginal);
+                originalImage.setCalibration(calibration);
+                originalImage.setDisplayRange(100,200);
+                originalImage.show();
 
                 manager.reset();
                 manager.close();
