@@ -24,13 +24,7 @@ public class WorkflowTester {
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
 
-        int startBefore = 1;
-        int endBefore = 4;
-        int startAfter = 5;
-        int endAfter = 10;
-
-        ImagePlus diffImage = processImage.createDiffImage(originalImage, startBefore, endBefore, startAfter, endAfter);
-
+        ImagePlus diffImage = processImage.createDiffImage(originalImage, 5);
 
         SpotSegmenter spot = new SpotSegmenter();
 
@@ -60,7 +54,7 @@ public class WorkflowTester {
         String thresholdBackground = "Mean";
 
         BackgroundSegmenter back = new BackgroundSegmenter();
-        ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, rollingBackground, thresholdBackground);
+        ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
 
         ImagePlus testBack = new ImagePlus("test", background);
         testBack.show();

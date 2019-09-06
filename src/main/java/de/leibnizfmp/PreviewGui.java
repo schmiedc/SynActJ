@@ -5,19 +5,17 @@ import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.plugin.Commands;
 import ij.plugin.Concatenator;
-import ij.plugin.PlugIn;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import net.imglib2.ops.parse.token.Int;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-import static ij.plugin.filter.ParticleAnalyzer.ADD_TO_MANAGER;
 
 
 public class PreviewGui {
@@ -42,15 +40,21 @@ public class PreviewGui {
     SpinnerModel intSpinnerRollingBallSpot;
     JComboBox thresholdListSpot;
     SpinnerModel intSpinnerGradient;
-    JTextField textSizeFilterSpot;
-    JTextField textCircFilterSpot;
+    SpinnerModel doubleSpinnerMinSize;
+    SpinnerModel doubleSpinnerMaxSize;
+    SpinnerModel doubleSpinnerLowCirc;
+    SpinnerModel doubleSpinnerHighCirc;
 
     // settings for background segmentation
-    SpinnerModel intSpinBack1;
-    SpinnerModel intSpinBack2;
+    SpinnerModel doubleSpinBack1;
     JComboBox thresholdListBack;
-    JTextField textBack1;
-    JTextField textBack2;
+    SpinnerModel doubleSpinBack2;
+    SpinnerModel doubleSpinBack3;
+
+    // experimental settings
+    SpinnerModel doubleSpinnerPixelSize;
+    SpinnerModel integerSpinnerFrameRate;
+    SpinnerModel integerSpinnerStimulationFrame;
 
 
     public void setUpSpotTab() {
@@ -64,7 +68,6 @@ public class PreviewGui {
         String spinUnitSpot1 = "µm";
         Box spinSpot1 = (Box) addLabeledSpinnerUnit(spinLabelSpot1, doubleSpinnerLoGSpot, spinUnitSpot1);
         boxSpotSeg.add(spinSpot1);
-
 
         doubleSpinnerProminenceSpot = new SpinnerNumberModel(0.005, 0.0,1.000, 0.001);
         String spinLabelSpot2 = "Prominence - grayValue: ";
@@ -99,17 +102,29 @@ public class PreviewGui {
         Box spinSpot5 = (Box) addLabeledSpinnerUnit(spinLabelSpot5, intSpinnerGradient, spinUnitSpot5);
         boxSpotSeg.add(spinSpot5);
 
-        textSizeFilterSpot = new JTextField("0-Infinity");
-        String labelSpot1 = "Set size filter: ";
-        String unitSpot1 = "µm²";
-        Box textSpotBox1 = (Box) addLabeledTextField(labelSpot1,textSizeFilterSpot ,unitSpot1);
-        boxSpotSeg.add(textSpotBox1);
+        doubleSpinnerMinSize = new SpinnerNumberModel(0.0, 0.0,10000, 0.1);
+        String labelMinSize = "Minimum spot size: ";
+        String unitMinSize = "µm²";
+        Box minSizeBox = (Box) addLabeledSpinnerUnit(labelMinSize , doubleSpinnerMinSize, unitMinSize);
+        boxSpotSeg.add(minSizeBox);
 
-        textCircFilterSpot = new JTextField("0-1.00");
-        String labelSpot2 = "Set circ. filter: ";
-        String unitSpot2 = "";
-        Box textSpotBox2 = (Box) addLabeledTextField(labelSpot2, textCircFilterSpot,unitSpot2);
-        boxSpotSeg.add(textSpotBox2);
+        doubleSpinnerMaxSize = new SpinnerNumberModel(1000, 0.0,10000, 0.1);
+        String labelMaxSize = "Maximum spot size: ";
+        String unitMaxSize = "µm²";
+        Box maxSizeBox = (Box) addLabeledSpinnerUnit(labelMaxSize , doubleSpinnerMaxSize, unitMaxSize);
+        boxSpotSeg.add(maxSizeBox);
+
+        doubleSpinnerLowCirc = new SpinnerNumberModel(0.0, 0.0,1.0, 0.01);
+        String labelLowCirc = "Minimum spot circ.: ";
+        String unitLowCirc = "";
+        Box lowCirc = (Box) addLabeledSpinnerUnit(labelLowCirc , doubleSpinnerLowCirc, unitLowCirc);
+        boxSpotSeg.add(lowCirc);
+
+        doubleSpinnerHighCirc = new SpinnerNumberModel(1.0, 0.0,1.0, 0.01);
+        String labelHighCirc = "Minimum spot size: ";
+        String unitHighCirc = "";
+        Box highCirc = (Box) addLabeledSpinnerUnit(labelHighCirc , doubleSpinnerHighCirc , unitHighCirc );
+        boxSpotSeg.add(highCirc);
 
         // Preview Button for Spot segmentation
         JButton previewSpot = new JButton("Preview");
@@ -125,17 +140,11 @@ public class PreviewGui {
         // Setup Interactions for Segment Background
         Box boxBackground = new Box(BoxLayout.Y_AXIS);
 
-        intSpinBack1 = new SpinnerNumberModel(4.0, 0.0,20.0, 1.0);
+        doubleSpinBack1 = new SpinnerNumberModel(4.0, 0.0,20.0, 1.0);
         String spinBackLabel1 = "Gauss sigma: ";
         String spinBackUnit1 = "px";
-        Box spinnerBack1 = (Box) addLabeledSpinnerUnit(spinBackLabel1,intSpinBack1, spinBackUnit1);
+        Box spinnerBack1 = (Box) addLabeledSpinnerUnit(spinBackLabel1, doubleSpinBack1, spinBackUnit1);
         boxBackground.add(spinnerBack1);
-
-        intSpinBack2 = new SpinnerNumberModel(30.0, 0.0,100.0, 1.0);
-        String spinBackLabel2 = "RollingBall radius: ";
-        String spinBackUnit2 = "px";
-        Box spinnerBack2 = (Box) addLabeledSpinnerUnit(spinBackLabel2,intSpinBack2, spinBackUnit2);
-        boxBackground.add(spinnerBack2);
 
         thresholdListBack = new JComboBox(thresholdString);
         JLabel thresholdListBackLabel  = new JLabel("Select threshold: ");
@@ -146,17 +155,17 @@ public class PreviewGui {
         thresholdListBackBox.add(thresholdListBack);
         boxBackground.add(thresholdListBackBox);
 
-        textBack1 = new JTextField("0-Infinity");
-        String labelBack1 = "Set size filter: ";
-        String unitBack1 = "µm²";
-        Box textBack1Box = (Box) addLabeledTextField(labelBack1,textBack1,unitBack1);
-        boxBackground.add(textBack1Box);
+        doubleSpinBack2 = new SpinnerNumberModel(0.0,0.0,1000000,10.0);
+        String minSizeLabel = "Select minimum size: ";
+        String minUnitLabel = "µm²";
+        Box spinnerBack2 = (Box) addLabeledSpinnerUnit(minSizeLabel, doubleSpinBack2, minUnitLabel );
+        boxBackground.add(spinnerBack2);
 
-        textBack2 = new JTextField("0-1.00");
-        String labelBack2 = "Set circ. filter: ";
-        String unitBack2  = "";
-        Box textBack2Box = (Box) addLabeledTextField(labelBack2, textBack2, unitBack2 );
-        boxBackground.add(textBack2Box);
+        doubleSpinBack3 = new SpinnerNumberModel(1000000,0.0,1000000,10.0);
+        String maxSizeLabel = "Select maximum size: ";
+        String maxUnitLabel = "µm²";
+        Box spinnerBack3 = (Box) addLabeledSpinnerUnit(maxSizeLabel, doubleSpinBack3, maxUnitLabel);
+        boxBackground.add(spinnerBack3);
 
         // setup Buttons
         JButton previewButton = new JButton("Preview");
@@ -172,11 +181,23 @@ public class PreviewGui {
         // Setup Interactions for experimental settings
         Box boxSettings = new Box(BoxLayout.Y_AXIS);
 
-        SpinnerModel spinSettings1 = new SpinnerNumberModel(0.1620, 0.0000,1.0000, 0.0001);
-        String spinSettingsLabel1 = "Pixel size: ";
-        String spinSettingsunit1 = "µm";
-        Box spinSettingsBox1 = (Box) addLabeledSpinnerUnit(spinSettingsLabel1,spinSettings1, spinSettingsunit1);
-        boxSettings.add(spinSettingsBox1);
+        doubleSpinnerPixelSize = new SpinnerNumberModel(0.1620, 0.0000,1.0000, 0.0001);
+        String pixelSizeLabel = "Pixel size: ";
+        String pixelSizeUnit = "µm";
+        Box boxPixelSize = (Box) addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
+        boxSettings.add(boxPixelSize);
+
+        integerSpinnerFrameRate = new SpinnerNumberModel(2, 0,10, 1);
+        String frameRateLabel = "Frame rate: ";
+        String frameRateUnit = "s";
+        Box boxFrameRate = (Box) addLabeledSpinnerUnit(frameRateLabel,integerSpinnerFrameRate, frameRateUnit);
+        boxSettings.add(boxFrameRate);
+
+        integerSpinnerStimulationFrame = new SpinnerNumberModel(5, 0,10, 1);
+        String stimulationFrameLabel = "Stimulation Frame: ";
+        String stimulationFrameUnit = "";
+        Box boxStimulationFrame = (Box) addLabeledSpinnerUnit(stimulationFrameLabel,integerSpinnerStimulationFrame, stimulationFrameUnit);
+        boxSettings.add(boxStimulationFrame);
 
         tabbedPane.addTab("Settings", boxSettings);
 
@@ -231,7 +252,7 @@ public class PreviewGui {
         setUpButtons();
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabbedPane.setPreferredSize(new Dimension(300, 80));
+        tabbedPane.setPreferredSize(new Dimension(320, 80));
 
         // setup Buttons
         JButton  saveButton = new JButton("Save settings");
@@ -244,7 +265,7 @@ public class PreviewGui {
         background.add(BorderLayout.SOUTH, saveButton);
         theFrame.getContentPane().add(background);
 
-        theFrame.setSize(800,600);
+        theFrame.setSize(900,400);
         theFrame.setVisible(true);
 
     }
@@ -327,12 +348,23 @@ public class PreviewGui {
                 Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
                 System.out.println("Gradient Radius: " + Integer.toString(radiusGradient));
 
+                Double minSize = (Double) doubleSpinnerMinSize.getValue();
+                Double maxSize = (Double) doubleSpinnerMaxSize.getValue();
+                System.out.println("Spots size from: " + Double.toString(minSize) + " to " + Double.toString(maxSize) + " µm²" );
+
+                Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+                Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+                System.out.println("Spots circ. from: " + Double.toString(lowCirc) + " to " + Double.toString(highCirc));
+
+                Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+                System.out.println("Stimulation frame: " + Integer.toString(stimFrame));
+
                 // start preview for spot segmentation
                 Image previewImage = new Image(testDir);
                 ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                 DifferenceImage processImage = new DifferenceImage(projMethod);
-                ImagePlus diffImage = processImage.createDiffImage(originalImage, startBefore, endBefore, startAfter, endAfter);
+                ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
 
                 SpotSegmenter spot = new SpotSegmenter();
                 ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
@@ -341,13 +373,14 @@ public class PreviewGui {
                 ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
                 RoiManager manager = new RoiManager();
-                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null,0,1000000);
+                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSize, maxSize, lowCirc, highCirc );
                 analyzer.analyze(watershed);
 
                 manager.moveRoisToOverlay(watershed);
                 Overlay overlay = watershed.getOverlay();
                 overlay.drawLabels(false);
                 originalImage.setOverlay(overlay);
+
                 originalImage.show();
 
                 manager.reset();
@@ -383,38 +416,40 @@ public class PreviewGui {
                 String selectedFile = (String) list.getSelectedValue();
                 System.out.println("Selected File: " + selectedFile);
 
-                Double sigmaBackground = (Double) intSpinBack1.getValue();
-
-                Double rollingBackground = (Double) intSpinBack2.getValue();
+                Double sigmaBackground = (Double) doubleSpinBack1.getValue();
 
                 String thresholdBackground = (String) thresholdListBack.getSelectedItem();
 
-                String sizeBack1 = (String) textBack1.getText();
-                String circBack2 = (String) textBack2.getText();
+                Double minSizeBack = (Double) doubleSpinBack2.getValue();
+                Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
 
                 // segment background and show for validation
-                // start preview
                 Image previewImage = new Image(testDir);
                 ImagePlus originalImage = previewImage.openImage(selectedFile);
+                String titleOriginal = originalImage.getTitle();
 
                 ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
 
                 BackgroundSegmenter back = new BackgroundSegmenter();
-                ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, rollingBackground, thresholdBackground);
+                ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
+
+                RoiManager manager = new RoiManager();
+                ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizeBack, maxSizeBack);
 
                 ImagePlus testBack = new ImagePlus("test", background);
-                testBack.show();
+                backAnalyzer.analyze(testBack);
 
-                ImagePlus projectedImage = previewImage.projectImage(originalImage, "max");
-                ImageProcessor projectedImage8Bit = projectedImage.getProcessor().convertToByteProcessor();
-                ImagePlus projectedImage8Bit2 = new ImagePlus("projected", projectedImage8Bit);
+                manager.moveRoisToOverlay(testBack);
+                Overlay overlay = testBack.getOverlay();
+                overlay.drawLabels(false);
 
-                Concatenator add = new Concatenator();
-                ImagePlus result = add.concatenate(testBack, projectedImage8Bit2,false);
-                result.setDimensions(2,1,1);
-                CompositeImage composite = new CompositeImage(result, CompositeImage.COMPOSITE);
-                composite.setDisplayRange(0,100);
-                composite.show();
+                ImagePlus showBack = previewImage.projectImage(originalImage, "max");
+                showBack.setOverlay(overlay);
+                showBack.setTitle(titleOriginal);
+                showBack.show();
+
+                manager.reset();
+                manager.close();
 
             } else {
 
