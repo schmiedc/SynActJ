@@ -1,7 +1,9 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.ImageWindow;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.plugin.Commands;
@@ -14,7 +16,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 
 public class PreviewGui {
@@ -307,6 +312,65 @@ public class PreviewGui {
         return spinnerLabelBox;
     }
 
+    public void spotVis(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
+                    double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
+                    int radiusGradient, int minSizePx, int maxSizePx, double lowCirc, double highCirc,
+                    Calibration calibration) {
+
+        DifferenceImage processImage = new DifferenceImage(projMethod);
+        ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
+
+        SpotSegmenter spot = new SpotSegmenter();
+        ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
+        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots);
+
+        ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
+
+        RoiManager manager = new RoiManager();
+        ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx, lowCirc, highCirc );
+        analyzer.analyze(watershed);
+
+        manager.moveRoisToOverlay(watershed);
+        Overlay overlay = watershed.getOverlay();
+        overlay.drawLabels(false);
+        originalImage.setOverlay(overlay);
+        originalImage.setCalibration(calibration);
+        originalImage.setDisplayRange(100,200);
+        originalImage.show();
+
+        manager.reset();
+        manager.close();
+
+    }
+
+    public void backVis(ImagePlus forBackSegmentation, double sigmaBackground, String thresholdBackground,
+                        int minSizePx, int maxSizePx, ImagePlus originalImage, String titleOriginal,
+                        Calibration calibration) {
+
+        BackgroundSegmenter back = new BackgroundSegmenter();
+        ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
+
+        RoiManager manager = new RoiManager();
+        ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx);
+
+        ImagePlus testBack = new ImagePlus("test", background);
+        backAnalyzer.analyze(testBack);
+
+        manager.moveRoisToOverlay(testBack);
+        Overlay overlay = testBack.getOverlay();
+        overlay.drawLabels(false);
+
+        originalImage.setOverlay(overlay);
+        originalImage.setTitle(titleOriginal);
+        originalImage.setCalibration(calibration);
+        originalImage.setDisplayRange(100,200);
+        originalImage.show();
+
+        manager.reset();
+        manager.close();
+
+    }
+
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
@@ -314,7 +378,50 @@ public class PreviewGui {
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
             String projMethod = "median";
 
+            ImagePlus originalImage;
+            Calibration calibration;
+
             System.out.println("Starting preview for spot segmentation");
+
+            // get all the values from the GUI
+            Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+            System.out.println("LoG sigma: " + sigmaLoG);
+
+            Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+            System.out.println("Prominence: " + prominence);
+
+            Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+            System.out.println("Gauss sigma: " + sigmaSpots);
+
+            Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
+            System.out.println("Rolling Ball radius: " + rollingSpots);
+
+            String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
+            System.out.println("Threshold: " + thresholdSpots);
+
+            Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
+            System.out.println("Gradient Radius: " + radiusGradient);
+
+            Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
+            Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
+            System.out.println("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
+
+            // calculate size in pixel
+            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            Double pxArea = pxSizeMicron * pxSizeMicron;
+            Integer minSizePx = (int)Math.round(minSizeMicron / pxArea);
+            Integer maxSizePx = (int)Math.round(maxSizeMicron  / pxArea);
+
+            Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+            Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+            System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
+
+            Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+
+            Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+            System.out.println("Stimulation frame: " + stimFrame);
+
+            Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
 
             // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
@@ -325,79 +432,80 @@ public class PreviewGui {
                 String selectedFile = (String) list.getSelectedValue();
                 System.out.println("Selected File: " + selectedFile);
 
-                String[] openImage = WindowManager.getImageTitles();
+                // check if there are windows open already
+                int openImages = WindowManager.getImageCount();
 
-                for (String image : openImage) {
+                // if there are image windows open check if they are of the list and of the selected image
+                if  ( openImages != 0 ) {
 
-                    System.out.println("Open image: " + image);
+                    System.out.println("There are images open!");
 
+                    String[] openImage = WindowManager.getImageTitles();
+                    ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
+
+                    FileList fileUtility = new FileList();
+                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, aListOfFiles);
+
+                    Boolean selectedFileChecker = false;
+
+                    for (String image : openInputImages) {
+
+                        if (image.equals(selectedFile)) {
+
+                            System.out.println(selectedFile + " is already open");
+                            selectedFileChecker = true;
+
+                        } else {
+
+                            IJ.selectWindow(image);
+                            IJ.run("Close");
+
+                        }
+
+                    }
+
+                    if (selectedFileChecker) {
+                        IJ.selectWindow(selectedFile);
+                        ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
+                        calibration = selectedImage.getCalibration();
+
+                        spotVis( selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
+                                sigmaSpots, rollingSpots, thresholdSpots,
+                                radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
+                                calibration);
+
+
+                    } else {
+
+                        System.out.println("The selected image is not open");
+
+                        // start preview for spot segmentation
+                        previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        originalImage = previewImage.openImage(selectedFile);
+                        calibration = previewImage.calibrate();
+
+
+                        spotVis(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                                sigmaSpots, rollingSpots, thresholdSpots,
+                                radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
+                                calibration);
+
+                    }
+
+                } else {
+
+                    System.out.println("There are no images open!");
+
+                    // start preview for spot segmentation
+                    previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                    originalImage = previewImage.openImage(selectedFile);
+                    calibration = previewImage.calibrate();
+
+                    spotVis(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                            sigmaSpots, rollingSpots, thresholdSpots,
+                            radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
+                            calibration);
                 }
-
-                Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
-                System.out.println("LoG sigma: " + sigmaLoG);
-
-                Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
-                System.out.println("Prominence: " + prominence);
-
-                Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
-                System.out.println("Gauss sigma: " + sigmaSpots);
-
-                Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
-                System.out.println("Rolling Ball radius: " + rollingSpots);
-
-                String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
-                System.out.println("Threshold: " + thresholdSpots);
-
-                Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
-                System.out.println("Gradient Radius: " + radiusGradient);
-
-                Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
-                Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
-                System.out.println("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
-
-                // calculate size in pixel
-                Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-                Double pxArea = pxSizeMicron * pxSizeMicron;
-                Integer minSizePx = (int)Math.round(minSizeMicron / pxArea);
-                Integer maxSizePx = (int)Math.round(maxSizeMicron  / pxArea);
-
-                Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
-                Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
-                System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
-
-                Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
-
-                Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
-                System.out.println("Stimulation frame: " + stimFrame);
-
-                // start preview for spot segmentation
-                Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
-                ImagePlus originalImage = previewImage.openImage(selectedFile);
-                Calibration calibration = previewImage.calibrate();
-
-                DifferenceImage processImage = new DifferenceImage(projMethod);
-                ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
-
-                SpotSegmenter spot = new SpotSegmenter();
-                ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
-                ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots);
-
-                ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
-
-                RoiManager manager = new RoiManager();
-                ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx, lowCirc, highCirc );
-                analyzer.analyze(watershed);
-
-                manager.moveRoisToOverlay(watershed);
-                Overlay overlay = watershed.getOverlay();
-                overlay.drawLabels(false);
-                originalImage.setOverlay(overlay);
-                originalImage.setCalibration(calibration);
-                originalImage.setDisplayRange(100,200);
-                originalImage.show();
-
-                manager.reset();
-                manager.close();
 
             } else {
 
@@ -414,67 +522,114 @@ public class PreviewGui {
 
         public void actionPerformed(ActionEvent a) {
 
-            Commands.closeAll();
-
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
 
             System.out.println("Starting preview for background segmentation");
 
+            Double sigmaBackground = (Double) doubleSpinBack1.getValue();
+
+            String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+
+            Double minSizeBack = (Double) doubleSpinBack2.getValue();
+            Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
+            System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+
+            // calculate size in pixel
+            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            Double pxArea = pxSizeMicron * pxSizeMicron;
+            Integer minSizePx = (int)Math.round(minSizeBack / pxArea);
+            Integer maxSizePx = (int)Math.round(maxSizeBack  / pxArea);
+
+            Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+
             int selectionChecker = list.getSelectedIndex();
 
             if (selectionChecker != -1){
 
-                // get values from fields
                 String selectedFile = (String) list.getSelectedValue();
                 System.out.println("Selected File: " + selectedFile);
 
-                Double sigmaBackground = (Double) doubleSpinBack1.getValue();
+                // check if there are windows open already
+                int openImages = WindowManager.getImageCount();
 
-                String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+                // if there are image windows open check if they are of the list and of the selected image
+                if  ( openImages != 0 ) {
 
-                Double minSizeBack = (Double) doubleSpinBack2.getValue();
-                Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
-                System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+                    System.out.println("There are images open!");
 
-                // calculate size in pixel
-                Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-                Double pxArea = pxSizeMicron * pxSizeMicron;
-                Integer minSizePx = (int)Math.round(minSizeBack / pxArea);
-                Integer maxSizePx = (int)Math.round(maxSizeBack  / pxArea);
+                    String[] openImage = WindowManager.getImageTitles();
+                    ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
 
-                Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+                    FileList fileUtility = new FileList();
+                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, aListOfFiles);
 
-                // segment background and show for validation
-                Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
-                ImagePlus originalImage = previewImage.openImage(selectedFile);
-                Calibration calibration = previewImage.calibrate();
-                String titleOriginal = originalImage.getTitle();
+                    Boolean selectedFileChecker = false;
 
-                ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+                    for (String image : openInputImages) {
 
-                BackgroundSegmenter back = new BackgroundSegmenter();
-                ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
+                        if (image.equals(selectedFile)) {
 
-                RoiManager manager = new RoiManager();
-                ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx);
+                            System.out.println(selectedFile + " is already open");
+                            selectedFileChecker = true;
 
-                ImagePlus testBack = new ImagePlus("test", background);
-                backAnalyzer.analyze(testBack);
+                        } else {
 
-                manager.moveRoisToOverlay(testBack);
-                Overlay overlay = testBack.getOverlay();
-                overlay.drawLabels(false);
+                            IJ.selectWindow(image);
+                            IJ.run("Close");
 
+                        }
 
-                originalImage.setOverlay(overlay);
-                originalImage.setTitle(titleOriginal);
-                originalImage.setCalibration(calibration);
-                originalImage.setDisplayRange(100,200);
-                originalImage.show();
+                    }
 
-                manager.reset();
-                manager.close();
+                    if (selectedFileChecker) {
+
+                        IJ.selectWindow(selectedFile);
+                        Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
+                        Calibration calibration = selectedImage.getCalibration();
+                        String titleOriginal = selectedImage.getTitle();
+
+                        ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
+
+                        backVis(forBackSegmentation, sigmaBackground, thresholdBackground,
+                                minSizePx, maxSizePx, selectedImage, titleOriginal,
+                                calibration );
+
+                    } else {
+
+                        System.out.println("The selected image is not open");
+
+                        // segment background and show for validation
+                        Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        ImagePlus originalImage = previewImage.openImage(selectedFile);
+                        Calibration calibration = previewImage.calibrate();
+                        String titleOriginal = originalImage.getTitle();
+
+                        ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+
+                        backVis(forBackSegmentation, sigmaBackground, thresholdBackground,
+                                minSizePx, maxSizePx, originalImage, titleOriginal,
+                                calibration );
+
+                    }
+
+                } else {
+
+                    System.out.println("There are no images open!");
+
+                    // segment background and show for validation
+                    Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                    ImagePlus originalImage = previewImage.openImage(selectedFile);
+                    Calibration calibration = previewImage.calibrate();
+                    String titleOriginal = originalImage.getTitle();
+
+                    ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+
+                    backVis(forBackSegmentation, sigmaBackground, thresholdBackground,
+                            minSizePx, maxSizePx, originalImage, titleOriginal,
+                            calibration );
+                }
 
             } else {
 

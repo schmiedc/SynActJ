@@ -9,7 +9,6 @@
 package de.leibnizfmp;
 import java.util.ArrayList;
 
-import ij.IJ;
 import ij.ImageJ;
 import ij.plugin.PlugIn;
 
@@ -25,8 +24,6 @@ public class PHluorinJ_ implements PlugIn {
 	public void run(String s) {
 
 		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
-
-
 
 		FileList getFileList = new FileList();
 
