@@ -3,10 +3,8 @@ package de.leibnizfmp;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.gui.ImageWindow;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
-import ij.plugin.Commands;
 
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
@@ -243,7 +241,8 @@ public class PreviewGui {
 
         // sets up the frame
         theFrame = new JFrame("pHluorin Processing");
-        theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // needs to set to dispose otherwise it also closes Fiji
+        theFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         BorderLayout layout = new BorderLayout();
         JPanel background = new JPanel(layout);
 
