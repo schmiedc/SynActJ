@@ -182,7 +182,7 @@ public class PreviewGui {
         JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
         buttonBox.add(settingsLabel);
 
-        doubleSpinnerPixelSize = new SpinnerNumberModel(0.1620, 0.0000,1.0000, 0.0001);
+        doubleSpinnerPixelSize = new SpinnerNumberModel(0.162, 0.000,1.000, 0.001);
         String pixelSizeLabel = "Pixel size: ";
         String pixelSizeUnit = "µm";
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
@@ -337,6 +337,7 @@ public class PreviewGui {
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
+
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
             String projMethod = "median";
@@ -451,20 +452,20 @@ public class PreviewGui {
                         previewImage = new Image( testDir, pxSizeMicron, frameRate );
 
                         originalImage = previewImage.openImage(selectedFile);
-                        calibration = previewImage.calibrate();
 
                         int minSizePx;
                         int maxSizePx;
 
                         if (calibrationSetting) {
 
+                            calibration = previewImage.calibrate();
                             minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
                             maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
                             
                         } else {
 
-                            Calibration imageCalibration = originalImage.getCalibration();
-                            Double pxSizeFromImage = imageCalibration.pixelWidth;
+                            calibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = calibration.pixelWidth;
                             minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
                             maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
@@ -486,20 +487,20 @@ public class PreviewGui {
                     // start preview for spot segmentation
                     previewImage = new Image( testDir, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
-                    calibration = previewImage.calibrate();
 
                     int minSizePx;
                     int maxSizePx;
 
                     if (calibrationSetting) {
 
+                        calibration = previewImage.calibrate();
                         minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
                         maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
 
                     } else {
 
-                        Calibration imageCalibration = originalImage.getCalibration();
-                        Double pxSizeFromImage = imageCalibration.pixelWidth;
+                        calibration = originalImage.getCalibration();
+                        Double pxSizeFromImage = calibration.pixelWidth;
                         minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
                         maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
@@ -527,6 +528,8 @@ public class PreviewGui {
     public class MyPreviewBackListener implements ActionListener {
 
         public void actionPerformed(ActionEvent a) {
+
+            Calibration calibration;
 
             // test settings
             String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
@@ -592,7 +595,7 @@ public class PreviewGui {
                         IJ.selectWindow(selectedFile);
                         Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
-                        Calibration calibration = selectedImage.getCalibration();
+                        calibration = selectedImage.getCalibration();
                         String titleOriginal = selectedImage.getTitle();
 
                         ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
@@ -614,7 +617,7 @@ public class PreviewGui {
                         // segment background and show for validation
                         Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
                         ImagePlus originalImage = previewImage.openImage(selectedFile);
-                        Calibration calibration = previewImage.calibrate();
+
                         String titleOriginal = originalImage.getTitle();
 
                         ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
@@ -624,13 +627,14 @@ public class PreviewGui {
 
                         if (calibrationSetting) {
 
+                            calibration = previewImage.calibrate();
                             minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
                             maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                         } else {
 
-                            Calibration imageCalibration = originalImage.getCalibration();
-                            Double pxSizeFromImage = imageCalibration.pixelWidth;
+                            calibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = calibration.pixelWidth;
                             minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
                             maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
@@ -651,7 +655,7 @@ public class PreviewGui {
                     // segment background and show for validation
                     Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
                     ImagePlus originalImage = previewImage.openImage(selectedFile);
-                    Calibration calibration = previewImage.calibrate();
+
                     String titleOriginal = originalImage.getTitle();
 
                     ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
@@ -661,13 +665,14 @@ public class PreviewGui {
 
                     if (calibrationSetting) {
 
+                        calibration = previewImage.calibrate();
                         minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
                         maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                     } else {
 
-                        Calibration imageCalibration = originalImage.getCalibration();
-                        Double pxSizeFromImage = imageCalibration.pixelWidth;
+                        calibration = originalImage.getCalibration();
+                        Double pxSizeFromImage = calibration.pixelWidth;
                         minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
                         maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
