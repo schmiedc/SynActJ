@@ -23,18 +23,8 @@ public class PHluorinJ_ implements PlugIn {
 	@Override
 	public void run(String s) {
 
-		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
-
-		FileList getFileList = new FileList();
-
-		ArrayList<String> fileList = getFileList.getFileList(testDir);
-
-		for (String file : fileList) {
-			System.out.println(file);
-		}
-
-		PreviewGui guiTest = new PreviewGui(fileList);
-		guiTest.setUpGui();
+		InputGui start = new InputGui();
+		start.createWindow();
 
 	}
 
