@@ -3,12 +3,7 @@ package de.leibnizfmp;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
-import ij.gui.Overlay;
 import ij.measure.Calibration;
-
-import ij.plugin.filter.ParticleAnalyzer;
-import ij.plugin.frame.RoiManager;
-import ij.process.ByteProcessor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +12,6 @@ import java.awt.event.ActionListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-
 
 public class PreviewGui {
 
@@ -31,7 +24,7 @@ public class PreviewGui {
     public ArrayList<String> aListOfFiles;
 
     // creates the panel that contains the buttons boxlayout vertical aligned
-    Box buttonBox = new Box(BoxLayout.Y_AXIS);
+    JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
     // tabbed pane
     JTabbedPane tabbedPane = new JTabbedPane();
@@ -57,6 +50,7 @@ public class PreviewGui {
 
     // experimental settings
     SpinnerModel doubleSpinnerPixelSize;
+    JCheckBox checkCalibration;
     SpinnerModel doubleSpinnerFrameRate;
     SpinnerModel integerSpinnerStimulationFrame;
 
@@ -74,7 +68,7 @@ public class PreviewGui {
         boxSpotSeg.add(spinSpot1);
 
         doubleSpinnerProminenceSpot = new SpinnerNumberModel(0.005, 0.0,1.000, 0.001);
-        String spinLabelSpot2 = "Prominence - grayValue: ";
+        String spinLabelSpot2 = "Prominence: ";
         String spinUnitSpot2 = "";
         Box spinSpot2 = addLabeledSpinnerUnit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
         boxSpotSeg.add(spinSpot2);
@@ -160,13 +154,13 @@ public class PreviewGui {
         boxBackground.add(thresholdListBackBox);
 
         doubleSpinBack2 = new SpinnerNumberModel(0.0,0.0,1000000,10.0);
-        String minSizeLabel = "Select minimum size: ";
+        String minSizeLabel = "Select min. size: ";
         String minUnitLabel = "µm²";
         Box spinnerBack2 = addLabeledSpinnerUnit(minSizeLabel, doubleSpinBack2, minUnitLabel );
         boxBackground.add(spinnerBack2);
 
         doubleSpinBack3 = new SpinnerNumberModel(10000,0.0,1000000,10.0);
-        String maxSizeLabel = "Select maximum size: ";
+        String maxSizeLabel = "Select max. size: ";
         String maxUnitLabel = "µm²";
         Box spinnerBack3 = addLabeledSpinnerUnit(maxSizeLabel, doubleSpinBack3, maxUnitLabel);
         boxBackground.add(spinnerBack3);
@@ -185,11 +179,17 @@ public class PreviewGui {
         // Setup Interactions for experimental settings
         Box boxSettings = new Box(BoxLayout.Y_AXIS);
 
+        JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
+        buttonBox.add(settingsLabel);
+
         doubleSpinnerPixelSize = new SpinnerNumberModel(0.1620, 0.0000,1.0000, 0.0001);
         String pixelSizeLabel = "Pixel size: ";
         String pixelSizeUnit = "µm";
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
         boxSettings.add(boxPixelSize);
+
+        checkCalibration = new JCheckBox("Override pixel size?");
+        boxSettings.add(checkCalibration);
 
         doubleSpinnerFrameRate = new SpinnerNumberModel(2.0, 0.0,10.0, 1.0);
         String frameRateLabel = "Frame rate: ";
@@ -203,7 +203,7 @@ public class PreviewGui {
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
         boxSettings.add(boxStimulationFrame);
 
-        tabbedPane.addTab("Settings", boxSettings);
+        buttonBox.add(boxSettings);
 
     }
 
@@ -233,6 +233,8 @@ public class PreviewGui {
         JButton batchButton = new JButton("Batch Process");
         batchButton.addActionListener(new MyBatchListener());
         buttonBox.add(batchButton);
+        buttonBox.setPreferredSize(new Dimension(270, 80));
+
     }
 
     public void setUpGui() {
@@ -257,7 +259,8 @@ public class PreviewGui {
         setUpButtons();
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabbedPane.setPreferredSize(new Dimension(320, 80));
+        tabbedPane.setPreferredSize(new Dimension(280, 80));
+
 
         // setup Buttons
         JButton  saveButton = new JButton("Save settings");
@@ -297,6 +300,7 @@ public class PreviewGui {
 
         Box spinnerLabelBox = new Box(BoxLayout.X_AXIS);
         JLabel l1 = new JLabel(label);
+        l1.setPreferredSize(new Dimension(150, l1.getMinimumSize().height));
         spinnerLabelBox.add(l1);
 
         JSpinner spinner = new JSpinner(model);
@@ -310,6 +314,25 @@ public class PreviewGui {
 
         return spinnerLabelBox;
     }
+
+    public int calculateMinSizePx(Double pxSize, Double minSize) {
+
+        Double pxArea = pxSize * pxSize;
+        Integer minSizePx = (int)Math.round(minSize / pxArea);
+
+        return minSizePx;
+
+    }
+
+    public int calculateMaxSizePx(Double pxSize, Double maxSize) {
+
+        Double pxArea = pxSize * pxSize;
+        Integer maxSizePx = (int)Math.round(maxSize  / pxArea);
+
+        return maxSizePx;
+
+    }
+
 
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
@@ -342,15 +365,13 @@ public class PreviewGui {
             Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
             System.out.println("Gradient Radius: " + radiusGradient);
 
+            // calculate size in pixel
+            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            Boolean calibrationSetting = checkCalibration.isSelected();
+
             Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
             Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
             System.out.println("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
-
-            // calculate size in pixel
-            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-            Double pxArea = pxSizeMicron * pxSizeMicron;
-            Integer minSizePx = (int)Math.round(minSizeMicron / pxArea);
-            Integer maxSizePx = (int)Math.round(maxSizeMicron  / pxArea);
 
             Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
             Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
@@ -406,8 +427,13 @@ public class PreviewGui {
 
                     if (selectedFileChecker) {
                         IJ.selectWindow(selectedFile);
+
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
                         calibration = selectedImage.getCalibration();
+
+                        Double pxSizeFromImage = calibration.pixelWidth;
+                        int minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        int maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -423,8 +449,26 @@ public class PreviewGui {
 
                         // start preview for spot segmentation
                         previewImage = new Image( testDir, pxSizeMicron, frameRate );
+
                         originalImage = previewImage.openImage(selectedFile);
                         calibration = previewImage.calibrate();
+
+                        int minSizePx;
+                        int maxSizePx;
+
+                        if (calibrationSetting) {
+
+                            minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                            
+                        } else {
+
+                            Calibration imageCalibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = imageCalibration.pixelWidth;
+                            minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+
+                        }
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -443,6 +487,23 @@ public class PreviewGui {
                     previewImage = new Image( testDir, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
                     calibration = previewImage.calibrate();
+
+                    int minSizePx;
+                    int maxSizePx;
+
+                    if (calibrationSetting) {
+
+                        minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                        maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+
+                    } else {
+
+                        Calibration imageCalibration = originalImage.getCalibration();
+                        Double pxSizeFromImage = imageCalibration.pixelWidth;
+                        minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+
+                    }
 
                     SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -482,9 +543,8 @@ public class PreviewGui {
 
             // calculate size in pixel
             Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-            Double pxArea = pxSizeMicron * pxSizeMicron;
-            Integer minSizePx = (int)Math.round(minSizeBack / pxArea);
-            Integer maxSizePx = (int)Math.round(maxSizeBack  / pxArea);
+
+            Boolean calibrationSetting = checkCalibration.isSelected();
 
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
@@ -537,6 +597,10 @@ public class PreviewGui {
 
                         ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
 
+                        Double pxSizeFromImage = calibration.pixelWidth;
+                        int minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        int maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
                         visualizer.backgroundVisualization(forBackSegmentation, sigmaBackground, thresholdBackground,
@@ -554,6 +618,23 @@ public class PreviewGui {
                         String titleOriginal = originalImage.getTitle();
 
                         ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+
+                        int minSizePx;
+                        int maxSizePx;
+
+                        if (calibrationSetting) {
+
+                            minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+
+                        } else {
+
+                            Calibration imageCalibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = imageCalibration.pixelWidth;
+                            minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
+                        }
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -574,6 +655,24 @@ public class PreviewGui {
                     String titleOriginal = originalImage.getTitle();
 
                     ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
+
+                    int minSizePx;
+                    int maxSizePx;
+
+                    if (calibrationSetting) {
+
+                        minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
+                        maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+
+                    } else {
+
+                        Calibration imageCalibration = originalImage.getCalibration();
+                        Double pxSizeFromImage = imageCalibration.pixelWidth;
+                        minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
+                    }
+
 
                     SegmentationVisualization visualizer = new SegmentationVisualization();
 
