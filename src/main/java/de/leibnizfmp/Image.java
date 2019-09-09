@@ -5,6 +5,8 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.ZProjector;
 
+import java.io.File;
+
 public class Image {
 
     String directory;

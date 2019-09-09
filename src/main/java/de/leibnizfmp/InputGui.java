@@ -1,20 +1,31 @@
 package de.leibnizfmp;
 
+import ij.ImageJ;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 class InputGui {
 
+    private static JTextField inputDir;
+    private static JTextField outputDir;
+    private static JTextField settingsDir;
+    private static File inputFolder = null;
+    private static File outputFolder = null;
+    private static String inputFolderString;
+    private static String outputFolderString;
+    private static JFrame frame;
 
     void createWindow() {
 
-        JFrame frame = new JFrame("Setup dialog");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame = new JFrame("Setup dialog");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         createUI(frame);
-        frame.setSize(560, 200);
+        frame.setSize(560, 150);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -32,7 +43,9 @@ class InputGui {
         Box chooserBox = new Box(BoxLayout.Y_AXIS);
 
         JLabel inputLabel = new JLabel("Input directory: ");
-        JTextField inputDir = new JTextField("Choose Directory");
+        inputLabel.setPreferredSize(new Dimension(130,inputLabel.getMinimumSize().height));
+        inputDir = new JTextField("Choose Directory");
+        inputDir.setPreferredSize(new Dimension(300, inputDir.getMinimumSize().height));
         JButton inputButton = new JButton("Choose");
         inputButton.addActionListener(new InputListener());
 
@@ -40,20 +53,22 @@ class InputGui {
         chooserBox.add(boxInput);
 
         JLabel outputLabel = new JLabel("Output directory: ");
-        JTextField outputDir = new JTextField("Choose Directory");
+        outputLabel.setPreferredSize(new Dimension(130, outputLabel.getMinimumSize().height));
+        outputDir = new JTextField("Choose Directory");
+        outputDir.setPreferredSize(new Dimension(300, outputDir.getMinimumSize().height));
         JButton outputButton = new JButton("Choose");
         outputButton.addActionListener(new OutputListener());
 
         Box boxOutput = createInputDialog(outputButton, outputLabel, outputDir);
-        chooserBox.add(boxOutput );
+        chooserBox.add(boxOutput);
 
-        JLabel settingsLabel = new JLabel("Settings file: ");
+        //JLabel settingsLabel = new JLabel("Settings file: ");
         JTextField settingsDir = new JTextField("Choose File");
-        JButton settingButton = new JButton("Choose");
-        settingButton.addActionListener(new SettingsListener());
+        //JButton settingButton = new JButton("Choose");
+        //settingButton.addActionListener(new SettingsListener());
 
-        Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsDir);
-        chooserBox.add(boxSettings);
+        //Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsDir);
+        //chooserBox.add(boxSettings);
 
         panelChooser.add(chooserBox);
 
@@ -82,17 +97,48 @@ class InputGui {
 
     }
 
+    private static String checkTrailingSlash(String inputString) {
+
+        return inputString.endsWith("/") ? inputString : inputString + "/";
+    }
+
     public static class InputListener extends Component implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            JFileChooser inputFileChooser = new JFileChooser();
+            inputFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-            int option = fileChooser.showOpenDialog(this);
+            int option = inputFileChooser.showOpenDialog(this);
+
             if (option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
+
+                inputFolder = inputFileChooser.getSelectedFile();
+                inputDir.setText(String.valueOf(inputFolder));
+
+            } else {
+
+                System.out.println("This is not a directory");
+
+            }
+
+        }
+    }
+
+    public static class OutputListener extends Component implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            JFileChooser outputfileChooser = new JFileChooser();
+            outputfileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+            int option = outputfileChooser.showOpenDialog(this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                outputFolder = outputfileChooser.getSelectedFile();
+                outputDir.setText(String.valueOf(outputFolder));
+
             } else {
                 System.out.println("This is not a directory");
             }
@@ -100,18 +146,22 @@ class InputGui {
         }
     }
 
-    public static class OutputListener implements ActionListener {
+    public static class SettingsListener extends Component implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-        }
-    }
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-    public static class SettingsListener implements ActionListener {
+            int option = fileChooser.showOpenDialog(this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                settingsDir.setText(String.valueOf(file));
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+            } else {
+                System.out.println("This is not a directory");
+            }
 
         }
     }
@@ -121,13 +171,51 @@ class InputGui {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            System.out.println("Starting preview segmentation");
+
+            if (inputFolder != null && outputFolder != null){
+
+                FileList getFileList = new FileList();
+                String inputFileString = inputFolder.toString();
+
+                new ImageJ();
+
+                String newInputFile = checkTrailingSlash(inputFileString);
+                System.out.println("Processing directory: " + newInputFile);
+                frame.setVisible(false);
+
+                ArrayList<String> fileList = getFileList.getFileList(newInputFile);
+                PreviewGui guiTest = new PreviewGui(fileList);
+                guiTest.setUpGui();
+
+            } else {
+
+                System.out.println("No valid folder for input or output directory selected");
+
+            }
+
+
+
         }
+
+
     }
 
     public static class BatchListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
+
+            if (inputFolder != null && outputFolder != null) {
+
+                System.out.println("Starting batch segmentation");
+
+            } else {
+
+                System.out.println("No valid folder for input or output directory selected");
+
+            }
 
         }
     }

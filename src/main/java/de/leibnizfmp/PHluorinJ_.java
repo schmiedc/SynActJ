@@ -7,9 +7,9 @@
  */
 
 package de.leibnizfmp;
-import java.util.ArrayList;
 
 import ij.ImageJ;
+import java.util.ArrayList;
 import ij.plugin.PlugIn;
 
 
@@ -55,25 +55,24 @@ public class PHluorinJ_ implements PlugIn {
 		System.setProperty("plugins.dir", fileDir.getAbsolutePath());
 		//IJ.runPlugIn(PHluorinJ_.class.getName(),"");
 
-
-		//InputGui start = new InputGui();
-		//start.createWindow();
+		InputGui start = new InputGui();
+		start.createWindow();
 
 		// start imageJ
-		new ImageJ();
+		//new ImageJ();
 
-		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+		//String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
 
-		FileList getFileList = new FileList();
+		//FileList getFileList = new FileList();
 
-		ArrayList<String> fileList = getFileList.getFileList(testDir);
+		//ArrayList<String> fileList = getFileList.getFileList(testDir);
 
-		for (String file : fileList) {
-			System.out.println(file);
-		}
+		//for (String file : fileList) {
+		//	System.out.println(file);
+		//}
 
-		PreviewGui guiTest = new PreviewGui(fileList);
-		guiTest.setUpGui();
+		//PreviewGui guiTest = new PreviewGui(fileList);
+		//guiTest.setUpGui();
 
 	}
 }
