@@ -47,6 +47,24 @@ public class Image {
 
     }
 
+    public static int calculateMinSizePx(Double pxSize, Double minSize) {
+
+        Double pxArea = pxSize * pxSize;
+        Integer minSizePx = (int)Math.round(minSize / pxArea);
+
+        return minSizePx;
+
+    }
+
+    public int calculateMaxSizePx(Double pxSize, Double maxSize) {
+
+        Double pxArea = pxSize * pxSize;
+        Integer maxSizePx = (int)Math.round(maxSize  / pxArea);
+
+        return maxSizePx;
+
+    }
+
     public Image(String inputDir, double pxSize, double frameRate){
 
         directory = inputDir;

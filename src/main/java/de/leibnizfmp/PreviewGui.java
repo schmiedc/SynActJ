@@ -24,6 +24,9 @@ public class PreviewGui {
 
     private ArrayList<String> aListOfFiles;
     private String directory;
+    String projMethod;
+
+
 
     // creates the panel that contains the buttons boxlayout vertical aligned
     JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -190,14 +193,14 @@ public class PreviewGui {
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
         boxSettings.add(boxPixelSize);
 
-        checkCalibration = new JCheckBox("Override pixel size?");
-        boxSettings.add(checkCalibration);
-
         doubleSpinnerFrameRate = new SpinnerNumberModel(2.0, 0.0,10.0, 1.0);
         String frameRateLabel = "Frame rate: ";
         String frameRateUnit = "s";
         Box boxFrameRate = addLabeledSpinnerUnit(frameRateLabel, doubleSpinnerFrameRate, frameRateUnit);
         boxSettings.add(boxFrameRate);
+
+        checkCalibration = new JCheckBox("Override metadata?");
+        boxSettings.add(checkCalibration);
 
         integerSpinnerStimulationFrame = new SpinnerNumberModel(5, 0,10, 1);
         String stimulationFrameLabel = "Stimulation Frame: ";
@@ -316,31 +319,12 @@ public class PreviewGui {
         return spinnerLabelBox;
     }
 
-    public int calculateMinSizePx(Double pxSize, Double minSize) {
 
-        Double pxArea = pxSize * pxSize;
-        Integer minSizePx = (int)Math.round(minSize / pxArea);
-
-        return minSizePx;
-
-    }
-
-    public int calculateMaxSizePx(Double pxSize, Double maxSize) {
-
-        Double pxArea = pxSize * pxSize;
-        Integer maxSizePx = (int)Math.round(maxSize  / pxArea);
-
-        return maxSizePx;
-
-    }
 
 
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
-
-            // test settings
-            String projMethod = "median";
 
             ImagePlus originalImage;
             Calibration calibration;
@@ -383,7 +367,7 @@ public class PreviewGui {
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             System.out.println("Stimulation frame: " + stimFrame);
 
-            Image previewImage;
+            Image previewImage = new Image(directory, pxSizeMicron, frameRate);
 
             // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
@@ -433,8 +417,8 @@ public class PreviewGui {
                         calibration = selectedImage.getCalibration();
 
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        int maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        int minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        int maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -449,8 +433,6 @@ public class PreviewGui {
                         System.out.println("The selected image is not open");
 
                         // start preview for spot segmentation
-                        previewImage = new Image( directory, pxSizeMicron, frameRate );
-
                         originalImage = previewImage.openImage(selectedFile);
 
                         int minSizePx;
@@ -459,15 +441,22 @@ public class PreviewGui {
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                            maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
-                            
+                            minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+
+                            System.out.println("Metadata will be overwritten.");
+                            System.out.println("Pixel size set to: " + pxSizeMicron);
+                            System.out.println("Frame rate set to: " + frameRate);
+
+
                         } else {
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                            maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                            minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+
+                            System.out.println("Metadata will no be overwritten");
 
                         }
 
@@ -494,15 +483,21 @@ public class PreviewGui {
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                        maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                        minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                        System.out.println("Metadata will be overwritten.");
+                        System.out.println("Pixel size set to: " + pxSizeMicron);
+                        System.out.println("Frame rate set to: " + frameRate);
+
 
                     } else {
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+
+                        System.out.println("Metadata will no be overwritten");
 
                     }
 
@@ -531,25 +526,25 @@ public class PreviewGui {
 
             Calibration calibration;
 
-            // test settings
-            String directory = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
-
             System.out.println("Starting preview for background segmentation");
 
             Double sigmaBackground = (Double) doubleSpinBack1.getValue();
+            System.out.println("Sigma background set to: " + sigmaBackground);
 
             String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+            System.out.println("Threshold for background set to: " + thresholdBackground);
 
             Double minSizeBack = (Double) doubleSpinBack2.getValue();
             Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
             System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
             // calculate size in pixel
-            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-
             Boolean calibrationSetting = checkCalibration.isSelected();
 
+            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+
+            Image previewImage = new Image(directory, pxSizeMicron, frameRate);
 
             int selectionChecker = list.getSelectedIndex();
 
@@ -593,7 +588,6 @@ public class PreviewGui {
                     if (selectedFileChecker) {
 
                         IJ.selectWindow(selectedFile);
-                        Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
                         calibration = selectedImage.getCalibration();
                         String titleOriginal = selectedImage.getTitle();
@@ -601,8 +595,8 @@ public class PreviewGui {
                         ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
 
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        int maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        int minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        int maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -615,7 +609,6 @@ public class PreviewGui {
                         System.out.println("The selected image is not open");
 
                         // segment background and show for validation
-                        Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                         ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                         String titleOriginal = originalImage.getTitle();
@@ -628,15 +621,22 @@ public class PreviewGui {
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
-                            maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                            minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+
+                            System.out.println("Metadata will be overwritten.");
+                            System.out.println("Pixel size set to: " + pxSizeMicron);
+                            System.out.println("Frame rate set to: " + frameRate);
+
 
                         } else {
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                            maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                            minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
+                            System.out.println("Metadata will no be overwritten");
 
                         }
 
@@ -653,7 +653,6 @@ public class PreviewGui {
                     System.out.println("There are no images open!");
 
                     // segment background and show for validation
-                    Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                     ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                     String titleOriginal = originalImage.getTitle();
@@ -666,15 +665,21 @@ public class PreviewGui {
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = calculateMinSizePx(pxSizeMicron, minSizeBack);
-                        maxSizePx = calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                        minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+
+                        System.out.println("Metadata will be overwritten.");
+                        System.out.println("Pixel size set to: " + pxSizeMicron);
+                        System.out.println("Frame rate set to: " + frameRate);
 
                     } else {
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        maxSizePx = calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
+                        System.out.println("Metadata will no be overwritten");
 
                     }
 
@@ -701,17 +706,67 @@ public class PreviewGui {
     }
 
     // upon pressing the stop button call sequencer.stop() method
-    public static class MyBatchListener implements ActionListener {
+    public class MyBatchListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
-            System.out.println("Starting batch");
+            System.out.println("Starting batch processing");
             Commands.closeAll();
 
             // get current settings for spot segmentation
+            // get all the values from the GUI
+            Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+            System.out.println("LoG sigma: " + sigmaLoG);
+
+            Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+            System.out.println("Prominence: " + prominence);
+
+            Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+            System.out.println("Gauss sigma: " + sigmaSpots);
+
+            Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
+            System.out.println("Rolling Ball radius: " + rollingSpots);
+
+            String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
+            System.out.println("Threshold: " + thresholdSpots);
+
+            Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
+            System.out.println("Gradient Radius: " + radiusGradient);
+
+            Double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
+            Double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
+            System.out.println("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²" );
+
+            Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+            Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+            System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
 
             // get current settings for background segmentation
+            Double sigmaBackground = (Double) doubleSpinBack1.getValue();
+            System.out.println("Sigma background set to: " + sigmaBackground);
 
+            String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+            System.out.println("Threshold for background set to: " + thresholdBackground);
 
+            Double minSizeBack = (Double) doubleSpinBack2.getValue();
+            Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
+            System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+
+            // extract settings for experiment
+            Boolean calibrationSetting = checkCalibration.isSelected();
+
+            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+
+            Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+            System.out.println("Stimulation frame: " + stimFrame);
+
+            BatchProcessor batch = new BatchProcessor(directory, aListOfFiles,
+                    projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+                    minSizeSpot, maxSizeSpot, lowCirc, highCirc,
+                    sigmaBackground, thresholdBackground,
+                    minSizeBack, maxSizeBack,
+                    stimFrame, calibrationSetting, pxSizeMicron, frameRate
+                    );
 
         }
 
@@ -722,6 +777,9 @@ public class PreviewGui {
 
         aListOfFiles = filesSelected;
         directory = dir;
+
+        // Projection Method
+        projMethod = "median";
         
 
     }
