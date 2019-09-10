@@ -4,6 +4,7 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.measure.Calibration;
+import ij.plugin.Commands;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,8 @@ public class PreviewGui {
             "Triangle","Yen",
     };
 
-    public ArrayList<String> aListOfFiles;
+    private ArrayList<String> aListOfFiles;
+    private String directory;
 
     // creates the panel that contains the buttons boxlayout vertical aligned
     JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -259,8 +261,7 @@ public class PreviewGui {
         setUpButtons();
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        tabbedPane.setPreferredSize(new Dimension(280, 80));
-
+        tabbedPane.setPreferredSize(new Dimension(290, 80));
 
         // setup Buttons
         JButton  saveButton = new JButton("Save settings");
@@ -339,7 +340,6 @@ public class PreviewGui {
         public void actionPerformed(ActionEvent a) {
 
             // test settings
-            String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
             String projMethod = "median";
 
             ImagePlus originalImage;
@@ -383,7 +383,7 @@ public class PreviewGui {
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             System.out.println("Stimulation frame: " + stimFrame);
 
-            Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+            Image previewImage;
 
             // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
@@ -449,7 +449,7 @@ public class PreviewGui {
                         System.out.println("The selected image is not open");
 
                         // start preview for spot segmentation
-                        previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        previewImage = new Image( directory, pxSizeMicron, frameRate );
 
                         originalImage = previewImage.openImage(selectedFile);
 
@@ -485,7 +485,7 @@ public class PreviewGui {
                     System.out.println("There are no images open!");
 
                     // start preview for spot segmentation
-                    previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                    previewImage = new Image( directory, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
 
                     int minSizePx;
@@ -532,7 +532,7 @@ public class PreviewGui {
             Calibration calibration;
 
             // test settings
-            String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+            String directory = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
 
             System.out.println("Starting preview for background segmentation");
 
@@ -593,7 +593,7 @@ public class PreviewGui {
                     if (selectedFileChecker) {
 
                         IJ.selectWindow(selectedFile);
-                        Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
                         calibration = selectedImage.getCalibration();
                         String titleOriginal = selectedImage.getTitle();
@@ -615,7 +615,7 @@ public class PreviewGui {
                         System.out.println("The selected image is not open");
 
                         // segment background and show for validation
-                        Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                        Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                         ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                         String titleOriginal = originalImage.getTitle();
@@ -653,7 +653,7 @@ public class PreviewGui {
                     System.out.println("There are no images open!");
 
                     // segment background and show for validation
-                    Image previewImage = new Image( testDir, pxSizeMicron, frameRate );
+                    Image previewImage = new Image( directory, pxSizeMicron, frameRate );
                     ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                     String titleOriginal = originalImage.getTitle();
@@ -703,16 +703,27 @@ public class PreviewGui {
     // upon pressing the stop button call sequencer.stop() method
     public static class MyBatchListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
+
             System.out.println("Starting batch");
+            Commands.closeAll();
+
+            // get current settings for spot segmentation
+
+            // get current settings for background segmentation
+
+
+
         }
+
     } // close inner class
 
-    public PreviewGui (ArrayList<String> filesSelected){
+    // PreviewGui constructor
+    public PreviewGui (ArrayList<String> filesSelected, String dir){
 
         aListOfFiles = filesSelected;
+        directory = dir;
+        
 
     }
-
-
 
 }

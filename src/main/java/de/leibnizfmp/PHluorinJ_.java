@@ -61,7 +61,7 @@ public class PHluorinJ_ implements PlugIn {
 			System.out.println(file);
 		}
 
-		PreviewGui guiTest = new PreviewGui(fileList);
+		PreviewGui guiTest = new PreviewGui(fileList, testDir);
 		guiTest.setUpGui();
 
 	}

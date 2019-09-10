@@ -185,7 +185,7 @@ class InputGui {
                 frame.setVisible(false);
 
                 ArrayList<String> fileList = getFileList.getFileList(newInputFile);
-                PreviewGui guiTest = new PreviewGui(fileList);
+                PreviewGui guiTest = new PreviewGui(fileList, newInputFile);
                 guiTest.setUpGui();
 
             } else {

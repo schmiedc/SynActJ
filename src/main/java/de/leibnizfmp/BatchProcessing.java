@@ -3,11 +3,13 @@ package de.leibnizfmp;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
+import ij.plugin.Commands;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 
 public class BatchProcessing {
+
 
     public void spotAnalysis(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
                         double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
@@ -27,16 +29,7 @@ public class BatchProcessing {
         ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx, lowCirc, highCirc );
         analyzer.analyze(watershed);
 
-        manager.moveRoisToOverlay(watershed);
-        Overlay overlay = watershed.getOverlay();
-        overlay.drawLabels(false);
-        originalImage.setOverlay(overlay);
-        originalImage.setCalibration(calibration);
-        originalImage.setDisplayRange(100,200);
-        originalImage.show();
 
-        manager.reset();
-        manager.close();
 
     }
 
@@ -56,15 +49,6 @@ public class BatchProcessing {
         manager.moveRoisToOverlay(testBack);
         Overlay overlay = testBack.getOverlay();
         overlay.drawLabels(false);
-
-        originalImage.setOverlay(overlay);
-        originalImage.setTitle(titleOriginal);
-        originalImage.setCalibration(calibration);
-        originalImage.setDisplayRange(100,200);
-        originalImage.show();
-
-        manager.reset();
-        manager.close();
 
     }
 
