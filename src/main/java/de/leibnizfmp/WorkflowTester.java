@@ -10,6 +10,7 @@ public class WorkflowTester {
     public static void main(String[] args) throws Exception {
 
         String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+        String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
         String projMethod = "median";
         double pixelSize = 0.162;
         double frameRate = 2;

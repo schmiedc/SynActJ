@@ -23,7 +23,8 @@ public class PreviewGui {
     };
 
     private ArrayList<String> aListOfFiles;
-    private String directory;
+    private String inputDirectory;
+    private String outputDirectory;
     String projMethod;
 
 
@@ -367,7 +368,7 @@ public class PreviewGui {
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             System.out.println("Stimulation frame: " + stimFrame);
 
-            Image previewImage = new Image(directory, pxSizeMicron, frameRate);
+            Image previewImage = new Image(inputDirectory, pxSizeMicron, frameRate);
 
             // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
@@ -474,7 +475,7 @@ public class PreviewGui {
                     System.out.println("There are no images open!");
 
                     // start preview for spot segmentation
-                    previewImage = new Image( directory, pxSizeMicron, frameRate );
+                    previewImage = new Image(inputDirectory, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
 
                     int minSizePx;
@@ -544,7 +545,7 @@ public class PreviewGui {
             Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
-            Image previewImage = new Image(directory, pxSizeMicron, frameRate);
+            Image previewImage = new Image(inputDirectory, pxSizeMicron, frameRate);
 
             int selectionChecker = list.getSelectedIndex();
 
@@ -760,7 +761,7 @@ public class PreviewGui {
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             System.out.println("Stimulation frame: " + stimFrame);
 
-            BatchProcessor batch = new BatchProcessor(directory, aListOfFiles,
+            BatchProcessor batch = new BatchProcessor(inputDirectory, outputDirectory ,aListOfFiles,
                     projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
@@ -775,10 +776,11 @@ public class PreviewGui {
     } // close inner class
 
     // PreviewGui constructor
-    public PreviewGui (ArrayList<String> filesSelected, String dir){
+    public PreviewGui (ArrayList<String> filesSelected, String inputDir, String outputDir){
 
         aListOfFiles = filesSelected;
-        directory = dir;
+        inputDirectory = inputDir;
+        outputDirectory = outputDir;
 
         // Projection Method
         projMethod = "median";

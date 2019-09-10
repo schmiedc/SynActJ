@@ -52,6 +52,7 @@ public class PHluorinJ_ implements PlugIn {
 		new ImageJ();
 
 		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+		String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
 
 		FileList getFileList = new FileList();
 
@@ -61,7 +62,7 @@ public class PHluorinJ_ implements PlugIn {
 			System.out.println(file);
 		}
 
-		PreviewGui guiTest = new PreviewGui(fileList, testDir);
+		PreviewGui guiTest = new PreviewGui(fileList, testDir, testOut);
 		guiTest.setUpGui();
 
 	}

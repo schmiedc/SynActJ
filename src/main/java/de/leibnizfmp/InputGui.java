@@ -177,15 +177,19 @@ class InputGui {
 
                 FileList getFileList = new FileList();
                 String inputFileString = inputFolder.toString();
+                String outputFileString = outputFolder.toString();
 
                 new ImageJ();
 
                 String newInputFile = checkTrailingSlash(inputFileString);
                 System.out.println("Processing directory: " + newInputFile);
+
+                String newOutputFile = checkTrailingSlash(outputFileString);
+                System.out.println("Saving to directory: " + newOutputFile);
                 frame.setVisible(false);
 
                 ArrayList<String> fileList = getFileList.getFileList(newInputFile);
-                PreviewGui guiTest = new PreviewGui(fileList, newInputFile);
+                PreviewGui guiTest = new PreviewGui(fileList, newInputFile, newOutputFile);
                 guiTest.setUpGui();
 
             } else {

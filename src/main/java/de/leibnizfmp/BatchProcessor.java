@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class BatchProcessor {
 
     String inputDir;
+    String outputDir;
     ArrayList<String> fileList;
     Boolean calibrationSetting;
     Double pxSizeMicron;
@@ -83,7 +84,7 @@ public class BatchProcessor {
 
             spotAnalysis(imageToProcess, minSizePxSpot, maxSizePxSpot);
 
-            backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
+            //backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
 
         }
 
@@ -119,7 +120,7 @@ public class BatchProcessor {
 
     }
 
-    public BatchProcessor(String directory, ArrayList<String> filesToProcess,
+    public BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                           String projectionMethod, double setSigmaLoG, double setProminence,
                           double setSigmaSpots, double setRollingSpots, String setThresholdSpots, int setRadiusGradient,
                           double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
@@ -127,7 +128,8 @@ public class BatchProcessor {
                           double setMinSizePxBack, double setMaxSizePxBack,
                           int setStimFrame, Boolean setCalibrationSetting, Double setSizeMicron, Double setFrameRate ) {
 
-        inputDir = directory;
+        inputDir = inputDirectory;
+        outputDir = outputDirectory;
         fileList = filesToProcess;
         projMethod = projectionMethod;
         sigmaLoG = setSigmaLoG;
