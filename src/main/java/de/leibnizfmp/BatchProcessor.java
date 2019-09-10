@@ -19,29 +19,27 @@ public class BatchProcessor {
     Double pxSizeMicron;
     Double frameRate;
 
-    String projMethod;
-    double sigmaLoG;
-    double prominence;
-    double sigmaSpots;
-    double rollingSpots;
-    String thresholdSpots;
-    int radiusGradient;
-    double minSizeSpot;
-    double maxSizeSpot;
-    double lowCirc;
-    double highCirc;
+    private String projMethod;
+    private double sigmaLoG;
+    private double prominence;
+    private double sigmaSpots;
+    private double rollingSpots;
+    private String thresholdSpots;
+    private int radiusGradient;
+    private double minSizeSpot;
+    private double maxSizeSpot;
+    private double lowCirc;
+    private double highCirc;
 
-    double sigmaBackground;
-    String thresholdBackground;
-    double minSizeBack;
-    double maxSizeBack;
-    int stimFrame;
+    private double sigmaBackground;
+    private String thresholdBackground;
+    private double minSizeBack;
+    private double maxSizeBack;
+    private int stimFrame;
 
-    Calibration calibration;
+    private Calibration calibration;
 
-    public void loopOverImages(String directory, ArrayList<String> listOfFiles,
-                               Boolean calibrationSetting, Double pxSize, Double frameRate,
-                               Double minSizeSpot, Double maxSizeSpot, Double minSizeBack, Double maxSizeBack) {
+    public void loopOverImages() {
 
         int minSizePxSpot;
         int maxSizePxSpot;
@@ -49,22 +47,24 @@ public class BatchProcessor {
         int minSizePxBack;
         int maxSizePxBack;
 
-        for (String image : listOfFiles) {
+        for (String image : fileList) {
 
-            Image batchImage = new Image( directory, pxSize, frameRate );
+            System.out.println("Processing file: " + image);
+
+            Image batchImage = new Image( inputDir, pxSizeMicron, frameRate );
             ImagePlus imageToProcess = batchImage.openImage(image);
 
             if (calibrationSetting) {
 
                 calibration = batchImage.calibrate();
-                minSizePxSpot = batchImage.calculateMinSizePx(pxSize, minSizeSpot);
-                maxSizePxSpot = batchImage.calculateMaxSizePx(pxSize, maxSizeSpot);
+                minSizePxSpot = batchImage.calculateMinSizePx(pxSizeMicron, minSizeSpot);
+                maxSizePxSpot = batchImage.calculateMaxSizePx(pxSizeMicron, maxSizeSpot);
 
-                minSizePxBack = batchImage.calculateMinSizePx(pxSize, minSizeBack);
-                maxSizePxBack = batchImage.calculateMaxSizePx(pxSize, maxSizeBack);
+                minSizePxBack = batchImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                maxSizePxBack = batchImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                 System.out.println("Metadata will be overwritten.");
-                System.out.println("Pixel size set to: " + pxSize);
+                System.out.println("Pixel size set to: " + pxSizeMicron);
                 System.out.println("Frame rate set to: " + frameRate);
 
             } else {
@@ -80,6 +80,10 @@ public class BatchProcessor {
                 System.out.println("Metadata will no be overwritten");
 
             }
+
+            spotAnalysis(imageToProcess, minSizePxSpot, maxSizePxSpot);
+
+            backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
 
         }
 
@@ -98,7 +102,7 @@ public class BatchProcessor {
 
         RoiManager manager = new RoiManager();
         ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePxSpot, maxSizePxSpot, lowCirc, highCirc );
-        analyzer.analyze(watershed);
+        //analyzer.analyze(watershed);
 
     }
 
@@ -111,12 +115,12 @@ public class BatchProcessor {
         ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePxBack, maxSizePxBack);
 
         ImagePlus testBack = new ImagePlus("test", background);
-        backAnalyzer.analyze(testBack);
+        //backAnalyzer.analyze(testBack);
 
     }
 
     public BatchProcessor(String directory, ArrayList<String> filesToProcess,
-                          String projctionMethod, double setSigmaLoG, double setProminence,
+                          String projectionMethod, double setSigmaLoG, double setProminence,
                           double setSigmaSpots, double setRollingSpots, String setThresholdSpots, int setRadiusGradient,
                           double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
                           double setSigmaBackground, String setThresholdBackground,
@@ -125,7 +129,7 @@ public class BatchProcessor {
 
         inputDir = directory;
         fileList = filesToProcess;
-        projMethod = projctionMethod;
+        projMethod = projectionMethod;
         sigmaLoG = setSigmaLoG;
         prominence = setProminence;
         sigmaSpots = setSigmaSpots;

@@ -768,6 +768,8 @@ public class PreviewGui {
                     stimFrame, calibrationSetting, pxSizeMicron, frameRate
                     );
 
+            batch.loopOverImages();
+
         }
 
     } // close inner class

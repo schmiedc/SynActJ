@@ -75,11 +75,11 @@ class InputGui {
         JButton previewButton = new JButton("Preview");
         previewButton.addActionListener(new PreviewListener());
 
-        JButton batchButton = new JButton("Batch");
-        batchButton.addActionListener(new BatchListener());
+        //JButton batchButton = new JButton("Batch");
+        //batchButton.addActionListener(new BatchListener());
 
         panelStarter.add(previewButton);
-        panelStarter.add(batchButton);
+        //panelStarter.add(batchButton);
 
         frame.getContentPane().add(panelStarter, BorderLayout.SOUTH);
         frame.getContentPane().add(panelChooser, BorderLayout.CENTER);
