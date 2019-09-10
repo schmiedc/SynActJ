@@ -2,8 +2,6 @@ package de.leibnizfmp;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 class FileList {
 
@@ -31,15 +29,6 @@ class FileList {
 
         return filesToProcess;
 
-    }
-
-    ArrayList<String> union(ArrayList<String> list1, ArrayList<String> list2) {
-        Set<String> set = new HashSet<>();
-
-        set.addAll(list1);
-        set.addAll(list2);
-
-        return new ArrayList<>(set);
     }
 
     ArrayList<String> intersection(ArrayList<String> list1, ArrayList<String> list2) {

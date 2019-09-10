@@ -116,17 +116,18 @@ class BatchProcessor {
 
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
-
             inputImage.setT(frame);
-            System.out.println("Measuring frame " + frame);
+            System.out.println("Measuring spots in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
             table.save(outputDir + inputImage.getShortTitle() + "_" + String.format("%03d", frame) + "_signal.csv");
 
             if ( IJ.isResultsWindow() ){
+
                 IJ.selectWindow("Results");
                 IJ.run("Close");
+
             }
 
         }
@@ -162,7 +163,7 @@ class BatchProcessor {
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
             inputImage.setT(frame);
-            System.out.println("Measuring frame " + frame);
+            System.out.println("Measuring background in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
