@@ -8,9 +8,16 @@
 
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImageJ;
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
 import ij.plugin.PlugIn;
+import org.scijava.Context;
+import org.scijava.log.*;
+import org.scijava.plugin.PluginInfo;
+
+import static org.scijava.log.LogService.*;
 
 
 /**
@@ -23,6 +30,8 @@ public class PHluorinJ_ implements PlugIn {
 	@Override
 	public void run(String s) {
 
+		System.setProperty("scijava.log.level", "debug");
+		IJ.log("Starting pHlourin plugin");
 		InputGui start = new InputGui();
 		start.createWindow();
 
@@ -45,25 +54,29 @@ public class PHluorinJ_ implements PlugIn {
 		System.setProperty("plugins.dir", fileDir.getAbsolutePath());
 		//IJ.runPlugIn(PHluorinJ_.class.getName(),"");
 
+		System.setProperty("scijava.log.level", "debug");
 		//InputGui start = new InputGui();
 		//start.createWindow();
 
 		// start imageJ
 		new ImageJ();
 
-		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
-		String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
+		// show something in the status bar
 
-		FileList getFileList = new FileList();
 
-		ArrayList<String> fileList = getFileList.getFileList(testDir);
+		//String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+		//String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
 
-		for (String file : fileList) {
-			System.out.println(file);
-		}
+		//FileList getFileList = new FileList();
 
-		PreviewGui guiTest = new PreviewGui(fileList, testDir, testOut);
-		guiTest.setUpGui();
+		//ArrayList<String> fileList = getFileList.getFileList(testDir);
+
+		//for (String file : fileList) {
+		//	System.out.println(file);
+		//}
+
+		//PreviewGui guiTest = new PreviewGui(fileList, testDir, testOut);
+		//guiTest.setUpGui();
 
 	}
 }

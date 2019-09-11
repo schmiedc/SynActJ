@@ -330,26 +330,26 @@ public class PreviewGui {
             ImagePlus originalImage;
             Calibration calibration;
 
-            System.out.println("Starting preview for spot segmentation");
+            IJ.log("Starting preview for spot segmentation");
 
             // get all the values from the GUI
             Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
-            System.out.println("LoG sigma: " + sigmaLoG);
+            IJ.log("LoG sigma: " + sigmaLoG);
 
             Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
-            System.out.println("Prominence: " + prominence);
+            IJ.log("Prominence: " + prominence);
 
             Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
-            System.out.println("Gauss sigma: " + sigmaSpots);
+            IJ.log("Gauss sigma: " + sigmaSpots);
 
             Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
-            System.out.println("Rolling Ball radius: " + rollingSpots);
+            IJ.log("Rolling Ball radius: " + rollingSpots);
 
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
-            System.out.println("Threshold: " + thresholdSpots);
+            IJ.log("Threshold: " + thresholdSpots);
 
             Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
-            System.out.println("Gradient Radius: " + radiusGradient);
+            IJ.log("Gradient Radius: " + radiusGradient);
 
             // calculate size in pixel
             Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
@@ -357,16 +357,16 @@ public class PreviewGui {
 
             Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
             Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
-            System.out.println("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
+            IJ.log("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
 
             Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
             Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
-            System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
+            IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
 
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
-            System.out.println("Stimulation frame: " + stimFrame);
+            IJ.log("Stimulation frame: " + stimFrame);
 
             Image previewImage = new Image(inputDirectory, pxSizeMicron, frameRate);
 
@@ -377,7 +377,7 @@ public class PreviewGui {
             if (selectionChecker != -1){
 
                 String selectedFile = (String) list.getSelectedValue();
-                System.out.println("Selected File: " + selectedFile);
+                IJ.log("Selected File: " + selectedFile);
 
                 // check if there are windows open already
                 int openImages = WindowManager.getImageCount();
@@ -385,7 +385,7 @@ public class PreviewGui {
                 // if there are image windows open check if they are of the list and of the selected image
                 if  ( openImages != 0 ) {
 
-                    System.out.println("There are images open!");
+                    IJ.log("There are images open!");
 
                     String[] openImage = WindowManager.getImageTitles();
                     ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
@@ -399,7 +399,7 @@ public class PreviewGui {
 
                         if (image.equals(selectedFile)) {
 
-                            System.out.println(selectedFile + " is already open");
+                            IJ.log(selectedFile + " is already open");
                             selectedFileChecker = true;
 
                         } else {
@@ -412,6 +412,9 @@ public class PreviewGui {
                     }
 
                     if (selectedFileChecker) {
+
+                        IJ.log("The selected image is already open");
+
                         IJ.selectWindow(selectedFile);
 
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
@@ -431,7 +434,8 @@ public class PreviewGui {
 
                     } else {
 
-                        System.out.println("The selected image is not open");
+                        IJ.log("The selected image is not open");
+                        IJ.log("Opening new image");
 
                         // start preview for spot segmentation
                         originalImage = previewImage.openImage(selectedFile);
@@ -445,9 +449,9 @@ public class PreviewGui {
                             minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
                             maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
 
-                            System.out.println("Metadata will be overwritten.");
-                            System.out.println("Pixel size set to: " + pxSizeMicron);
-                            System.out.println("Frame rate set to: " + frameRate);
+                            IJ.log("Metadata will be overwritten.");
+                            IJ.log("Pixel size set to: " + pxSizeMicron);
+                            IJ.log("Frame rate set to: " + frameRate);
 
 
                         } else {
@@ -457,7 +461,7 @@ public class PreviewGui {
                             minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
                             maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
-                            System.out.println("Metadata will no be overwritten");
+                            IJ.log("Metadata will no be overwritten");
 
                         }
 
@@ -472,7 +476,7 @@ public class PreviewGui {
 
                 } else {
 
-                    System.out.println("There are no images open!");
+                    IJ.log("There are no images open!");
 
                     // start preview for spot segmentation
                     previewImage = new Image(inputDirectory, pxSizeMicron, frameRate );
@@ -486,9 +490,9 @@ public class PreviewGui {
                         calibration = previewImage.calibrate();
                         minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
                         maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
-                        System.out.println("Metadata will be overwritten.");
-                        System.out.println("Pixel size set to: " + pxSizeMicron);
-                        System.out.println("Frame rate set to: " + frameRate);
+                        IJ.log("Metadata will be overwritten.");
+                        IJ.log("Pixel size set to: " + pxSizeMicron);
+                        IJ.log("Frame rate set to: " + frameRate);
 
 
                     } else {
@@ -498,7 +502,7 @@ public class PreviewGui {
                         minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
                         maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
-                        System.out.println("Metadata will no be overwritten");
+                        IJ.log("Metadata will no be overwritten");
 
                     }
 
@@ -512,7 +516,7 @@ public class PreviewGui {
 
             } else {
 
-                System.out.println("Please choose a file in the file list!");
+                IJ.error("Please choose a file in the file list!");
 
             }
 
@@ -527,17 +531,17 @@ public class PreviewGui {
 
             Calibration calibration;
 
-            System.out.println("Starting preview for background segmentation");
+            IJ.log("Starting preview for background segmentation");
 
             Double sigmaBackground = (Double) doubleSpinBack1.getValue();
-            System.out.println("Sigma background set to: " + sigmaBackground);
+            IJ.log("Sigma background set to: " + sigmaBackground);
 
             String thresholdBackground = (String) thresholdListBack.getSelectedItem();
-            System.out.println("Threshold for background set to: " + thresholdBackground);
+            IJ.log("Threshold for background set to: " + thresholdBackground);
 
             Double minSizeBack = (Double) doubleSpinBack2.getValue();
             Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
-            System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+            IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
             // calculate size in pixel
             Boolean calibrationSetting = checkCalibration.isSelected();
@@ -552,7 +556,7 @@ public class PreviewGui {
             if (selectionChecker != -1){
 
                 String selectedFile = (String) list.getSelectedValue();
-                System.out.println("Selected File: " + selectedFile);
+                IJ.log("Selected File: " + selectedFile);
 
                 // check if there are windows open already
                 int openImages = WindowManager.getImageCount();
@@ -560,7 +564,7 @@ public class PreviewGui {
                 // if there are image windows open check if they are of the list and of the selected image
                 if  ( openImages != 0 ) {
 
-                    System.out.println("There are images open!");
+                    IJ.log("There are images open!");
 
                     String[] openImage = WindowManager.getImageTitles();
                     ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
@@ -574,7 +578,7 @@ public class PreviewGui {
 
                         if (image.equals(selectedFile)) {
 
-                            System.out.println(selectedFile + " is already open");
+                            IJ.log(selectedFile + " is already open");
                             selectedFileChecker = true;
 
                         } else {
@@ -587,6 +591,8 @@ public class PreviewGui {
                     }
 
                     if (selectedFileChecker) {
+
+                        IJ.log("Selected file is already open")
 
                         IJ.selectWindow(selectedFile);
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
@@ -607,7 +613,7 @@ public class PreviewGui {
 
                     } else {
 
-                        System.out.println("The selected image is not open");
+                        IJ.log("The selected image is not open");
 
                         // segment background and show for validation
                         ImagePlus originalImage = previewImage.openImage(selectedFile);
@@ -625,9 +631,9 @@ public class PreviewGui {
                             minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
                             maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
-                            System.out.println("Metadata will be overwritten.");
-                            System.out.println("Pixel size set to: " + pxSizeMicron);
-                            System.out.println("Frame rate set to: " + frameRate);
+                            IJ.log("Metadata will be overwritten.");
+                            IJ.log("Pixel size set to: " + pxSizeMicron);
+                            IJ.log("Frame rate set to: " + frameRate);
 
 
                         } else {
@@ -637,7 +643,7 @@ public class PreviewGui {
                             minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
                             maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
-                            System.out.println("Metadata will no be overwritten");
+                            IJ.log("Metadata will no be overwritten");
 
                         }
 
@@ -651,7 +657,7 @@ public class PreviewGui {
 
                 } else {
 
-                    System.out.println("There are no images open!");
+                    IJ.log("There are no images open!");
 
                     // segment background and show for validation
                     ImagePlus originalImage = previewImage.openImage(selectedFile);
@@ -669,9 +675,9 @@ public class PreviewGui {
                         minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
                         maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
-                        System.out.println("Metadata will be overwritten.");
-                        System.out.println("Pixel size set to: " + pxSizeMicron);
-                        System.out.println("Frame rate set to: " + frameRate);
+                        IJ.log("Metadata will be overwritten.");
+                        IJ.log("Pixel size set to: " + pxSizeMicron);
+                        IJ.log("Frame rate set to: " + frameRate);
 
                     } else {
 
@@ -680,7 +686,7 @@ public class PreviewGui {
                         minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
                         maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
-                        System.out.println("Metadata will no be overwritten");
+                        IJ.log("Metadata will no be overwritten");
 
                     }
 
@@ -694,7 +700,7 @@ public class PreviewGui {
 
             } else {
 
-            System.out.println("Please choose a file in the file list!");
+                IJ.error("Please choose a file in the file list!");
 
             }
 
@@ -703,54 +709,54 @@ public class PreviewGui {
     } // close inner class
 
     public static class MySaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent a) { System.out.println("Saving settings");}
+        public void actionPerformed(ActionEvent a) { IJ.log("Saving settings");}
     }
 
     // upon pressing the stop button call sequencer.stop() method
     public class MyBatchListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
-            System.out.println("Starting batch processing");
+            IJ.log("Starting batch processing");
             Commands.closeAll();
 
             // get current settings for spot segmentation
             // get all the values from the GUI
             Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
-            System.out.println("LoG sigma: " + sigmaLoG);
+            IJ.log("LoG sigma: " + sigmaLoG);
 
             Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
-            System.out.println("Prominence: " + prominence);
+            IJ.log("Prominence: " + prominence);
 
             Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
-            System.out.println("Gauss sigma: " + sigmaSpots);
+            IJ.log("Gauss sigma: " + sigmaSpots);
 
             Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
-            System.out.println("Rolling Ball radius: " + rollingSpots);
+            IJ.log("Rolling Ball radius: " + rollingSpots);
 
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
-            System.out.println("Threshold: " + thresholdSpots);
+            IJ.log("Threshold: " + thresholdSpots);
 
             Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
-            System.out.println("Gradient Radius: " + radiusGradient);
+            IJ.log("Gradient Radius: " + radiusGradient);
 
             Double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
             Double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
-            System.out.println("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²" );
+            IJ.log("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²" );
 
             Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
             Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
-            System.out.println("Spots circ. from: " + lowCirc + " to " + highCirc);
+            IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
 
             // get current settings for background segmentation
             Double sigmaBackground = (Double) doubleSpinBack1.getValue();
-            System.out.println("Sigma background set to: " + sigmaBackground);
+            IJ.log("Sigma background set to: " + sigmaBackground);
 
             String thresholdBackground = (String) thresholdListBack.getSelectedItem();
-            System.out.println("Threshold for background set to: " + thresholdBackground);
+            IJ.log("Threshold for background set to: " + thresholdBackground);
 
             Double minSizeBack = (Double) doubleSpinBack2.getValue();
             Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
-            System.out.println("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
+            IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
             // extract settings for experiment
             Boolean calibrationSetting = checkCalibration.isSelected();
@@ -759,7 +765,7 @@ public class PreviewGui {
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
             Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
-            System.out.println("Stimulation frame: " + stimFrame);
+            IJ.log("Stimulation frame: " + stimFrame);
 
             BatchProcessor batch = new BatchProcessor(inputDirectory, outputDirectory ,aListOfFiles,
                     projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,

@@ -1,5 +1,6 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImageJ;
 
 import javax.swing.*;
@@ -72,7 +73,7 @@ class InputGui {
 
         panelChooser.add(chooserBox);
 
-        JButton previewButton = new JButton("Preview");
+        JButton previewButton = new JButton("Start Preview");
         previewButton.addActionListener(new PreviewListener());
 
         //JButton batchButton = new JButton("Batch");
@@ -120,6 +121,7 @@ class InputGui {
             } else {
 
                 System.out.println("This is not a directory");
+                IJ.error("Please choose a valid directory!");
 
             }
 
@@ -140,7 +142,7 @@ class InputGui {
                 outputDir.setText(String.valueOf(outputFolder));
 
             } else {
-                System.out.println("This is not a directory");
+                IJ.error("Please choose a valid directory!");
             }
 
         }
@@ -160,7 +162,7 @@ class InputGui {
                 settingsDir.setText(String.valueOf(file));
 
             } else {
-                System.out.println("This is not a directory");
+                IJ.error("Please choose a valid settings file!");
             }
 
         }
@@ -171,7 +173,7 @@ class InputGui {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            System.out.println("Starting preview segmentation");
+            IJ.log("Starting preview segmentation");
 
             if (inputFolder != null && outputFolder != null){
 
@@ -182,10 +184,10 @@ class InputGui {
                 new ImageJ();
 
                 String newInputFile = checkTrailingSlash(inputFileString);
-                System.out.println("Processing directory: " + newInputFile);
+                IJ.log("Processing directory: " + newInputFile);
 
                 String newOutputFile = checkTrailingSlash(outputFileString);
-                System.out.println("Saving to directory: " + newOutputFile);
+                IJ.log("Saving to directory: " + newOutputFile);
                 frame.setVisible(false);
 
                 ArrayList<String> fileList = getFileList.getFileList(newInputFile);
@@ -194,7 +196,7 @@ class InputGui {
 
             } else {
 
-                System.out.println("No valid folder for input or output directory selected");
+                IJ.error("No valid folder for input or output directory selected");
 
             }
 
@@ -213,11 +215,11 @@ class InputGui {
 
             if (inputFolder != null && outputFolder != null) {
 
-                System.out.println("Starting batch segmentation");
+                IJ.log("Starting batch segmentation");
 
             } else {
 
-                System.out.println("No valid folder for input or output directory selected");
+                IJ.error("No valid folder for input or output directory selected");
 
             }
 

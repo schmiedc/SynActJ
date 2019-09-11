@@ -18,7 +18,7 @@ public class Image {
     public ImagePlus openImage(String inputFile) {
 
         // open a example pHlorin image
-        System.out.println("Opening file: " + inputFile);
+        IJ.log("Opening file: " + inputFile);
         ImagePlus image = IJ.openImage(directory + inputFile);
 
         return image;
