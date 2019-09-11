@@ -592,7 +592,7 @@ public class PreviewGui {
 
                     if (selectedFileChecker) {
 
-                        IJ.log("Selected file is already open")
+                        IJ.log("Selected file is already open");
 
                         IJ.selectWindow(selectedFile);
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();

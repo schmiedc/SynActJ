@@ -1,5 +1,6 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
@@ -19,12 +20,12 @@ public class DifferenceImage {
         int endAfter = stimulationFrame + frameUp;
 
         // perform z projections before and after and create difference image
-        System.out.println("Creating difference image...");
+        IJ.log("Creating difference image...");
         ImagePlus impBefore = ZProjector.run(image,projMethod,startBefore,endBefore);
         ImagePlus impAfter = ZProjector.run(image,projMethod,startAfter,endAfter);
         ImageCalculator ic = new ImageCalculator();
         ImagePlus impDiff = ic.run("Divide create", impAfter, impBefore );
-        System.out.println("Difference image created.");
+        IJ.log("Difference image created.");
 
         return impDiff;
 
@@ -35,7 +36,7 @@ public class DifferenceImage {
         projMethod = "median";
         frameUp = 4;
         frameDown = 4;
-        System.out.println("Projection Method set to: " + projMethod);
+        IJ.log("Projection Method set to: " + projMethod);
 
 
     }
@@ -45,7 +46,7 @@ public class DifferenceImage {
         projMethod = method;
         frameUp = 4;
         frameDown = 4;
-        System.out.println("Projection Method set to: " + projMethod);
+        IJ.log("Projection Method set to: " + projMethod);
 
     }
 
@@ -54,7 +55,7 @@ public class DifferenceImage {
         projMethod = method;
         frameDown = downProj;
         frameUp = upProj;
-        System.out.println("Projection Method set to: " + projMethod);
+        IJ.log("Projection Method set to: " + projMethod);
 
     }
 

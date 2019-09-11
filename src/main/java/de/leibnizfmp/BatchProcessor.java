@@ -45,9 +45,15 @@ class BatchProcessor {
         int minSizePxBack;
         int maxSizePxBack;
 
+        int progress = 0;
+        int progressEnd = fileList.size();
+
+        IJ.showStatus("Running pHlourin Batch processing...");
+
         for (String image : fileList) {
 
-            System.out.println("Processing file: " + image);
+
+            IJ.log("Processing file: " + image);
 
             Image batchImage = new Image( inputDir, pxSizeMicron, frameRate );
             ImagePlus imageToProcess = batchImage.openImage(image);
@@ -61,9 +67,9 @@ class BatchProcessor {
                 minSizePxBack = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
                 maxSizePxBack = batchImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
-                System.out.println("Metadata will be overwritten.");
-                System.out.println("Pixel size set to: " + pxSizeMicron);
-                System.out.println("Frame rate set to: " + frameRate);
+                IJ.log("Metadata will be overwritten.");
+                IJ.log("Pixel size set to: " + pxSizeMicron);
+                IJ.log("Frame rate set to: " + frameRate);
 
             } else {
 
@@ -75,7 +81,7 @@ class BatchProcessor {
                 minSizePxBack = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
                 maxSizePxBack = batchImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
-                System.out.println("Metadata will no be overwritten");
+                IJ.log("Metadata will no be overwritten");
 
             }
 
@@ -83,11 +89,13 @@ class BatchProcessor {
 
             backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
 
-            System.out.println("Measurement in image " + image + " finished");
+            IJ.showProgress(progress + 1, progressEnd);
+            IJ.log("Measurement in image " + image + " finished");
 
         }
 
-        System.out.println("Finished batch Processing");
+        IJ.showStatus("pHlourin Batch processing finished!");
+        IJ.log("Finished batch Processing");
 
     }
 
@@ -112,12 +120,12 @@ class BatchProcessor {
 
         // loop over original image
         int frameNumber = inputImage.getNFrames();
-        System.out.println("There are " + frameNumber + " frames");
+        IJ.log("There are " + frameNumber + " frames");
 
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
             inputImage.setT(frame);
-            System.out.println("Measuring spots in frame " + frame);
+            IJ.log("Measuring spots in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
@@ -138,7 +146,7 @@ class BatchProcessor {
         }
 
         manager.close();
-        System.out.println("Measuring intensities in spots finished.");
+        IJ.log("Measuring intensities in spots finished.");
     }
 
     private void backgroundAnalysis(ImagePlus inputImage, int minSizePxBack, int maxSizePxBack) {
@@ -158,12 +166,12 @@ class BatchProcessor {
 
         // loop over original image
         int frameNumber = inputImage.getNFrames();
-        System.out.println("There are " + frameNumber + " frames");
+        IJ.log("There are " + frameNumber + " frames");
 
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
             inputImage.setT(frame);
-            System.out.println("Measuring background in frame " + frame);
+            IJ.log("Measuring background in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
@@ -182,7 +190,7 @@ class BatchProcessor {
         }
 
         manager.close();
-        System.out.println("Measuring intensities in background finished.");
+        IJ.log("Measuring intensities in background finished.");
     }
 
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
