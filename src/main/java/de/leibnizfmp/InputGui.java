@@ -181,8 +181,6 @@ class InputGui {
                 String inputFileString = inputFolder.toString();
                 String outputFileString = outputFolder.toString();
 
-                new ImageJ();
-
                 String newInputFile = checkTrailingSlash(inputFileString);
                 IJ.log("Processing directory: " + newInputFile);
 
