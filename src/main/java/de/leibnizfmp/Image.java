@@ -5,17 +5,15 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.ZProjector;
 
-import java.io.File;
-
 public class Image {
 
-    String directory;
-    String sizeUnit;
-    String timeUnit;
-    double pxSizeCalib;
-    double frameRateCalib;
+    private String directory;
+    private String sizeUnit;
+    private String timeUnit;
+    private double pxSizeCalib;
+    private double frameRateCalib;
 
-    public ImagePlus openImage(String inputFile) {
+    ImagePlus openImage(String inputFile) {
 
         // open a example pHlorin image
         IJ.log("Opening file: " + inputFile);
@@ -24,7 +22,7 @@ public class Image {
         return image;
     }
 
-    public Calibration calibrate(){
+    Calibration calibrate(){
 
         Calibration imageScale = new Calibration();
         imageScale.setTimeUnit(timeUnit);
@@ -39,7 +37,7 @@ public class Image {
 
     }
 
-    public ImagePlus projectImage(ImagePlus image, String method) {
+    ImagePlus projectImage(ImagePlus image, String method) {
 
         ImagePlus maxProjectImage = ZProjector.run(image, method);
 
@@ -47,19 +45,19 @@ public class Image {
 
     }
 
-    public static int calculateMinSizePx(Double pxSize, Double minSize) {
+    static int calculateMinSizePx(Double pxSize, Double minSize) {
 
-        Double pxArea = pxSize * pxSize;
-        Integer minSizePx = (int)Math.round(minSize / pxArea);
+        double pxArea = pxSize * pxSize;
+        int minSizePx = (int)Math.round(minSize / pxArea);
 
         return minSizePx;
 
     }
 
-    public int calculateMaxSizePx(Double pxSize, Double maxSize) {
+    static int calculateMaxSizePx(Double pxSize, Double maxSize) {
 
-        Double pxArea = pxSize * pxSize;
-        Integer maxSizePx = (int)Math.round(maxSize  / pxArea);
+        double pxArea = pxSize * pxSize;
+        int maxSizePx = (int)Math.round(maxSize  / pxArea);
 
         return maxSizePx;
 

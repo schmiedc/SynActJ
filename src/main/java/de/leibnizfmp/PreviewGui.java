@@ -62,7 +62,7 @@ public class PreviewGui {
     private SpinnerModel doubleSpinnerProminenceSpot;
     private SpinnerModel doubleSpinnerGaussSpot;
     private SpinnerModel doubleSpinnerRollingBallSpot;
-    private JComboBox thresholdListSpot;
+    private JComboBox<String> thresholdListSpot;
     private SpinnerModel intSpinnerGradient;
     private SpinnerModel doubleSpinnerMinSize;
     private SpinnerModel doubleSpinnerMaxSize;
@@ -71,7 +71,7 @@ public class PreviewGui {
 
     // settings for background segmentation
     private SpinnerModel doubleSpinBack1;
-    private JComboBox thresholdListBack;
+    private JComboBox<String> thresholdListBack;
     private SpinnerModel doubleSpinBack2;
     private SpinnerModel doubleSpinBack3;
 
@@ -112,7 +112,7 @@ public class PreviewGui {
         Box spinSpot4 = addLabeledSpinnerUnit(spinLabelSpot4, doubleSpinnerRollingBallSpot, spinUnitSpot4);
         boxSpotSeg.add(spinSpot4);
 
-        thresholdListSpot = new JComboBox(thresholdString);
+        thresholdListSpot = new JComboBox<>(thresholdString);
         JLabel thresholdListSpotLabel  = new JLabel("Select threshold: ");
         Box thresholdListSpotBox= new Box(BoxLayout.X_AXIS);
         thresholdListSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListSpot.getMinimumSize().height));
@@ -170,13 +170,13 @@ public class PreviewGui {
         // Setup Interactions for Segment Background
         Box boxBackground = new Box(BoxLayout.Y_AXIS);
 
-        doubleSpinBack1 = new SpinnerNumberModel(sigmaBackground, 0.0,20.0, 1.0);
+        doubleSpinBack1 = new SpinnerNumberModel(sigmaBackground, 0.0,20.0, 0.1);
         String spinBackLabel1 = "Gauss sigma: ";
         String spinBackUnit1 = "px";
         Box spinnerBack1 = addLabeledSpinnerUnit(spinBackLabel1, doubleSpinBack1, spinBackUnit1);
         boxBackground.add(spinnerBack1);
 
-        thresholdListBack = new JComboBox(thresholdString);
+        thresholdListBack = new JComboBox<>(thresholdString);
         JLabel thresholdListBackLabel  = new JLabel("Select threshold: ");
         Box thresholdListBackBox= new Box(BoxLayout.X_AXIS);
         thresholdListBack.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListBack.getMinimumSize().height));
@@ -450,8 +450,8 @@ public class PreviewGui {
                         calibration = selectedImage.getCalibration();
 
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        int maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        int minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        int maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -475,8 +475,8 @@ public class PreviewGui {
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
 
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -487,8 +487,8 @@ public class PreviewGui {
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                             IJ.log("Metadata will no be overwritten");
 
@@ -517,8 +517,8 @@ public class PreviewGui {
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                        minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                        maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
                         IJ.log("Frame rate set to: " + frameRate);
@@ -528,8 +528,8 @@ public class PreviewGui {
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                        maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                         IJ.log("Metadata will no be overwritten");
 
@@ -631,8 +631,8 @@ public class PreviewGui {
                         ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
 
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        int maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        int minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        int maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -657,8 +657,8 @@ public class PreviewGui {
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -669,8 +669,8 @@ public class PreviewGui {
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                            maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                             IJ.log("Metadata will no be overwritten");
 
@@ -701,8 +701,8 @@ public class PreviewGui {
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = previewImage.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                        minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                        maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -712,8 +712,8 @@ public class PreviewGui {
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = previewImage.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        maxSizePx = previewImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                        maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                         IJ.log("Metadata will no be overwritten");
 
@@ -787,8 +787,11 @@ public class PreviewGui {
             double maxSizeBack  = (Double) doubleSpinBack3.getValue();
             IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
-            // extract settings for experiment
-            boolean calibrationSetting = checkCalibration.isSelected();
+            // check if calibration needs to be overwritten
+            boolean calibrationSetting;
+
+            if (checkCalibration.isSelected()) calibrationSetting = true;
+            else calibrationSetting = false;
 
             double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
             double frameRate = (Double) doubleSpinnerFrameRate.getValue();

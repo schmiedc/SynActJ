@@ -1,7 +1,6 @@
 package de.leibnizfmp;
 
 import ij.IJ;
-import ij.ImageJ;
 
 import javax.swing.*;
 import java.awt.*;
