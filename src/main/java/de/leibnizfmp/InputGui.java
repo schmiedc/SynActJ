@@ -4,6 +4,7 @@ import ij.IJ;
 import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -152,8 +153,12 @@ class InputGui {
         @Override
         public void actionPerformed(ActionEvent e) {
 
+            FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
+                    "xml files (*.xml)", "xml");
+
             JFileChooser settingsFileChooser = new JFileChooser();
             settingsFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            settingsFileChooser.setFileFilter(xmlfilter);
 
             int option = settingsFileChooser.showOpenDialog(this);
 
@@ -165,6 +170,8 @@ class InputGui {
 
             } else {
 
+                settingsFile = null;
+                settingsFilePath.setText("");
                 IJ.error("Uses default values if no settings file is present");
 
             }
@@ -220,14 +227,17 @@ class InputGui {
                     } catch (ParserConfigurationException ex) {
 
                         ex.printStackTrace();
+                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
 
                     } catch (IOException ex) {
 
                         ex.printStackTrace();
+                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
 
                     } catch (SAXException ex) {
 
                         ex.printStackTrace();
+                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
 
                     }
 
