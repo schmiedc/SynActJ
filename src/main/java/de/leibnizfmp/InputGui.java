@@ -66,7 +66,9 @@ class InputGui {
         chooserBox.add(boxOutput);
 
         JLabel settingsLabel = new JLabel("Settings file: ");
-        settingsFilePath = new JTextField("Choose File");
+        settingsLabel.setPreferredSize(new Dimension(130, settingsLabel.getMinimumSize().height));
+        settingsFilePath = new JTextField("Choose a File");
+        settingsFilePath.setPreferredSize(new Dimension(300, settingsFilePath.getMinimumSize().height));
         JButton settingButton = new JButton("Choose");
         settingButton.addActionListener(new SettingsListener());
 
