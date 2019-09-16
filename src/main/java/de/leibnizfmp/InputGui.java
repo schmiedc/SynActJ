@@ -1,23 +1,25 @@
 package de.leibnizfmp;
 
 import ij.IJ;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 class InputGui {
 
     private static JTextField inputDir;
     private static JTextField outputDir;
-    private static JTextField settingsDir;
+    private static JTextField settingsFilePath;
     private static File inputFolder = null;
     private static File outputFolder = null;
-    private static String inputFolderString;
-    private static String outputFolderString;
+    private static File settingsFile = null;
     private static JFrame frame;
 
     void createWindow() {
@@ -62,24 +64,20 @@ class InputGui {
         Box boxOutput = createInputDialog(outputButton, outputLabel, outputDir);
         chooserBox.add(boxOutput);
 
-        //JLabel settingsLabel = new JLabel("Settings file: ");
+        JLabel settingsLabel = new JLabel("Settings file: ");
         JTextField settingsDir = new JTextField("Choose File");
-        //JButton settingButton = new JButton("Choose");
-        //settingButton.addActionListener(new SettingsListener());
+        JButton settingButton = new JButton("Choose");
+        settingButton.addActionListener(new SettingsListener());
 
-        //Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsDir);
-        //chooserBox.add(boxSettings);
+        Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsDir);
+        chooserBox.add(boxSettings);
 
         panelChooser.add(chooserBox);
 
         JButton previewButton = new JButton("Start Preview");
         previewButton.addActionListener(new PreviewListener());
 
-        //JButton batchButton = new JButton("Batch");
-        //batchButton.addActionListener(new BatchListener());
-
         panelStarter.add(previewButton);
-        //panelStarter.add(batchButton);
 
         frame.getContentPane().add(panelStarter, BorderLayout.SOUTH);
         frame.getContentPane().add(panelChooser, BorderLayout.CENTER);
@@ -156,12 +154,17 @@ class InputGui {
             fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
             int option = fileChooser.showOpenDialog(this);
+
             if (option == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                settingsDir.setText(String.valueOf(file));
+
+                settingsFile = fileChooser.getSelectedFile();
+                settingsFilePath.setText(String.valueOf(settingsFile));
+
 
             } else {
-                IJ.error("Please choose a valid settings file!");
+
+                IJ.error("Uses default values if no settings file is present");
+
             }
 
         }
@@ -180,48 +183,70 @@ class InputGui {
                 String inputFileString = inputFolder.toString();
                 String outputFileString = outputFolder.toString();
 
+
                 String newInputFile = checkTrailingSlash(inputFileString);
                 IJ.log("Processing directory: " + newInputFile);
 
                 String newOutputFile = checkTrailingSlash(outputFileString);
                 IJ.log("Saving to directory: " + newOutputFile);
-                frame.setVisible(false);
 
                 ArrayList<String> fileList = getFileList.getFileList(newInputFile);
-                PreviewGui guiTest = new PreviewGui(newInputFile, newOutputFile, fileList);
-                guiTest.setUpGui();
 
+                if (settingsFile != null) {
+
+                    String settingsFileString = settingsFile.toString();
+
+                    IJ.log("Found xml settings file");
+                    XmlHandler readMyXml = new XmlHandler();
+
+                    try {
+
+                        readMyXml.xmlReader(settingsFileString);
+
+                        PreviewGui previewGui = new PreviewGui(newInputFile, newOutputFile, fileList,
+                                readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
+                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots, readMyXml.readThresholdSpots, readMyXml.readRadiusGradient,
+                                readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,readMyXml.readLowCirc,readMyXml.readHighCirc,
+                                readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
+                                readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,
+                                readMyXml.readStimFrame, readMyXml.readCalibrationSetting, readMyXml.readPxSizeMicron, readMyXml.readFrameRate
+                        );
+
+                        frame.setVisible(false);
+                        previewGui.setUpGui();
+
+                    } catch (ParserConfigurationException ex) {
+
+                        ex.printStackTrace();
+
+                    } catch (IOException ex) {
+
+                        ex.printStackTrace();
+
+                    } catch (SAXException ex) {
+
+                        ex.printStackTrace();
+
+                    }
+
+                } else {
+
+                    IJ.log("Did no find xml settings file");
+                    PreviewGui previewGui = new PreviewGui(newInputFile, newOutputFile, fileList);
+
+                    frame.setVisible(false);
+                    previewGui.setUpGui();
+
+                }
             } else {
 
                 IJ.error("No valid folder for input or output directory selected");
 
             }
 
-
-
         }
 
 
     }
-
-    public static class BatchListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-
-            if (inputFolder != null && outputFolder != null) {
-
-                IJ.log("Starting batch segmentation");
-
-            } else {
-
-                IJ.error("No valid folder for input or output directory selected");
-
-            }
-
-        }
-    }
-
 
 }

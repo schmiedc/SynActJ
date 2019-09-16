@@ -912,7 +912,6 @@ public class PreviewGui {
         stimFrame = 5;
         pxSizeMicron = 0.162;
         frameRate = 2.0;
-        
 
     }
 

@@ -19,6 +19,29 @@ import java.util.Date;
 
 public class XmlHandler {
 
+    String readProjMethod;
+
+    double readSigmaLoG;
+    double readProminence;
+    double readSigmaSpots;
+    double readRollingSpots;
+    String readThresholdSpots;
+    int readRadiusGradient;
+    double readMinSizeSpot;
+    double readMaxSizeSpot;
+    double readLowCirc;
+    double readHighCirc;
+
+    double readSigmaBackground;
+    String readThresholdBackground;
+    double readMinSizeBack;
+    double readMaxSizeBack;
+
+    boolean readCalibrationSetting;
+    double readPxSizeMicron;
+    double readFrameRate;
+    int readStimFrame;
+
     void xmlReader(String filePath) throws ParserConfigurationException, IOException, SAXException {
 
         File xmlFile = new File(filePath);
@@ -29,43 +52,43 @@ public class XmlHandler {
         Document doc = builder.parse(xmlFile);
 
         // get nodes of tag name
-        String getProjMethod = doc.getElementsByTagName("projMethod").item(0).getTextContent();
+        readProjMethod = doc.getElementsByTagName("projMethod").item(0).getTextContent();
 
-        double getSigmaLoG = Double.parseDouble(doc.getElementsByTagName("sigmaLoG").item(0).getTextContent());
+        readSigmaLoG = Double.parseDouble(doc.getElementsByTagName("sigmaLoG").item(0).getTextContent());
 
-        double getProminence= Double.parseDouble(doc.getElementsByTagName("prominence").item(0).getTextContent());
+        readProminence= Double.parseDouble(doc.getElementsByTagName("prominence").item(0).getTextContent());
 
-        double sigmaSpots = Double.parseDouble(doc.getElementsByTagName("sigmaSpots").item(0).getTextContent());
+        readSigmaSpots = Double.parseDouble(doc.getElementsByTagName("sigmaSpots").item(0).getTextContent());
 
-        double  rollingSpots = Double.parseDouble(doc.getElementsByTagName("rollingSpots").item(0).getTextContent());
+        readRollingSpots = Double.parseDouble(doc.getElementsByTagName("rollingSpots").item(0).getTextContent());
 
-        String thresholdSpots = doc.getElementsByTagName("thresholdSpots").item(0).getTextContent();
+        readThresholdSpots = doc.getElementsByTagName("thresholdSpots").item(0).getTextContent();
 
-        int radiusGradient = Integer.parseInt(doc.getElementsByTagName("radiusGradient").item(0).getTextContent());
+        readRadiusGradient = Integer.parseInt(doc.getElementsByTagName("radiusGradient").item(0).getTextContent());
 
-        double minSizeSpot = Double.parseDouble(doc.getElementsByTagName("minSizeSpot").item(0).getTextContent());
+        readMinSizeSpot = Double.parseDouble(doc.getElementsByTagName("minSizeSpot").item(0).getTextContent());
 
-        double maxSizeSpot= Double.parseDouble(doc.getElementsByTagName("maxSizeSpot").item(0).getTextContent());
+        readMaxSizeSpot= Double.parseDouble(doc.getElementsByTagName("maxSizeSpot").item(0).getTextContent());
 
-        double lowCirc = Double.parseDouble(doc.getElementsByTagName("lowCirc").item(0).getTextContent());
+        readLowCirc = Double.parseDouble(doc.getElementsByTagName("lowCirc").item(0).getTextContent());
 
-        double highCirc = Double.parseDouble(doc.getElementsByTagName("highCirc").item(0).getTextContent());
+        readHighCirc = Double.parseDouble(doc.getElementsByTagName("highCirc").item(0).getTextContent());
 
-        double sigmaBackground = Double.parseDouble(doc.getElementsByTagName("sigmaBackground").item(0).getTextContent());
+        readSigmaBackground = Double.parseDouble(doc.getElementsByTagName("sigmaBackground").item(0).getTextContent());
 
-        String thresholdBackground = doc.getElementsByTagName("thresholdBackground").item(0).getTextContent();
+        readThresholdBackground = doc.getElementsByTagName("thresholdBackground").item(0).getTextContent();
 
-        double minSizeBack = Double.parseDouble(doc.getElementsByTagName("minSizeBack").item(0).getTextContent());
+        readMinSizeBack = Double.parseDouble(doc.getElementsByTagName("minSizeBack").item(0).getTextContent());
 
-        double maxSizeBack = Double.parseDouble(doc.getElementsByTagName("maxSizeBack").item(0).getTextContent());
+        readMaxSizeBack = Double.parseDouble(doc.getElementsByTagName("maxSizeBack").item(0).getTextContent());
 
-        boolean calibrationSetting = Boolean.parseBoolean(doc.getElementsByTagName("calibrationSetting").item(0).getTextContent());
+        readCalibrationSetting = Boolean.parseBoolean(doc.getElementsByTagName("calibrationSetting").item(0).getTextContent());
 
-        double pxSizeMicron = Double.parseDouble(doc.getElementsByTagName("pxSizeMicron").item(0).getTextContent());
+        readPxSizeMicron = Double.parseDouble(doc.getElementsByTagName("pxSizeMicron").item(0).getTextContent());
 
-        double frameRate= Double.parseDouble(doc.getElementsByTagName("frameRate").item(0).getTextContent());
+        readFrameRate= Double.parseDouble(doc.getElementsByTagName("frameRate").item(0).getTextContent());
 
-        int stimFrame = Integer.parseInt(doc.getElementsByTagName("stimFrame").item(0).getTextContent());
+        readStimFrame = Integer.parseInt(doc.getElementsByTagName("stimFrame").item(0).getTextContent());
 
     }
 
