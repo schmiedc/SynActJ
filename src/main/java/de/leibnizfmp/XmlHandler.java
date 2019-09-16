@@ -160,11 +160,11 @@ public class XmlHandler {
             settingsRadiusGradient.setTextContent(radiusGradient);
             rootElement.appendChild(settingsRadiusGradient);
             
-            Element settingsMinSizePxSpot = doc.createElement("minSizePxSpot");
+            Element settingsMinSizePxSpot = doc.createElement("minSizeSpot");
             settingsMinSizePxSpot.setTextContent(minSizePxSpot);
             rootElement.appendChild(settingsMinSizePxSpot);
 
-            Element settingsMaxSizePxSpot = doc.createElement("maxSizePxSpot");
+            Element settingsMaxSizePxSpot = doc.createElement("maxSizeSpot");
             settingsMaxSizePxSpot.setTextContent(maxSizePxSpot);
             rootElement.appendChild(settingsMaxSizePxSpot);
 
@@ -176,7 +176,7 @@ public class XmlHandler {
             settingsHighCirc.setTextContent(highCirc);
             rootElement.appendChild(settingsHighCirc);
 
-            Element settingsSimgaBackground = doc.createElement("simgaBackground");
+            Element settingsSimgaBackground = doc.createElement("sigmaBackground");
             settingsSimgaBackground.setTextContent(simgaBackground);
             rootElement.appendChild(settingsSimgaBackground);
 
@@ -184,11 +184,11 @@ public class XmlHandler {
             settingsThresholdBackground.setTextContent(getThresholdBackground);
             rootElement.appendChild(settingsThresholdBackground);
 
-            Element settingsMinSizePxBack = doc.createElement("minSizePxBack");
+            Element settingsMinSizePxBack = doc.createElement("minSizeBack");
             settingsMinSizePxBack.setTextContent(minSizePxBack);
             rootElement.appendChild(settingsMinSizePxBack);
 
-            Element settingsMaxSizePxBack = doc.createElement("maxSizePxBack");
+            Element settingsMaxSizePxBack = doc.createElement("maxSizeBack");
             settingsMaxSizePxBack.setTextContent(maxSizePxBack);
             rootElement.appendChild(settingsMaxSizePxBack);
 
@@ -200,7 +200,7 @@ public class XmlHandler {
             settingsCalibrationSetting.setTextContent(calibrationSetting);
             rootElement.appendChild(settingsCalibrationSetting);
 
-            Element settingsSizeMicron = doc.createElement("sizeMicron");
+            Element settingsSizeMicron = doc.createElement("pxSizeMicron");
             settingsSizeMicron.setTextContent(sizeMicron);
             rootElement.appendChild(settingsSizeMicron);
 

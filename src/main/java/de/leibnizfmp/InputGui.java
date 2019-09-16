@@ -65,11 +65,11 @@ class InputGui {
         chooserBox.add(boxOutput);
 
         JLabel settingsLabel = new JLabel("Settings file: ");
-        JTextField settingsDir = new JTextField("Choose File");
+        settingsFilePath = new JTextField("Choose File");
         JButton settingButton = new JButton("Choose");
         settingButton.addActionListener(new SettingsListener());
 
-        Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsDir);
+        Box boxSettings = createInputDialog(settingButton, settingsLabel, settingsFilePath);
         chooserBox.add(boxSettings);
 
         panelChooser.add(chooserBox);
@@ -134,7 +134,9 @@ class InputGui {
             outputfileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
             int option = outputfileChooser.showOpenDialog(this);
+
             if (option == JFileChooser.APPROVE_OPTION) {
+
                 outputFolder = outputfileChooser.getSelectedFile();
                 outputDir.setText(String.valueOf(outputFolder));
 
@@ -150,14 +152,14 @@ class InputGui {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            JFileChooser settingsFileChooser = new JFileChooser();
+            settingsFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-            int option = fileChooser.showOpenDialog(this);
+            int option = settingsFileChooser.showOpenDialog(this);
 
             if (option == JFileChooser.APPROVE_OPTION) {
 
-                settingsFile = fileChooser.getSelectedFile();
+                settingsFile = settingsFileChooser.getSelectedFile();
                 settingsFilePath.setText(String.valueOf(settingsFile));
 
 
@@ -196,7 +198,7 @@ class InputGui {
 
                     String settingsFileString = settingsFile.toString();
 
-                    IJ.log("Found xml settings file");
+                    IJ.log("Found xml settings file: " + settingsFileString);
                     XmlHandler readMyXml = new XmlHandler();
 
                     try {
@@ -231,7 +233,7 @@ class InputGui {
 
                 } else {
 
-                    IJ.log("Did no find xml settings file");
+                    IJ.log("Did no find xml settings file using default values");
                     PreviewGui previewGui = new PreviewGui(newInputFile, newOutputFile, fileList);
 
                     frame.setVisible(false);
