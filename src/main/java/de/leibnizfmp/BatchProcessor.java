@@ -45,9 +45,6 @@ class BatchProcessor {
         int minSizePxBack;
         int maxSizePxBack;
 
-        int progress = 0;
-        int progressEnd = fileList.size();
-
         IJ.showStatus("Running pHlourin Batch processing...");
 
         for (String image : fileList) {
@@ -88,8 +85,6 @@ class BatchProcessor {
             spotAnalysis(imageToProcess, minSizePxSpot, maxSizePxSpot);
 
             backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
-
-            IJ.showProgress(progress + 1, progressEnd);
             IJ.log("Measurement in image " + image + " finished");
 
         }
@@ -125,7 +120,6 @@ class BatchProcessor {
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
             inputImage.setT(frame);
-            IJ.log("Measuring spots in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
@@ -171,7 +165,6 @@ class BatchProcessor {
         for (int frame = 1; frame <= frameNumber; frame++ ) {
 
             inputImage.setT(frame);
-            IJ.log("Measuring background in frame " + frame);
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
