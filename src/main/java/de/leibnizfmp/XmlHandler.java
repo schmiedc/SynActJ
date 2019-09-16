@@ -14,10 +14,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class XmlHandler {
 
-    private void xmlReader(String filePath) throws ParserConfigurationException, IOException, SAXException {
+    void xmlReader(String filePath) throws ParserConfigurationException, IOException, SAXException {
 
         File xmlFile = new File(filePath);
 
@@ -67,24 +69,21 @@ public class XmlHandler {
 
     }
 
-    private void xmlWriter(String outputPath,
-                           String getProjectionMethod, double getSigmaLoG, double getProminence,
-                           double getSigmaSpots, double getRollingSpots, String getThresholdSpots, int getRadiusGradient,
-                           double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
-                           double getSigmaBackground, String getThresholdBackground,
-                           double getMinSizePxBack, double getMaxSizePxBack,
-                           int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
+    void xmlWriter(String outputPath, String getProjectionMethod,
+                   double getSigmaLoG, double getProminence,
+                   double getSigmaSpots, double getRollingSpots, String getThresholdSpots, int getRadiusGradient,
+                   double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
+                   double getSigmaBackground, String getThresholdBackground,
+                   double getMinSizePxBack, double getMaxSizePxBack,
+                   int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
 
         try
         {
-
-            String projMethod = getProjectionMethod;
 
             String sigmaLoG = Double.toString(getSigmaLoG);
             String prominence = Double.toString(getProminence);
             String sigmaSpots = Double.toString(getSigmaSpots);
             String rollingSpots = Double.toString(getRollingSpots);
-            String thresholdSpots = getThresholdSpots;
             String radiusGradient = Integer.toString(getRadiusGradient);
             String minSizePxSpot = Double.toString(getMinSizePxSpot);
             String maxSizePxSpot = Double.toString(getMaxSizePxSpot);
@@ -92,7 +91,6 @@ public class XmlHandler {
             String highCirc = Double.toString(getHighCirc);
 
             String simgaBackground = Double.toString(getSigmaBackground);
-            String thresholdBackground = getThresholdBackground;
             String minSizePxBack = Double.toString(getMinSizePxBack);
             String maxSizePxBack = Double.toString(getMaxSizePxBack);
 
@@ -112,7 +110,7 @@ public class XmlHandler {
 
             // add the different settings as child of root
             Element settingsProjMethod = doc.createElement("projMethod");
-            settingsProjMethod.setTextContent(projMethod);
+            settingsProjMethod.setTextContent(getProjectionMethod);
             rootElement.appendChild(settingsProjMethod);
 
             Element settingsSigmaLoG = doc.createElement("sigmaLoG");
@@ -132,7 +130,7 @@ public class XmlHandler {
             rootElement.appendChild(settingsRollingSpots);
 
             Element settingsThresholdSpots = doc.createElement("thresholdSpots");
-            settingsThresholdSpots.setTextContent(thresholdSpots);
+            settingsThresholdSpots.setTextContent(getThresholdSpots);
             rootElement.appendChild(settingsThresholdSpots);
 
             Element settingsRadiusGradient = doc.createElement("radiusGradient");
@@ -160,7 +158,7 @@ public class XmlHandler {
             rootElement.appendChild(settingsSimgaBackground);
 
             Element settingsThresholdBackground = doc.createElement("thresholdBackground");
-            settingsThresholdBackground.setTextContent(thresholdBackground);
+            settingsThresholdBackground.setTextContent(getThresholdBackground);
             rootElement.appendChild(settingsThresholdBackground);
 
             Element settingsMinSizePxBack = doc.createElement("minSizePxBack");
@@ -188,7 +186,9 @@ public class XmlHandler {
             rootElement.appendChild(settingsFrameRate);
 
             // Write the content into XML file
-            String filePath = outputPath + "students-new.xml";
+            String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'-settings.xml'").format(new Date());
+
+            String filePath = outputPath + fileName;
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(filePath));
 

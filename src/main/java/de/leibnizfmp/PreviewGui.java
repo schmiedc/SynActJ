@@ -737,8 +737,77 @@ public class PreviewGui {
 
     } // close inner class
 
-    public static class MySaveListener implements ActionListener {
-        public void actionPerformed(ActionEvent a) { IJ.log("Saving settings");}
+    public class MySaveListener implements ActionListener {
+        public void actionPerformed(ActionEvent a) {
+
+            IJ.log("Saving settings");
+
+            XmlHandler writeToXml = new XmlHandler();
+
+            // get current settings for spot segmentation
+            // get all the values from the GUI
+            double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+            IJ.log("Spot LoG sigma: " + sigmaLoG);
+
+            double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+            IJ.log("Spot prominence: " + prominence);
+
+            double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+            IJ.log("Spot gauss sigma: " + sigmaSpots);
+
+            double rollingSpots = (Double) doubleSpinnerRollingBallSpot.getValue();
+            IJ.log("Spot rolling ball radius: " + rollingSpots);
+
+            String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
+            IJ.log("Spot threshold: " + thresholdSpots);
+
+            int radiusGradient = (Integer) intSpinnerGradient.getValue();
+            IJ.log("Spot gradient Radius: " + radiusGradient);
+
+            double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
+            double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
+            IJ.log("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²");
+
+            double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+            double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+            IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
+
+            // get current settings for background segmentation
+            double sigmaBackground = (Double) doubleSpinBack1.getValue();
+            IJ.log("Background sigma: " + sigmaBackground);
+
+            String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+            IJ.log("Background threshold: " + thresholdBackground);
+
+            double minSizeBack = (Double) doubleSpinBack2.getValue();
+            double maxSizeBack = (Double) doubleSpinBack3.getValue();
+            IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²");
+
+            // check if calibration needs to be overwritten
+            boolean calibrationSetting;
+
+            if (checkCalibration.isSelected()) calibrationSetting = true;
+            else calibrationSetting = false;
+            IJ.log("Calibration override: " + calibrationSetting);
+
+            double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            IJ.log("Calibration: " + pxSizeMicron + " µm");
+
+            double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+            IJ.log("Calibration: " + frameRate + " sec");
+
+            int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+            IJ.log("Stimulation frame: " + stimFrame);
+
+            writeToXml.xmlWriter(outputDir, projMethod,
+                    sigmaLoG, prominence,
+                    sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+                    minSizeSpot, maxSizeSpot, lowCirc, highCirc,
+                    sigmaBackground, thresholdBackground,
+                    minSizeBack, maxSizeBack,
+                    stimFrame, calibrationSetting, pxSizeMicron, frameRate);
+
+        }
     }
 
     // upon pressing the stop button call sequencer.stop() method
