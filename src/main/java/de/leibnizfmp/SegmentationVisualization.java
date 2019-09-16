@@ -12,7 +12,7 @@ public class SegmentationVisualization {
     public void spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
                         double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
                         int radiusGradient, int minSizePx, int maxSizePx, double lowCirc, double highCirc,
-                        Calibration calibration) {
+                        Calibration calibration, boolean setDisplayRange) {
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
         ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
@@ -32,7 +32,18 @@ public class SegmentationVisualization {
         overlay.drawLabels(false);
         originalImage.setOverlay(overlay);
         originalImage.setCalibration(calibration);
-        originalImage.setDisplayRange(100,200);
+
+        if (setDisplayRange) {
+
+            double rangeMin = originalImage.getDisplayRangeMin();
+            double newLower = rangeMin * 1.75;
+            double rangeMax = originalImage.getDisplayRangeMax();
+            double newUpper = (rangeMax / 2 );
+
+            originalImage.setDisplayRange(newLower,newUpper);
+
+        }
+
         originalImage.show();
 
         manager.reset();
@@ -42,7 +53,7 @@ public class SegmentationVisualization {
 
     public void backgroundVisualization(ImagePlus forBackSegmentation, double sigmaBackground, String thresholdBackground,
                         int minSizePx, int maxSizePx, ImagePlus originalImage, String titleOriginal,
-                        Calibration calibration) {
+                        Calibration calibration, boolean setDisplayRange) {
 
         BackgroundSegmenter back = new BackgroundSegmenter();
         ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
@@ -60,7 +71,17 @@ public class SegmentationVisualization {
         originalImage.setOverlay(overlay);
         originalImage.setTitle(titleOriginal);
         originalImage.setCalibration(calibration);
-        originalImage.setDisplayRange(100,200);
+
+        if (setDisplayRange) {
+
+            double rangeMin = originalImage.getDisplayRangeMin();
+            double newLower = rangeMin * 1.75;
+            double rangeMax = originalImage.getDisplayRangeMax();
+            double newUpper = (rangeMax / 2);
+            originalImage.setDisplayRange(newLower, newUpper);
+
+        }
+
         originalImage.show();
 
         manager.reset();

@@ -50,6 +50,8 @@ public class PreviewGui {
     private double pxSizeMicron;
     private double frameRate;
 
+    boolean setDisplayRange = false;
+
     // creates the panel that contains the buttons boxlayout vertical aligned
     private JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
@@ -445,7 +447,7 @@ public class PreviewGui {
                         IJ.log("The selected image is already open");
 
                         IJ.selectWindow(selectedFile);
-
+                        setDisplayRange = false;
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
                         calibration = selectedImage.getCalibration();
 
@@ -458,7 +460,7 @@ public class PreviewGui {
                         visualizer.spotVisualization( selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
-                                calibration);
+                                calibration, setDisplayRange);
 
 
                     } else {
@@ -466,6 +468,7 @@ public class PreviewGui {
                         IJ.log("The selected image is not open");
                         IJ.log("Opening new image");
 
+                        setDisplayRange = true;
                         // start preview for spot segmentation
                         originalImage = previewImage.openImage(selectedFile);
 
@@ -499,7 +502,7 @@ public class PreviewGui {
                         visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
-                                calibration);
+                                calibration, setDisplayRange);
 
                     }
 
@@ -508,6 +511,7 @@ public class PreviewGui {
                     IJ.log("There are no images open!");
 
                     // start preview for spot segmentation
+                    setDisplayRange = true;
                     previewImage = new Image(inputDir, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
 
@@ -540,7 +544,7 @@ public class PreviewGui {
                     visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
                             sigmaSpots, rollingSpots, thresholdSpots,
                             radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
-                            calibration);
+                            calibration, setDisplayRange);
                 }
 
             } else {
@@ -625,6 +629,8 @@ public class PreviewGui {
 
                         IJ.selectWindow(selectedFile);
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
+
+                        setDisplayRange = false;
                         calibration = selectedImage.getCalibration();
                         String titleOriginal = selectedImage.getTitle();
 
@@ -638,13 +644,14 @@ public class PreviewGui {
 
                         visualizer.backgroundVisualization(forBackSegmentation, sigmaBackground, thresholdBackground,
                                         minSizePx, maxSizePx, selectedImage, titleOriginal,
-                                        calibration);
+                                        calibration, setDisplayRange);
 
                     } else {
 
                         IJ.log("The selected image is not open");
 
                         // segment background and show for validation
+                        setDisplayRange = true;
                         ImagePlus originalImage = previewImage.openImage(selectedFile);
 
                         String titleOriginal = originalImage.getTitle();
@@ -680,7 +687,7 @@ public class PreviewGui {
 
                         visualizer.backgroundVisualization(forBackSegmentation, sigmaBackground, thresholdBackground,
                                 minSizePx, maxSizePx, originalImage, titleOriginal,
-                                calibration);
+                                calibration, setDisplayRange);
 
                     }
 
@@ -691,6 +698,7 @@ public class PreviewGui {
                     // segment background and show for validation
                     ImagePlus originalImage = previewImage.openImage(selectedFile);
 
+                    setDisplayRange = true;
                     String titleOriginal = originalImage.getTitle();
 
                     ImagePlus forBackSegmentation = previewImage.projectImage(originalImage, "max");
@@ -724,7 +732,7 @@ public class PreviewGui {
 
                     visualizer.backgroundVisualization(forBackSegmentation, sigmaBackground, thresholdBackground,
                             minSizePx, maxSizePx, originalImage, titleOriginal,
-                            calibration);
+                            calibration, setDisplayRange);
                 }
 
             } else {

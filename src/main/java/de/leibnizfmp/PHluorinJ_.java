@@ -66,22 +66,22 @@ public class PHluorinJ_ implements PlugIn {
 		// show something in the status bar
 
 
-		//String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
-		//String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
+		String testDir = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Input/";
+		String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
 
-		//FileList getFileList = new FileList();
+		FileList getFileList = new FileList();
 
-		//ArrayList<String> fileList = getFileList.getFileList(testDir);
+		ArrayList<String> fileList = getFileList.getFileList(testDir);
 
-		//for (String file : fileList) {
-		//	System.out.println(file);
-		//}
+		for (String file : fileList) {
+			System.out.println(file);
+		}
 
-		//PreviewGui guiTest = new PreviewGui(testDir, testOut, fileList);
-		//guiTest.setUpGui();
+		PreviewGui guiTest = new PreviewGui(testDir, testOut, fileList);
+		guiTest.setUpGui();
 
-		InputGui guiTestFull = new InputGui();
-		guiTestFull.createWindow();
+		//InputGui guiTestFull = new InputGui();
+		//guiTestFull.createWindow();
 
 	}
 }
