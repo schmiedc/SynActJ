@@ -193,8 +193,39 @@ class BatchProcessor {
         IJ.log("Measuring intensities in background finished.");
     }
 
+    BatchProcessor (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess) {
+
+        inputDir = inputDirectory;
+        outputDir = outputDirectory;
+        fileList = filesToProcess;
+
+        // Projection Method
+        projMethod = "median";
+
+        sigmaLoG = 0.5;
+        prominence = 0.005;
+        sigmaSpots = 1.0;
+        rollingSpots = 30.0;
+        thresholdSpots = "Triangle";
+        radiusGradient = 3;
+        minSizeSpot = 0.0;
+        maxSizeSpot = 1000.0;
+        lowCirc = 0.0;
+        highCirc = 1.0;
+
+        sigmaBackground = 4.0;
+        thresholdBackground = "MinError";
+        minSizeBack = 0.0;
+        maxSizeBack = 10000.0;
+
+        calibrationSetting = false;
+        stimFrame = 5;
+        pxSizeMicron = 0.162;
+        frameRate = 2.0;
+    }
+
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
-                          String projectionMethod, double setSigmaLoG, double setProminence,
+                          String setProjectionMethod, double setSigmaLoG, double setProminence,
                           double setSigmaSpots, double setRollingSpots, String setThresholdSpots, int setRadiusGradient,
                           double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
                           double setSigmaBackground, String setThresholdBackground,
@@ -204,7 +235,9 @@ class BatchProcessor {
         inputDir = inputDirectory;
         outputDir = outputDirectory;
         fileList = filesToProcess;
-        projMethod = projectionMethod;
+
+        projMethod = setProjectionMethod;
+
         sigmaLoG = setSigmaLoG;
         prominence = setProminence;
         sigmaSpots = setSigmaSpots;
@@ -215,14 +248,16 @@ class BatchProcessor {
         maxSizeSpot = setMaxSizePxSpot;
         lowCirc = setLowCirc;
         highCirc = setHighCirc;
+
         sigmaBackground = setSigmaBackground;
         thresholdBackground = setThresholdBackground;
         minSizeBack = setMinSizePxBack;
         maxSizeBack =  setMaxSizePxBack;
-        stimFrame = setStimFrame;
+
         calibrationSetting = setCalibrationSetting;
+        stimFrame = setStimFrame;
         pxSizeMicron = setSizeMicron;
-        frameRate = setFrameRate ;
+        frameRate = setFrameRate;
 
     }
 

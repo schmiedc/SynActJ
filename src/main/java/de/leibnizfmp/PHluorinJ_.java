@@ -32,7 +32,7 @@ public class PHluorinJ_ implements PlugIn {
 	@Override
 	public void run(String s) {
 
-		System.setProperty("scijava.log.level", "debug");
+		//System.setProperty("scijava.log.level", "debug");
 		IJ.log("Starting pHlourin plugin");
 		InputGui start = new InputGui();
 		start.createWindow();
@@ -77,7 +77,7 @@ public class PHluorinJ_ implements PlugIn {
 			System.out.println(file);
 		}
 
-		PreviewGui guiTest = new PreviewGui(fileList, testDir, testOut);
+		PreviewGui guiTest = new PreviewGui(testDir, testOut, fileList);
 		guiTest.setUpGui();
 
 	}

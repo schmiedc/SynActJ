@@ -5,6 +5,7 @@ import ij.ImagePlus;
 import ij.WindowManager;
 import ij.measure.Calibration;
 import ij.plugin.Commands;
+import org.scijava.util.ArrayUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,43 +23,63 @@ public class PreviewGui {
             "Triangle","Yen",
     };
 
-    private ArrayList<String> aListOfFiles;
-    private String inputDirectory;
-    private String outputDirectory;
-    String projMethod;
+    private String inputDir;
+    private String outputDir;
+    private ArrayList<String> fileList;
 
+    private String projMethod;
 
+    private double sigmaLoG;
+    private double prominence;
+    private double sigmaSpots;
+    private double rollingSpots;
+    private String thresholdSpots;
+    private int radiusGradient;
+    private double minSizeSpot;
+    private double maxSizeSpot;
+    private double lowCirc;
+    private double highCirc;
+
+    private double sigmaBackground;
+    private String thresholdBackground;
+    private double minSizeBack;
+    private double maxSizeBack;
+
+    private boolean calibrationSetting;
+    private int stimFrame;
+    private double pxSizeMicron;
+    private double frameRate;
 
     // creates the panel that contains the buttons boxlayout vertical aligned
-    JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
     // tabbed pane
-    JTabbedPane tabbedPane = new JTabbedPane();
+    private JTabbedPane tabbedPane = new JTabbedPane();
 
     // settings for spot segmentation
-    JList list;
-    SpinnerModel doubleSpinnerLoGSpot;
-    SpinnerModel doubleSpinnerProminenceSpot;
-    SpinnerModel doubleSpinnerGaussSpot;
-    SpinnerModel intSpinnerRollingBallSpot;
-    JComboBox thresholdListSpot;
-    SpinnerModel intSpinnerGradient;
-    SpinnerModel doubleSpinnerMinSize;
-    SpinnerModel doubleSpinnerMaxSize;
-    SpinnerModel doubleSpinnerLowCirc;
-    SpinnerModel doubleSpinnerHighCirc;
+    private JList list;
+    private SpinnerModel doubleSpinnerLoGSpot;
+    private SpinnerModel doubleSpinnerProminenceSpot;
+    private SpinnerModel doubleSpinnerGaussSpot;
+    private SpinnerModel doubleSpinnerRollingBallSpot;
+    private JComboBox thresholdListSpot;
+    private SpinnerModel intSpinnerGradient;
+    private SpinnerModel doubleSpinnerMinSize;
+    private SpinnerModel doubleSpinnerMaxSize;
+    private SpinnerModel doubleSpinnerLowCirc;
+    private SpinnerModel doubleSpinnerHighCirc;
 
     // settings for background segmentation
-    SpinnerModel doubleSpinBack1;
-    JComboBox thresholdListBack;
-    SpinnerModel doubleSpinBack2;
-    SpinnerModel doubleSpinBack3;
+    private SpinnerModel doubleSpinBack1;
+    private JComboBox thresholdListBack;
+    private SpinnerModel doubleSpinBack2;
+    private SpinnerModel doubleSpinBack3;
 
     // experimental settings
-    SpinnerModel doubleSpinnerPixelSize;
-    JCheckBox checkCalibration;
-    SpinnerModel doubleSpinnerFrameRate;
-    SpinnerModel integerSpinnerStimulationFrame;
+    private SpinnerModel doubleSpinnerPixelSize;
+    private JCheckBox checkCalibration;
+    private SpinnerModel doubleSpinnerFrameRate;
+    private SpinnerModel integerSpinnerStimulationFrame;
 
 
     private void setUpSpotTab() {
@@ -67,64 +88,69 @@ public class PreviewGui {
         Box boxSpotSeg = new Box(BoxLayout.Y_AXIS);
 
         // Spinner for some number input
-        doubleSpinnerLoGSpot = new SpinnerNumberModel(0.5, 0.0,5.0, 0.1);
+        doubleSpinnerLoGSpot = new SpinnerNumberModel(sigmaLoG, 0.0,5.0, 0.1);
         String spinLabelSpot1 = "LoG sigma: ";
         String spinUnitSpot1 = "µm";
         Box spinSpot1 = addLabeledSpinnerUnit(spinLabelSpot1, doubleSpinnerLoGSpot, spinUnitSpot1);
         boxSpotSeg.add(spinSpot1);
 
-        doubleSpinnerProminenceSpot = new SpinnerNumberModel(0.005, 0.0,1.000, 0.001);
+        doubleSpinnerProminenceSpot = new SpinnerNumberModel(prominence, 0.0,1.000, 0.001);
         String spinLabelSpot2 = "Prominence: ";
         String spinUnitSpot2 = "";
         Box spinSpot2 = addLabeledSpinnerUnit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
         boxSpotSeg.add(spinSpot2);
 
-        doubleSpinnerGaussSpot = new SpinnerNumberModel(1.0, 0.0,10.0, 0.1);
+        doubleSpinnerGaussSpot = new SpinnerNumberModel(sigmaSpots, 0.0,10.0, 0.1);
         String spinLabelSpot3 = "Gauss sigma: ";
         String spinUnitSpot3 = "px";
         Box spinSpot3 = addLabeledSpinnerUnit(spinLabelSpot3, doubleSpinnerGaussSpot, spinUnitSpot3);
         boxSpotSeg.add(spinSpot3);
 
-        intSpinnerRollingBallSpot = new SpinnerNumberModel(30, 0,100, 1);
+        doubleSpinnerRollingBallSpot = new SpinnerNumberModel(rollingSpots, 0,100, 1);
         String spinLabelSpot4 = "RollingBall Radius: ";
         String spinUnitSpot4 = "px";
-        Box spinSpot4 = addLabeledSpinnerUnit(spinLabelSpot4, intSpinnerRollingBallSpot, spinUnitSpot4);
+        Box spinSpot4 = addLabeledSpinnerUnit(spinLabelSpot4, doubleSpinnerRollingBallSpot, spinUnitSpot4);
         boxSpotSeg.add(spinSpot4);
 
         thresholdListSpot = new JComboBox(thresholdString);
         JLabel thresholdListSpotLabel  = new JLabel("Select threshold: ");
         Box thresholdListSpotBox= new Box(BoxLayout.X_AXIS);
         thresholdListSpot.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListSpot.getMinimumSize().height));
-        thresholdListSpot.setSelectedIndex(15);
+
+        // get index of selected threshold using arrayUtils
+        int indexOfThreshold = ArrayUtils.indexOf(thresholdString, thresholdSpots);
+        // set this index as selected in the threshold list
+        thresholdListSpot.setSelectedIndex(indexOfThreshold);
+
         thresholdListSpotBox.add(thresholdListSpotLabel);
         thresholdListSpotBox.add(thresholdListSpot);
         boxSpotSeg.add(thresholdListSpotBox);
 
-        intSpinnerGradient = new SpinnerNumberModel(3,0,10,1);
+        intSpinnerGradient = new SpinnerNumberModel(radiusGradient,0,10,1);
         String spinLabelSpot5 = "Gradient radius: ";
         String spinUnitSpot5 = "px";
         Box spinSpot5 = addLabeledSpinnerUnit(spinLabelSpot5, intSpinnerGradient, spinUnitSpot5);
         boxSpotSeg.add(spinSpot5);
 
-        doubleSpinnerMinSize = new SpinnerNumberModel(0.0, 0.0,10000, 0.1);
+        doubleSpinnerMinSize = new SpinnerNumberModel(minSizeSpot, 0.0,10000, 0.1);
         String labelMinSize = "Minimum spot size: ";
         String unitMinSize = "µm²";
         Box minSizeBox = addLabeledSpinnerUnit(labelMinSize , doubleSpinnerMinSize, unitMinSize);
         boxSpotSeg.add(minSizeBox);
 
-        doubleSpinnerMaxSize = new SpinnerNumberModel(1000, 0.0,10000, 0.1);
+        doubleSpinnerMaxSize = new SpinnerNumberModel(maxSizeSpot, 0.0,10000, 0.1);
         String labelMaxSize = "Maximum spot size: ";
         String unitMaxSize = "µm²";
         Box maxSizeBox = addLabeledSpinnerUnit(labelMaxSize , doubleSpinnerMaxSize, unitMaxSize);
         boxSpotSeg.add(maxSizeBox);
 
-        doubleSpinnerLowCirc = new SpinnerNumberModel(0.0, 0.0,1.0, 0.01);
+        doubleSpinnerLowCirc = new SpinnerNumberModel(lowCirc, 0.0,1.0, 0.01);
         String labelLowCirc = "Minimum spot circ.: ";
         String unitLowCirc = "";
         Box lowCirc = addLabeledSpinnerUnit(labelLowCirc , doubleSpinnerLowCirc, unitLowCirc);
         boxSpotSeg.add(lowCirc);
 
-        doubleSpinnerHighCirc = new SpinnerNumberModel(1.0, 0.0,1.0, 0.01);
+        doubleSpinnerHighCirc = new SpinnerNumberModel(highCirc, 0.0,1.0, 0.01);
         String labelHighCirc = "Minimum spot size: ";
         String unitHighCirc = "";
         Box highCirc = addLabeledSpinnerUnit(labelHighCirc , doubleSpinnerHighCirc , unitHighCirc );
@@ -144,7 +170,7 @@ public class PreviewGui {
         // Setup Interactions for Segment Background
         Box boxBackground = new Box(BoxLayout.Y_AXIS);
 
-        doubleSpinBack1 = new SpinnerNumberModel(4.0, 0.0,20.0, 1.0);
+        doubleSpinBack1 = new SpinnerNumberModel(sigmaBackground, 0.0,20.0, 1.0);
         String spinBackLabel1 = "Gauss sigma: ";
         String spinBackUnit1 = "px";
         Box spinnerBack1 = addLabeledSpinnerUnit(spinBackLabel1, doubleSpinBack1, spinBackUnit1);
@@ -154,18 +180,23 @@ public class PreviewGui {
         JLabel thresholdListBackLabel  = new JLabel("Select threshold: ");
         Box thresholdListBackBox= new Box(BoxLayout.X_AXIS);
         thresholdListBack.setMaximumSize(new Dimension(Integer.MAX_VALUE, thresholdListBack.getMinimumSize().height));
-        thresholdListBack.setSelectedIndex(8);
+
+        // get index of selected threshold using arrayUtils
+        int indexOfThreshold = ArrayUtils.indexOf(thresholdString, thresholdBackground);
+        // set this index as selected in the threshold list
+        thresholdListBack.setSelectedIndex(indexOfThreshold);
+
         thresholdListBackBox.add(thresholdListBackLabel);
         thresholdListBackBox.add(thresholdListBack);
         boxBackground.add(thresholdListBackBox);
 
-        doubleSpinBack2 = new SpinnerNumberModel(0.0,0.0,1000000,10.0);
+        doubleSpinBack2 = new SpinnerNumberModel(minSizeBack,0.0,1000000,10.0);
         String minSizeLabel = "Select min. size: ";
         String minUnitLabel = "µm²";
         Box spinnerBack2 = addLabeledSpinnerUnit(minSizeLabel, doubleSpinBack2, minUnitLabel );
         boxBackground.add(spinnerBack2);
 
-        doubleSpinBack3 = new SpinnerNumberModel(10000,0.0,1000000,10.0);
+        doubleSpinBack3 = new SpinnerNumberModel(maxSizeBack,0.0,1000000,10.0);
         String maxSizeLabel = "Select max. size: ";
         String maxUnitLabel = "µm²";
         Box spinnerBack3 = addLabeledSpinnerUnit(maxSizeLabel, doubleSpinBack3, maxUnitLabel);
@@ -188,22 +219,23 @@ public class PreviewGui {
         JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
         buttonBox.add(settingsLabel);
 
-        doubleSpinnerPixelSize = new SpinnerNumberModel(0.162, 0.000,1.000, 0.001);
+        doubleSpinnerPixelSize = new SpinnerNumberModel(pxSizeMicron, 0.000,1.000, 0.001);
         String pixelSizeLabel = "Pixel size: ";
         String pixelSizeUnit = "µm";
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
         boxSettings.add(boxPixelSize);
 
-        doubleSpinnerFrameRate = new SpinnerNumberModel(2.0, 0.0,10.0, 1.0);
+        doubleSpinnerFrameRate = new SpinnerNumberModel(frameRate, 0.0,10.0, 1.0);
         String frameRateLabel = "Frame rate: ";
         String frameRateUnit = "s";
         Box boxFrameRate = addLabeledSpinnerUnit(frameRateLabel, doubleSpinnerFrameRate, frameRateUnit);
         boxSettings.add(boxFrameRate);
 
         checkCalibration = new JCheckBox("Override metadata?");
+        checkCalibration.setSelected(calibrationSetting);
         boxSettings.add(checkCalibration);
 
-        integerSpinnerStimulationFrame = new SpinnerNumberModel(5, 0,10, 1);
+        integerSpinnerStimulationFrame = new SpinnerNumberModel(stimFrame, 0,10, 1);
         String stimulationFrameLabel = "Stimulation Frame: ";
         String stimulationFrameUnit = "";
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
@@ -243,7 +275,7 @@ public class PreviewGui {
 
     }
 
-    public void setUpGui() {
+    void setUpGui() {
 
         JFrame theFrame;
 
@@ -261,7 +293,7 @@ public class PreviewGui {
         setUpSpotTab();
         setUpBackTab();
         setUpSettingsTab();
-        JScrollPane scroller = setUpFileList(aListOfFiles);
+        JScrollPane scroller = setUpFileList(fileList);
         setUpButtons();
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -320,9 +352,6 @@ public class PreviewGui {
         return spinnerLabelBox;
     }
 
-
-
-
     // Upon pressing the start button call buildTrackAndStart() method
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
@@ -333,42 +362,42 @@ public class PreviewGui {
             IJ.log("Starting preview for spot segmentation");
 
             // get all the values from the GUI
-            Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+            double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
             IJ.log("LoG sigma: " + sigmaLoG);
 
-            Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+            double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
             IJ.log("Prominence: " + prominence);
 
-            Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+            double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
             IJ.log("Gauss sigma: " + sigmaSpots);
 
-            Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
+            double rollingSpots = (Double) doubleSpinnerRollingBallSpot.getValue();
             IJ.log("Rolling Ball radius: " + rollingSpots);
 
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Threshold: " + thresholdSpots);
 
-            Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
+            int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Gradient Radius: " + radiusGradient);
 
             // calculate size in pixel
-            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-            Boolean calibrationSetting = checkCalibration.isSelected();
+            double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            boolean calibrationSetting = checkCalibration.isSelected();
 
-            Double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
-            Double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
+            double minSizeMicron = (Double) doubleSpinnerMinSize.getValue();
+            double maxSizeMicron = (Double) doubleSpinnerMaxSize.getValue();
             IJ.log("Spots size from: " + minSizeMicron + " to " + maxSizeMicron + " µm²" );
 
-            Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
-            Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+            double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+            double highCirc = (Double) doubleSpinnerHighCirc.getValue();
             IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
 
-            Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+            double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
-            Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+            int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
 
-            Image previewImage = new Image(inputDirectory, pxSizeMicron, frameRate);
+            Image previewImage = new Image(inputDir, pxSizeMicron, frameRate);
 
             // checks if there is a file selected
             int selectionChecker = list.getSelectedIndex();
@@ -388,12 +417,12 @@ public class PreviewGui {
                     IJ.log("There are images open!");
 
                     String[] openImage = WindowManager.getImageTitles();
-                    ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
+                    ArrayList<String> openImageList = new ArrayList<>(Arrays.asList(openImage));
 
                     FileList fileUtility = new FileList();
-                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, aListOfFiles);
+                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, fileList);
 
-                    Boolean selectedFileChecker = false;
+                    boolean selectedFileChecker = false;
 
                     for (String image : openInputImages) {
 
@@ -479,7 +508,7 @@ public class PreviewGui {
                     IJ.log("There are no images open!");
 
                     // start preview for spot segmentation
-                    previewImage = new Image(inputDirectory, pxSizeMicron, frameRate );
+                    previewImage = new Image(inputDir, pxSizeMicron, frameRate );
                     originalImage = previewImage.openImage(selectedFile);
 
                     int minSizePx;
@@ -544,12 +573,12 @@ public class PreviewGui {
             IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
             // calculate size in pixel
-            Boolean calibrationSetting = checkCalibration.isSelected();
+            boolean calibrationSetting = checkCalibration.isSelected();
 
             Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
             Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
-            Image previewImage = new Image(inputDirectory, pxSizeMicron, frameRate);
+            Image previewImage = new Image(inputDir, pxSizeMicron, frameRate);
 
             int selectionChecker = list.getSelectedIndex();
 
@@ -567,12 +596,12 @@ public class PreviewGui {
                     IJ.log("There are images open!");
 
                     String[] openImage = WindowManager.getImageTitles();
-                    ArrayList<String> openImageList = new ArrayList<String>(Arrays.asList(openImage));
+                    ArrayList<String> openImageList = new ArrayList<>(Arrays.asList(openImage));
 
                     FileList fileUtility = new FileList();
-                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, aListOfFiles);
+                    ArrayList<String> openInputImages = fileUtility.intersection(openImageList, fileList);
 
-                    Boolean selectedFileChecker = false;
+                    boolean selectedFileChecker = false;
 
                     for (String image : openInputImages) {
 
@@ -721,53 +750,53 @@ public class PreviewGui {
 
             // get current settings for spot segmentation
             // get all the values from the GUI
-            Double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+            double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
             IJ.log("LoG sigma: " + sigmaLoG);
 
-            Double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+            double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
             IJ.log("Prominence: " + prominence);
 
-            Double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+            double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
             IJ.log("Gauss sigma: " + sigmaSpots);
 
-            Integer rollingSpots = (Integer) intSpinnerRollingBallSpot.getValue();
+            double rollingSpots = (Double) doubleSpinnerRollingBallSpot.getValue();
             IJ.log("Rolling Ball radius: " + rollingSpots);
 
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Threshold: " + thresholdSpots);
 
-            Integer radiusGradient = (Integer) intSpinnerGradient.getValue();
+            int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Gradient Radius: " + radiusGradient);
 
-            Double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
-            Double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
+            double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
+            double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
             IJ.log("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²" );
 
-            Double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
-            Double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+            double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+            double highCirc = (Double) doubleSpinnerHighCirc.getValue();
             IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
 
             // get current settings for background segmentation
-            Double sigmaBackground = (Double) doubleSpinBack1.getValue();
+            double sigmaBackground = (Double) doubleSpinBack1.getValue();
             IJ.log("Sigma background set to: " + sigmaBackground);
 
             String thresholdBackground = (String) thresholdListBack.getSelectedItem();
             IJ.log("Threshold for background set to: " + thresholdBackground);
 
-            Double minSizeBack = (Double) doubleSpinBack2.getValue();
-            Double maxSizeBack  = (Double) doubleSpinBack3.getValue();
+            double minSizeBack = (Double) doubleSpinBack2.getValue();
+            double maxSizeBack  = (Double) doubleSpinBack3.getValue();
             IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²" );
 
             // extract settings for experiment
-            Boolean calibrationSetting = checkCalibration.isSelected();
+            boolean calibrationSetting = checkCalibration.isSelected();
 
-            Double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-            Double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+            double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+            double frameRate = (Double) doubleSpinnerFrameRate.getValue();
 
-            Integer stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+            int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
 
-            BatchProcessor batch = new BatchProcessor(inputDirectory, outputDirectory ,aListOfFiles,
+            BatchProcessor batch = new BatchProcessor(inputDir, outputDir, fileList,
                     projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
@@ -782,15 +811,73 @@ public class PreviewGui {
     } // close inner class
 
     // PreviewGui constructor
-    public PreviewGui (ArrayList<String> filesSelected, String inputDir, String outputDir){
+    PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess){
 
-        aListOfFiles = filesSelected;
-        inputDirectory = inputDir;
-        outputDirectory = outputDir;
+        inputDir = inputDirectory;
+        outputDir = outputDirectory;
+        fileList= filesToProcess;
 
         // Projection Method
         projMethod = "median";
+
+        sigmaLoG = 0.5;
+        prominence = 0.005;
+        sigmaSpots = 1.0;
+        rollingSpots = 30.0;
+        thresholdSpots = "Triangle";
+        radiusGradient = 3;
+        minSizeSpot = 0.0;
+        maxSizeSpot = 1000.0;
+        lowCirc = 0.0;
+        highCirc = 1.0;
+
+        sigmaBackground = 4.0;
+        thresholdBackground = "MinError";
+        minSizeBack = 0.0;
+        maxSizeBack =  10000.0;
+
+        calibrationSetting = false;
+        stimFrame = 5;
+        pxSizeMicron = 0.162;
+        frameRate = 2.0;
         
+
+    }
+
+    PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
+                       String projectionMethod, double getSigmaLoG, double getProminence,
+                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots, int getRadiusGradient,
+                       double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
+                       double getSigmaBackground, String getThresholdBackground,
+                       double getMinSizePxBack, double getMaxSizePxBack,
+                       int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
+
+        inputDir = inputDirectory;
+        outputDir = outputDirectory;
+        fileList = filesToProcess;
+
+        projMethod = projectionMethod;
+
+        sigmaLoG = getSigmaLoG;
+        prominence = getProminence;
+        sigmaSpots = getSigmaSpots;
+        rollingSpots = getRollingSpots;
+        thresholdSpots = getThresholdSpots;
+        radiusGradient = getRadiusGradient;
+        minSizeSpot = getMinSizePxSpot;
+        maxSizeSpot = getMaxSizePxSpot;
+        lowCirc = getLowCirc;
+        highCirc = getHighCirc;
+
+        sigmaBackground = getSigmaBackground;
+        thresholdBackground = getThresholdBackground;
+        minSizeBack = getMinSizePxBack;
+        maxSizeBack =  getMaxSizePxBack;
+
+        calibrationSetting = getCalibrationSetting;
+        stimFrame = getStimFrame;
+        pxSizeMicron = getSizeMicron;
+        frameRate = getFrameRate;
 
     }
 
