@@ -807,8 +807,6 @@ public class PreviewGui extends JPanel{
 
             IJ.log("Saving settings");
 
-            XmlHandler writeToXml = new XmlHandler();
-
             // get current settings for spot segmentation
             // get all the values from the GUI
             double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
@@ -863,6 +861,8 @@ public class PreviewGui extends JPanel{
 
             int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
+
+            XmlHandler writeToXml = new XmlHandler();
 
             writeToXml.xmlWriter(outputDir, projMethod,
                     sigmaLoG, prominence,
@@ -932,6 +932,16 @@ public class PreviewGui extends JPanel{
 
             int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
+
+            XmlHandler writeToXml = new XmlHandler();
+
+            writeToXml.xmlWriter(outputDir, projMethod,
+                    sigmaLoG, prominence,
+                    sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+                    minSizeSpot, maxSizeSpot, lowCirc, highCirc,
+                    sigmaBackground, thresholdBackground,
+                    minSizeBack, maxSizeBack,
+                    stimFrame, calibrationSetting, pxSizeMicron, frameRate);
 
             BatchProcessor batch = new BatchProcessor(inputDir, outputDir, fileList,
                     projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
