@@ -52,7 +52,7 @@ public class PreviewGui extends JPanel{
     private double pxSizeMicron;
     private double frameRate;
 
-    boolean setDisplayRange = false;
+    private boolean setDisplayRange = false;
 
     // creates the panel that contains the buttons boxlayout vertical aligned
     private JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -85,7 +85,7 @@ public class PreviewGui extends JPanel{
     private SpinnerModel doubleSpinnerFrameRate;
     private SpinnerModel integerSpinnerStimulationFrame;
 
-    Border blackline;
+    private Border blackline;
 
     private void setUpSpotTab() {
 
