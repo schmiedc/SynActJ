@@ -1,5 +1,6 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class XmlHandler {
+class XmlHandler {
 
     String readProjMethod;
 
@@ -90,6 +91,8 @@ public class XmlHandler {
 
         readStimFrame = Integer.parseInt(doc.getElementsByTagName("stimFrame").item(0).getTextContent());
 
+        IJ.log("Loaded settings file from: " + filePath);
+
     }
 
     void xmlWriter(String outputPath, String getProjectionMethod,
@@ -99,6 +102,11 @@ public class XmlHandler {
                    double getSigmaBackground, String getThresholdBackground,
                    double getMinSizePxBack, double getMaxSizePxBack,
                    int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
+
+        // Write the content into XML file
+        String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
+
+        String filePath = outputPath + fileName;
 
         try
         {
@@ -208,10 +216,7 @@ public class XmlHandler {
             settingsFrameRate.setTextContent(frameRate);
             rootElement.appendChild(settingsFrameRate);
 
-            // Write the content into XML file
-            String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'-settings.xml'").format(new Date());
 
-            String filePath = outputPath + fileName;
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(filePath));
 
@@ -224,10 +229,13 @@ public class XmlHandler {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.transform(source, result);
 
+            IJ.log("Saved settings file: " + filePath);
+
         }
         catch(Exception ex)
         {
             ex.printStackTrace();
+            IJ.log("WARNING: was not able to save settings file to: " + filePath);
         }
 
     }
