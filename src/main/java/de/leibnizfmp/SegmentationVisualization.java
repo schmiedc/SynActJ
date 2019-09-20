@@ -38,7 +38,7 @@ public class SegmentationVisualization {
             double rangeMin = originalImage.getDisplayRangeMin();
             double newLower = rangeMin * 1.75;
             double rangeMax = originalImage.getDisplayRangeMax();
-            double newUpper = (rangeMax / 3 );
+            double newUpper = (rangeMax / 2 );
 
             originalImage.setDisplayRange(newLower,newUpper);
 

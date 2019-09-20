@@ -20,6 +20,7 @@ public class Image {
         // open a example pHlorin image
         IJ.log("Opening file: " + inputFile);
         ImagePlus image = IJ.openImage(directory + File.separator + inputFile);
+        image.setTitle(inputFile);
 
         return image;
     }

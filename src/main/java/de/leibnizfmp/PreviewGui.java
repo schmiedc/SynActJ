@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -106,10 +107,10 @@ public class PreviewGui extends JPanel{
         Box spinSpot1 = addLabeledSpinnerUnit(spinLabelSpot1, doubleSpinnerLoGSpot, spinUnitSpot1);
         detectionBox.add(spinSpot1);
 
-        doubleSpinnerProminenceSpot = new SpinnerNumberModel(prominence, 0.0,1.000, 0.001);
+        doubleSpinnerProminenceSpot = new SpinnerNumberModel(prominence, 0.0,1.0, 0.0001);
         String spinLabelSpot2 = "Prominence: ";
         String spinUnitSpot2 = "";
-        Box spinSpot2 = addLabeledSpinnerUnit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
+        Box spinSpot2 = addLabeledSpinner5Digit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
         detectionBox.add(spinSpot2);
 
         boxSpotSeg.add(detectionBox);
@@ -400,6 +401,30 @@ public class PreviewGui extends JPanel{
         spinnerLabelBox.add(l1);
 
         JSpinner spinner = new JSpinner(model);
+        l1.setLabelFor(spinner);
+        spinnerLabelBox.add(spinner);
+        spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, spinner.getMinimumSize().height));
+
+        JLabel l2 = new JLabel(unit);
+        l2.setPreferredSize(new Dimension(30, l2.getMinimumSize().height));
+        spinnerLabelBox.add(l2);
+
+        return spinnerLabelBox;
+    }
+
+    private static Box addLabeledSpinner5Digit(String label,
+                                             SpinnerModel model,
+                                             String unit) {
+
+        Box spinnerLabelBox = new Box(BoxLayout.X_AXIS);
+        JLabel l1 = new JLabel(label);
+        l1.setPreferredSize(new Dimension(150, l1.getMinimumSize().height));
+        spinnerLabelBox.add(l1);
+
+        JSpinner spinner = new JSpinner(model);
+        JSpinner.NumberEditor editor = (JSpinner.NumberEditor)spinner.getEditor();
+        DecimalFormat format = editor.getFormat();
+        format.setMinimumFractionDigits(4);
         l1.setLabelFor(spinner);
         spinnerLabelBox.add(spinner);
         spinner.setMaximumSize(new Dimension(Integer.MAX_VALUE, spinner.getMinimumSize().height));

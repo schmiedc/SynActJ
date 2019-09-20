@@ -2,12 +2,15 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.io.LogStream;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 class BatchProcessor {
@@ -123,7 +126,17 @@ class BatchProcessor {
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
-            table.save(outputDir + inputImage.getShortTitle() + "_" + String.format("%03d", frame) + "_signal.csv");
+
+            try {
+
+                table.save(outputDir + inputImage.getShortTitle().replace(File.separator, "_") + "_" + String.format("%03d", frame) + "_signal.csv");
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+                IJ.log("Could not save background results: " + inputImage.getShortTitle().replace(File.separator, "_"));
+
+            }
 
             if ( IJ.isResultsWindow() ){
 
@@ -172,7 +185,17 @@ class BatchProcessor {
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
 
-            table.save(outputDir + inputImage.getShortTitle() + "_" + String.format("%03d", frame) + "_background.csv");
+            try  {
+
+                table.saveAs(outputDir + inputImage.getShortTitle().replace(File.separator, "_") + "_" + String.format("%03d", frame) + "_background.csv");
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+                IJ.log("Could not save background results: " + inputImage.getShortTitle().replace(File.separator, "_"));
+
+            }
+
 
             if ( IJ.isResultsWindow() ){
                 IJ.selectWindow("Results");

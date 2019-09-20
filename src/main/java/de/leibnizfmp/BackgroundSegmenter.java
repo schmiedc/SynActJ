@@ -16,7 +16,7 @@ public class BackgroundSegmenter {
         processImage.setAutoThreshold(threshold, true, 1);
         ByteProcessor result = processImage.createMask();
 
-        result.erode();
+        //result.erode();
         result.erode();
         result.invert();
 

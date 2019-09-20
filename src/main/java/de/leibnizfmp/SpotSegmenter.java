@@ -47,7 +47,7 @@ public class SpotSegmenter {
         processImage.setAutoThreshold(threshold, true, 1);
         ByteProcessor result = processImage.createMask();
 
-        result.dilate();
+        //result.dilate();
 
         IJ.log("Spot segmentation finished.");
         // needs size and circ filter

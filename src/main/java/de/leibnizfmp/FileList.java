@@ -50,6 +50,7 @@ class FileList {
     }
 
     ArrayList<String> intersection(ArrayList<String> list1, ArrayList<String> list2) {
+
         ArrayList<String> list = new ArrayList<>();
 
         for (String item : list1) {
