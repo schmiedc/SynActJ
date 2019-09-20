@@ -27,6 +27,7 @@ class XmlHandler {
     double readSigmaSpots;
     double readRollingSpots;
     String readThresholdSpots;
+    boolean readSpotErosion;
     int readRadiusGradient;
     double readMinSizeSpot;
     double readMaxSizeSpot;
@@ -65,6 +66,8 @@ class XmlHandler {
 
         readThresholdSpots = doc.getElementsByTagName("thresholdSpots").item(0).getTextContent();
 
+        readSpotErosion = Boolean.parseBoolean(doc.getElementsByTagName("spotErosion").item(0).getTextContent());
+
         readRadiusGradient = Integer.parseInt(doc.getElementsByTagName("radiusGradient").item(0).getTextContent());
 
         readMinSizeSpot = Double.parseDouble(doc.getElementsByTagName("minSizeSpot").item(0).getTextContent());
@@ -97,7 +100,8 @@ class XmlHandler {
 
     void xmlWriter(String outputPath, String getProjectionMethod,
                    double getSigmaLoG, double getProminence,
-                   double getSigmaSpots, double getRollingSpots, String getThresholdSpots, int getRadiusGradient,
+                   double getSigmaSpots, double getRollingSpots, String getThresholdSpots, boolean getSpotErosion,
+                   int getRadiusGradient,
                    double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
                    double getSigmaBackground, String getThresholdBackground,
                    double getMinSizePxBack, double getMaxSizePxBack,
@@ -115,6 +119,7 @@ class XmlHandler {
             String prominence = Double.toString(getProminence);
             String sigmaSpots = Double.toString(getSigmaSpots);
             String rollingSpots = Double.toString(getRollingSpots);
+            String spotErosion = Boolean.toString(getSpotErosion);
             String radiusGradient = Integer.toString(getRadiusGradient);
             String minSizePxSpot = Double.toString(getMinSizePxSpot);
             String maxSizePxSpot = Double.toString(getMaxSizePxSpot);
@@ -163,6 +168,10 @@ class XmlHandler {
             Element settingsThresholdSpots = doc.createElement("thresholdSpots");
             settingsThresholdSpots.setTextContent(getThresholdSpots);
             rootElement.appendChild(settingsThresholdSpots);
+
+            Element settingsSpotErosion = doc.createElement("spotErosion");
+            settingsSpotErosion.setTextContent(spotErosion);
+            rootElement.appendChild(settingsSpotErosion);
 
             Element settingsRadiusGradient = doc.createElement("radiusGradient");
             settingsRadiusGradient.setTextContent(radiusGradient);

@@ -41,8 +41,9 @@ public class WorkflowTester {
         double sigmaSpots = 1.0;
         double rollingSpots = 30.0;
         String thresholdSpots = "Triangle";
+        boolean spotErosion = false;
 
-        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots);
+        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots, spotErosion);
 
         // Watershed
         int radiusGradient = 3;

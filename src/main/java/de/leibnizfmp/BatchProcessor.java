@@ -27,6 +27,7 @@ class BatchProcessor {
     private double sigmaSpots;
     private double rollingSpots;
     private String thresholdSpots;
+    private boolean spotErosion;
     private int radiusGradient;
     private double minSizeSpot;
     private double maxSizeSpot;
@@ -103,7 +104,7 @@ class BatchProcessor {
 
         SpotSegmenter spot = new SpotSegmenter();
         ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
-        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots);
+        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots, spotErosion);
 
         ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
@@ -226,6 +227,7 @@ class BatchProcessor {
         sigmaSpots = 1.0;
         rollingSpots = 30.0;
         thresholdSpots = "Triangle";
+        spotErosion = false;
         radiusGradient = 3;
         minSizeSpot = 0.0;
         maxSizeSpot = 1000.0;
@@ -245,7 +247,8 @@ class BatchProcessor {
 
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                           String setProjectionMethod, double setSigmaLoG, double setProminence,
-                          double setSigmaSpots, double setRollingSpots, String setThresholdSpots, int setRadiusGradient,
+                          double setSigmaSpots, double setRollingSpots, String setThresholdSpots, boolean setSpotErosion,
+                          int setRadiusGradient,
                           double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
                           double setSigmaBackground, String setThresholdBackground,
                           double setMinSizePxBack, double setMaxSizePxBack,
@@ -262,6 +265,7 @@ class BatchProcessor {
         sigmaSpots = setSigmaSpots;
         rollingSpots = setRollingSpots;
         thresholdSpots = setThresholdSpots;
+        spotErosion = setSpotErosion;
         radiusGradient = setRadiusGradient;
         minSizeSpot = setMinSizePxSpot;
         maxSizeSpot = setMaxSizePxSpot;

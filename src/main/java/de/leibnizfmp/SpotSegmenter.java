@@ -32,7 +32,7 @@ public class SpotSegmenter {
 
     }
 
-    public ByteProcessor segmentSpots(ImagePlus image, double gauss, double rolling, String threshold){
+    public ByteProcessor segmentSpots(ImagePlus image, double gauss, double rolling, String threshold, boolean spotErosion){
 
         ImageProcessor processImage = image.getProcessor().convertToShortProcessor();
 
@@ -47,7 +47,16 @@ public class SpotSegmenter {
         processImage.setAutoThreshold(threshold, true, 1);
         ByteProcessor result = processImage.createMask();
 
-        //result.dilate();
+        if(spotErosion) {
+
+            result.dilate();
+            IJ.log("Applying an erosion to the mask");
+
+        } else {
+
+            IJ.log("No erosion is applied");
+
+        }
 
         IJ.log("Spot segmentation finished.");
         // needs size and circ filter

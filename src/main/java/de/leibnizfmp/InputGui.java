@@ -213,7 +213,8 @@ class InputGui {
 
                         PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString) , checkTrailingSlash(outputFileString), fileList,
                                 readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
-                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots, readMyXml.readThresholdSpots, readMyXml.readRadiusGradient,
+                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots, readMyXml.readThresholdSpots, readMyXml.readSpotErosion,
+                                readMyXml.readRadiusGradient,
                                 readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,readMyXml.readLowCirc,readMyXml.readHighCirc,
                                 readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
                                 readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,

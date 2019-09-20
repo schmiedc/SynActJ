@@ -21,7 +21,7 @@ import java.util.Arrays;
 public class PreviewGui extends JPanel{
 
     private String[] thresholdString = { "Default", "Huang", "IJ_IsoData", "Intermodes",
-            "IsoData ", "Li", "MaxEntropy", "Mean", "MinError", "Minimum",
+            "IsoData", "Li", "MaxEntropy", "Mean", "MinError", "Minimum",
             "Moments", "Otsu", "Percentile", "RenyiEntropy", "Shanbhag",
             "Triangle","Yen",
     };
@@ -37,6 +37,7 @@ public class PreviewGui extends JPanel{
     private double sigmaSpots;
     private double rollingSpots;
     private String thresholdSpots;
+    private boolean spotErosionSetting;
     private int radiusGradient;
     private double minSizeSpot;
     private double maxSizeSpot;
@@ -68,6 +69,7 @@ public class PreviewGui extends JPanel{
     private SpinnerModel doubleSpinnerGaussSpot;
     private SpinnerModel doubleSpinnerRollingBallSpot;
     private JComboBox<String> thresholdListSpot;
+    private JCheckBox erosionCheckBox;
     private SpinnerModel intSpinnerGradient;
     private SpinnerModel doubleSpinnerMinSize;
     private SpinnerModel doubleSpinnerMaxSize;
@@ -97,7 +99,7 @@ public class PreviewGui extends JPanel{
         Box detectionBox = new Box(BoxLayout.Y_AXIS);
         TitledBorder titleDetection;
         blackline = BorderFactory.createLineBorder(Color.black);
-        titleDetection = BorderFactory.createTitledBorder(blackline, "Detection: number of spots");
+        titleDetection = BorderFactory.createTitledBorder(blackline, "Detect: number & position of spots");
         detectionBox.setBorder(titleDetection);
 
         // Spinner for some number input
@@ -117,9 +119,10 @@ public class PreviewGui extends JPanel{
 
         // box with titled borders
         Box segmentationBox = new Box(BoxLayout.Y_AXIS);
+        segmentationBox.setPreferredSize(new Dimension(350, 100));
         TitledBorder titleSegmentation;
         blackline = BorderFactory.createLineBorder(Color.black);
-        titleSegmentation = BorderFactory.createTitledBorder(blackline, "Segmentation: size of spots");
+        titleSegmentation = BorderFactory.createTitledBorder(blackline, "Segment: size & number of spots");
         segmentationBox.setBorder(titleSegmentation);
 
         doubleSpinnerGaussSpot = new SpinnerNumberModel(sigmaSpots, 0.0,10.0, 0.1);
@@ -148,13 +151,17 @@ public class PreviewGui extends JPanel{
         thresholdListSpotBox.add(thresholdListSpot);
         segmentationBox.add(thresholdListSpotBox);
 
+        erosionCheckBox = new JCheckBox("Erode Mask");
+        erosionCheckBox.setSelected(spotErosionSetting);
+        segmentationBox.add(erosionCheckBox);
+
         boxSpotSeg.add(segmentationBox);
 
         // box with titled borders
         Box splittingBox = new Box(BoxLayout.Y_AXIS);
         TitledBorder titleSplitting;
         blackline = BorderFactory.createLineBorder(Color.black);
-        titleSplitting = BorderFactory.createTitledBorder(blackline, "Spot splitter: separation of spots");
+        titleSplitting = BorderFactory.createTitledBorder(blackline, "Split spots: separation of spots");
         splittingBox.setBorder(titleSplitting);
 
         intSpinnerGradient = new SpinnerNumberModel(radiusGradient,0,10,1);
@@ -169,7 +176,7 @@ public class PreviewGui extends JPanel{
         Box filterBox = new Box(BoxLayout.Y_AXIS);
         TitledBorder titleFilter;
         blackline = BorderFactory.createLineBorder(Color.black);
-        titleFilter = BorderFactory.createTitledBorder(blackline, "Spot filter: size and circ.");
+        titleFilter = BorderFactory.createTitledBorder(blackline, "Filter spots: size and circ.");
         filterBox.setBorder(titleFilter);
 
         doubleSpinnerMinSize = new SpinnerNumberModel(minSizeSpot, 0.0,10000, 0.1);
@@ -191,7 +198,7 @@ public class PreviewGui extends JPanel{
         filterBox.add(lowCirc);
 
         doubleSpinnerHighCirc = new SpinnerNumberModel(highCirc, 0.0,1.0, 0.01);
-        String labelHighCirc = "Minimum spot size: ";
+        String labelHighCirc = "Maximum spot circ.: ";
         String unitHighCirc = "";
         Box highCirc = addLabeledSpinnerUnit(labelHighCirc , doubleSpinnerHighCirc , unitHighCirc );
         filterBox.add(highCirc);
@@ -370,7 +377,7 @@ public class PreviewGui extends JPanel{
         background.add(BorderLayout.SOUTH, saveButton);
         theFrame.getContentPane().add(background);
 
-        theFrame.setSize(900,500);
+        theFrame.setSize(1000,500);
         theFrame.setVisible(true);
 
     }
@@ -461,6 +468,12 @@ public class PreviewGui extends JPanel{
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Threshold: " + thresholdSpots);
 
+            // check if erosion is applied
+            boolean spotErosion;
+            if (erosionCheckBox.isSelected()) spotErosion = true;
+            else spotErosion = false;
+            IJ.log("Spot erosion: " + spotErosion);
+
             int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Gradient Radius: " + radiusGradient);
 
@@ -540,7 +553,7 @@ public class PreviewGui extends JPanel{
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
                         visualizer.spotVisualization( selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
-                                sigmaSpots, rollingSpots, thresholdSpots,
+                                sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
 
@@ -582,7 +595,7 @@ public class PreviewGui extends JPanel{
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
                         visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
-                                sigmaSpots, rollingSpots, thresholdSpots,
+                                sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
 
@@ -624,7 +637,7 @@ public class PreviewGui extends JPanel{
                     SegmentationVisualization visualizer = new SegmentationVisualization();
 
                     visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
-                            sigmaSpots, rollingSpots, thresholdSpots,
+                            sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                             radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                             calibration, setDisplayRange);
                 }
@@ -849,6 +862,12 @@ public class PreviewGui extends JPanel{
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Spot threshold: " + thresholdSpots);
 
+            // check if erosion is applied
+            boolean spotErosion;
+            if (erosionCheckBox.isSelected()) spotErosion = true;
+            else spotErosion = false;
+            IJ.log("Spot erosion: " + spotErosion);
+
             int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Spot gradient Radius: " + radiusGradient);
 
@@ -891,7 +910,8 @@ public class PreviewGui extends JPanel{
 
             writeToXml.xmlWriter(outputDir, projMethod,
                     sigmaLoG, prominence,
-                    sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+                    sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
+                    radiusGradient,
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
                     minSizeBack, maxSizeBack,
@@ -923,6 +943,14 @@ public class PreviewGui extends JPanel{
 
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Threshold: " + thresholdSpots);
+
+
+            // check if erosion is applied
+            boolean spotErosion;
+            if (erosionCheckBox.isSelected()) spotErosion = true;
+            else spotErosion = false;
+            IJ.log("Spot erosion: " + spotErosion);
+
 
             int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Gradient Radius: " + radiusGradient);
@@ -962,14 +990,16 @@ public class PreviewGui extends JPanel{
 
             writeToXml.xmlWriter(outputDir, projMethod,
                     sigmaLoG, prominence,
-                    sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+                    sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
+                    radiusGradient,
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
                     minSizeBack, maxSizeBack,
                     stimFrame, calibrationSetting, pxSizeMicron, frameRate);
 
-            BatchProcessor batch = new BatchProcessor(inputDir, outputDir, fileList,
-                    projMethod, sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, radiusGradient,
+            BatchProcessor batch = new BatchProcessor(inputDir, outputDir, fileList, projMethod,
+                    sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
+                    radiusGradient,
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
                     minSizeBack, maxSizeBack,
@@ -997,6 +1027,7 @@ public class PreviewGui extends JPanel{
         sigmaSpots = 1.0;
         rollingSpots = 30.0;
         thresholdSpots = "Triangle";
+        spotErosionSetting = false;
         radiusGradient = 3;
         minSizeSpot = 0.0;
         maxSizeSpot = 1000.0;
@@ -1017,7 +1048,7 @@ public class PreviewGui extends JPanel{
 
     PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                        String projectionMethod, double getSigmaLoG, double getProminence,
-                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots, int getRadiusGradient,
+                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots, boolean getSpotErosion, int getRadiusGradient,
                        double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
                        double getSigmaBackground, String getThresholdBackground,
                        double getMinSizePxBack, double getMaxSizePxBack,
@@ -1034,6 +1065,7 @@ public class PreviewGui extends JPanel{
         sigmaSpots = getSigmaSpots;
         rollingSpots = getRollingSpots;
         thresholdSpots = getThresholdSpots;
+        spotErosionSetting = getSpotErosion;
         radiusGradient = getRadiusGradient;
         minSizeSpot = getMinSizePxSpot;
         maxSizeSpot = getMaxSizePxSpot;
