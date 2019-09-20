@@ -59,10 +59,10 @@ class BatchProcessor {
 
                 batchImage.calibrate();
                 minSizePxSpot = Image.calculateMinSizePx(pxSizeMicron, minSizeSpot);
-                maxSizePxSpot = batchImage.calculateMaxSizePx(pxSizeMicron, maxSizeSpot);
+                maxSizePxSpot = Image.calculateMaxSizePx(pxSizeMicron, maxSizeSpot);
 
                 minSizePxBack = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                maxSizePxBack = batchImage.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                maxSizePxBack = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
 
                 IJ.log("Metadata will be overwritten.");
                 IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -73,10 +73,10 @@ class BatchProcessor {
                 Calibration calibration = imageToProcess.getCalibration();
                 Double pxSizeFromImage = calibration.pixelWidth;
                 minSizePxSpot = Image.calculateMinSizePx(pxSizeFromImage, minSizeSpot);
-                maxSizePxSpot = batchImage.calculateMaxSizePx(pxSizeFromImage, maxSizeSpot);
+                maxSizePxSpot = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeSpot);
 
                 minSizePxBack = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                maxSizePxBack = batchImage.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                maxSizePxBack = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                 IJ.log("Metadata will no be overwritten");
 
@@ -155,7 +155,10 @@ class BatchProcessor {
         backAnalyzer.analyze(testBack);
 
         // setup measurements
-        ResultsTable table;
+        ResultsTable table = new ResultsTable();
+        //TextWindow tableWindow = table.getResultsWindow();
+        //tableWindow.setSize(1,1);
+
         IJ.run("Set Measurements...", "area mean standard modal min integrated median redirect=None decimal=3");
 
         // loop over original image
@@ -168,6 +171,7 @@ class BatchProcessor {
             manager.runCommand(inputImage, "Select All");
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
+
             table.save(outputDir + inputImage.getShortTitle() + "_" + String.format("%03d", frame) + "_background.csv");
 
             if ( IJ.isResultsWindow() ){

@@ -12,15 +12,8 @@ import ij.IJ;
 import ij.ImageJ;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
 import ij.plugin.PlugIn;
-import org.scijava.Context;
-import org.scijava.log.*;
-import org.scijava.plugin.PluginInfo;
-
-import static org.scijava.log.LogService.*;
-
+import javafx.scene.effect.GaussianBlur;
 
 /**
  * pHluorin image analysis workflow
@@ -68,7 +61,6 @@ public class PHluorinJ_ implements PlugIn {
 		String testOut = "/home/schmiedc/Desktop/Projects/pHluorinPlugin_TS/Output/";
 
 		FileList getFileList = new FileList();
-
 		ArrayList<String> fileList = getFileList.getFileList(testDir);
 
 		for (String file : fileList) {

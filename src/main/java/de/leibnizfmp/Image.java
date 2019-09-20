@@ -5,6 +5,8 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.ZProjector;
 
+import java.io.File;
+
 public class Image {
 
     private String directory;
@@ -17,7 +19,7 @@ public class Image {
 
         // open a example pHlorin image
         IJ.log("Opening file: " + inputFile);
-        ImagePlus image = IJ.openImage(directory + inputFile);
+        ImagePlus image = IJ.openImage(directory + File.separator + inputFile);
 
         return image;
     }

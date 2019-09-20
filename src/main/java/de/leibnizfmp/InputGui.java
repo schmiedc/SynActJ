@@ -100,7 +100,7 @@ class InputGui {
 
     private static String checkTrailingSlash(String inputString) {
 
-        return inputString.endsWith("/") ? inputString : inputString + "/";
+        return inputString.endsWith(File.separator) ? inputString : inputString + File.separator;
     }
 
     public static class InputListener extends Component implements ActionListener {
@@ -194,14 +194,11 @@ class InputGui {
                 String inputFileString = inputFolder.toString();
                 String outputFileString = outputFolder.toString();
 
+                IJ.log("Processing directory: " + checkTrailingSlash(inputFileString ));
+                IJ.log("Saving to directory: " + checkTrailingSlash(outputFileString));
 
-                String newInputFile = checkTrailingSlash(inputFileString);
-                IJ.log("Processing directory: " + newInputFile);
-
-                String newOutputFile = checkTrailingSlash(outputFileString);
-                IJ.log("Saving to directory: " + newOutputFile);
-
-                ArrayList<String> fileList = getFileList.getFileList(newInputFile);
+                // generates the file list that is fed to the preview GUI
+                ArrayList<String> fileList = getFileList.getFileList(checkTrailingSlash(inputFileString));
 
                 if (settingsFile != null) {
 
@@ -214,7 +211,7 @@ class InputGui {
 
                         readMyXml.xmlReader(settingsFileString);
 
-                        PreviewGui previewGui = new PreviewGui(newInputFile, newOutputFile, fileList,
+                        PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString) , checkTrailingSlash(outputFileString), fileList,
                                 readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
                                 readMyXml.readSigmaSpots, readMyXml.readRollingSpots, readMyXml.readThresholdSpots, readMyXml.readRadiusGradient,
                                 readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,readMyXml.readLowCirc,readMyXml.readHighCirc,
@@ -252,7 +249,7 @@ class InputGui {
                 } else {
 
                     IJ.log("Did no find xml settings file using default values");
-                    PreviewGui previewGui = new PreviewGui(newInputFile, newOutputFile, fileList);
+                    PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString), checkTrailingSlash(outputFileString), fileList);
 
                     frame.setVisible(false);
                     previewGui.setUpGui();
