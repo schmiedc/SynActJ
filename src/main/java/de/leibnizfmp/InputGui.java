@@ -28,7 +28,7 @@ class InputGui {
         frame = new JFrame("Setup dialog");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         createUI(frame);
-        frame.setSize(560, 150);
+        frame.setSize(560, 200);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
@@ -67,7 +67,7 @@ class InputGui {
 
         JLabel settingsLabel = new JLabel("Settings file: ");
         settingsLabel.setPreferredSize(new Dimension(130, settingsLabel.getMinimumSize().height));
-        settingsFilePath = new JTextField("Choose a File");
+        settingsFilePath = new JTextField("Choose a File or leave empty");
         settingsFilePath.setPreferredSize(new Dimension(300, settingsFilePath.getMinimumSize().height));
         JButton settingButton = new JButton("Choose");
         settingButton.addActionListener(new SettingsListener());

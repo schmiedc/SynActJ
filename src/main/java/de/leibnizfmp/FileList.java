@@ -1,31 +1,43 @@
 package de.leibnizfmp;
 
+import ij.IJ;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class FileList {
 
+    // getFileList based on Files.walk
     ArrayList<String> getFileList(String inputDir) {
 
-        // needs to loop recursively through specified directory
-        // throws error if no files are found
         String suffix = "tif";
-        File folder = new File(inputDir);
-        File[] listOfFiles = folder.listFiles();
-        ArrayList<String> filesToProcess = new ArrayList<>();
+        List<String> results = null;
 
-        assert listOfFiles != null;
+        // opens a stream and walks through file tree of given path
+        try(Stream<Path> walk = Files.walk(Paths.get(inputDir))) {
 
-        for (File listOfFile : listOfFiles) {
+            // gets the filenames converts them to a string
+           results = walk.map(x -> x.getFileName().toString())
+                   // filters them for the suffix
+                   .filter(f -> f.endsWith(suffix))
+                   // puts results to a List
+                   .collect(Collectors.toList());
 
-            if (listOfFile.isFile() & listOfFile.toString().endsWith(suffix)) {
-                    filesToProcess.add(listOfFile.getName());
-
-            } else if (listOfFile.isDirectory()) {
-
-                System.out.println("Directory " + listOfFile.getName());
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("ERROR: files not found");
+            IJ.error("Error: no valid files found!");
         }
+
+        // casts list to arrayList
+        ArrayList<String> filesToProcess = new ArrayList<>(results);
 
         return filesToProcess;
 
