@@ -2,7 +2,6 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.io.LogStream;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.ParticleAnalyzer;
@@ -127,14 +126,14 @@ class BatchProcessor {
             manager.runCommand(inputImage, "Measure");
             table = ResultsTable.getResultsTable();
 
-            try {
+            try  {
 
                 table.save(outputDir + inputImage.getShortTitle().replace(File.separator, "_") + "_" + String.format("%03d", frame) + "_signal.csv");
 
-            } catch (IOException ex) {
+            } catch (Exception ex) {
 
                 ex.printStackTrace();
-                IJ.log("Could not save background results: " + inputImage.getShortTitle().replace(File.separator, "_"));
+                IJ.log("Could not save spot measurement results: " + inputImage.getShortTitle().replace(File.separator, "_"));
 
             }
 
@@ -192,7 +191,7 @@ class BatchProcessor {
             } catch (IOException ex) {
 
                 ex.printStackTrace();
-                IJ.log("Could not save background results: " + inputImage.getShortTitle().replace(File.separator, "_"));
+                IJ.log("Could not save background measurement results: " + inputImage.getShortTitle().replace(File.separator, "_"));
 
             }
 
