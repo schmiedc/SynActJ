@@ -7,9 +7,9 @@ import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 
-public class SegmentationVisualization {
+class SegmentationVisualization {
 
-    public void spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
+    void spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
                         double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots, boolean spotErosion,
                         int radiusGradient, int minSizePx, int maxSizePx, double lowCirc, double highCirc,
                         Calibration calibration, boolean setDisplayRange) {
@@ -51,7 +51,7 @@ public class SegmentationVisualization {
 
     }
 
-    public void backgroundVisualization(ImagePlus forBackSegmentation, double sigmaBackground, String thresholdBackground,
+    void backgroundVisualization(ImagePlus forBackSegmentation, double sigmaBackground, String thresholdBackground,
                         int minSizePx, int maxSizePx, ImagePlus originalImage, String titleOriginal,
                         Calibration calibration, boolean setDisplayRange) {
 

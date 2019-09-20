@@ -10,7 +10,9 @@ import ij.process.ByteProcessor;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 class BatchProcessor {
 
@@ -168,7 +170,7 @@ class BatchProcessor {
         backAnalyzer.analyze(testBack);
 
         // setup measurements
-        ResultsTable table = new ResultsTable();
+        ResultsTable table;
         //TextWindow tableWindow = table.getResultsWindow();
         //tableWindow.setSize(1,1);
 
@@ -211,6 +213,22 @@ class BatchProcessor {
 
         manager.close();
         IJ.log("Measuring intensities in background finished.");
+
+        IJ.selectWindow("Log");
+
+        try  {
+
+            String logName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
+            IJ.saveAs("Text", outputDir + File.separator + logName + "_Log.txt");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("WARNING: saving of log file failed");
+
+        }
+
+
     }
 
     BatchProcessor (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess) {

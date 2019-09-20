@@ -227,21 +227,21 @@ class InputGui {
                     } catch (ParserConfigurationException ex) {
 
                         ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
+                        IJ.log("ERROR: XML reader, Parser Configuration exception");
                         IJ.error("Please select a valid .xml or leave empty");
                         settingsFile = null;
 
                     } catch (IOException ex) {
 
                         ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
+                        IJ.log("ERROR: XML reader, IOException");
                         IJ.error("Please select a valid .xml or leave empty");
                         settingsFile = null;
 
                     } catch (SAXException ex) {
 
                         ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, input valid xml or leave empty");
+                        IJ.log("ERROR: XML reader, SAXException");
                         IJ.error("Please select a valid .xml or leave empty");
                         settingsFile = null;
 
