@@ -1076,7 +1076,8 @@ public class PreviewGui extends JPanel{
         fileList= filesToProcess;
 
         // Projection Method
-        projMethod = "median";
+        //projMethod = "median";
+        projMethod = "max";
 
         sigmaLoG = 0.5;
         prominence = 0.005;

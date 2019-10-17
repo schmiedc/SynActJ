@@ -48,6 +48,7 @@ class SegmentationVisualization {
         }
 
         originalImage.show();
+        //diffImage.show();
 
         manager.reset();
         manager.close();

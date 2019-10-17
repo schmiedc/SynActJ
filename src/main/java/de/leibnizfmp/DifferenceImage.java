@@ -24,7 +24,7 @@ public class DifferenceImage {
         ImagePlus impBefore = ZProjector.run(image,projMethod,startBefore,endBefore);
         ImagePlus impAfter = ZProjector.run(image,projMethod,startAfter,endAfter);
         ImageCalculator ic = new ImageCalculator();
-        ImagePlus impDiff = ic.run("Divide create", impAfter, impBefore );
+        ImagePlus impDiff = ic.run("Divide create 32-bit", impAfter, impBefore );
         IJ.log("Difference image created.");
 
         return impDiff;
