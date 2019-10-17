@@ -544,11 +544,33 @@ public class PreviewGui extends JPanel{
                         IJ.selectWindow(selectedFile);
                         setDisplayRange = false;
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
-                        calibration = selectedImage.getCalibration();
 
-                        Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        int maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        int minSizePx;
+                        int maxSizePx;
+
+                        if (calibrationSetting) {
+
+                            calibration = previewImage.calibrate();
+                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                            IJ.log("Metadata will be overwritten.");
+                            IJ.log("Pixel size set to: " + pxSizeMicron);
+                            IJ.log("Frame rate set to: " + frameRate);
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
+
+
+                        } else {
+
+                            originalImage = previewImage.openImage(selectedFile);
+                            calibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = calibration.pixelWidth;
+                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+
+                            IJ.log("Metadata will no be overwritten");
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
+
+                        }
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -570,6 +592,7 @@ public class PreviewGui extends JPanel{
                         int minSizePx;
                         int maxSizePx;
 
+                        // check if calibration is overwritten or used from original image
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
@@ -579,6 +602,7 @@ public class PreviewGui extends JPanel{
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
                             IJ.log("Frame rate set to: " + frameRate);
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
 
                         } else {
@@ -589,6 +613,7 @@ public class PreviewGui extends JPanel{
                             maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                             IJ.log("Metadata will no be overwritten");
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
                         }
 
@@ -621,6 +646,7 @@ public class PreviewGui extends JPanel{
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
                         IJ.log("Frame rate set to: " + frameRate);
+                        IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
 
                     } else {
@@ -631,6 +657,7 @@ public class PreviewGui extends JPanel{
                         maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
 
                         IJ.log("Metadata will no be overwritten");
+                        IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
                     }
 
@@ -722,18 +749,43 @@ public class PreviewGui extends JPanel{
 
                         IJ.log("Selected file is already open");
 
+
                         IJ.selectWindow(selectedFile);
                         ImagePlus selectedImage = WindowManager.getCurrentWindow().getImagePlus();
 
                         setDisplayRange = false;
-                        calibration = selectedImage.getCalibration();
+
                         String titleOriginal = selectedImage.getTitle();
 
-                        ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
+                        int minSizePx;
+                        int maxSizePx;
 
-                        Double pxSizeFromImage = calibration.pixelWidth;
-                        int minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        int maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        if (calibrationSetting) {
+
+                            calibration = previewImage.calibrate();
+                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+
+                            IJ.log("Metadata will be overwritten.");
+                            IJ.log("Pixel size set to: " + pxSizeMicron);
+                            IJ.log("Frame rate set to: " + frameRate);
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
+
+
+                        } else {
+
+                            ImagePlus originalImage = previewImage.openImage(selectedFile);
+                            calibration = originalImage.getCalibration();
+                            Double pxSizeFromImage = calibration.pixelWidth;
+                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+
+                            IJ.log("Metadata will no be overwritten");
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
+
+                        }
+
+                        ImagePlus forBackSegmentation = previewImage.projectImage(selectedImage, "max");
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
@@ -765,6 +817,7 @@ public class PreviewGui extends JPanel{
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
                             IJ.log("Frame rate set to: " + frameRate);
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
 
                         } else {
@@ -775,6 +828,7 @@ public class PreviewGui extends JPanel{
                             maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                             IJ.log("Metadata will no be overwritten");
+                            IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
                         }
 
@@ -810,6 +864,7 @@ public class PreviewGui extends JPanel{
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
                         IJ.log("Frame rate set to: " + frameRate);
+                        IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
                     } else {
 
@@ -819,6 +874,7 @@ public class PreviewGui extends JPanel{
                         maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
 
                         IJ.log("Metadata will no be overwritten");
+                        IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
 
                     }
 

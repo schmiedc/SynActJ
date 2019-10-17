@@ -14,6 +14,9 @@ class SegmentationVisualization {
                         int radiusGradient, int minSizePx, int maxSizePx, double lowCirc, double highCirc,
                         Calibration calibration, boolean setDisplayRange) {
 
+        // set the specified calibration
+        originalImage.setCalibration(calibration);
+
         DifferenceImage processImage = new DifferenceImage(projMethod);
         ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
 
@@ -30,8 +33,8 @@ class SegmentationVisualization {
         manager.moveRoisToOverlay(watershed);
         Overlay overlay = watershed.getOverlay();
         overlay.drawLabels(false);
+
         originalImage.setOverlay(overlay);
-        originalImage.setCalibration(calibration);
 
         if (setDisplayRange) {
 
@@ -55,6 +58,9 @@ class SegmentationVisualization {
                         int minSizePx, int maxSizePx, ImagePlus originalImage, String titleOriginal,
                         Calibration calibration, boolean setDisplayRange) {
 
+        // set the specified calibration
+        originalImage.setCalibration(calibration);
+
         BackgroundSegmenter back = new BackgroundSegmenter();
         ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
 
@@ -70,7 +76,6 @@ class SegmentationVisualization {
 
         originalImage.setOverlay(overlay);
         originalImage.setTitle(titleOriginal);
-        originalImage.setCalibration(calibration);
 
         if (setDisplayRange) {
 
