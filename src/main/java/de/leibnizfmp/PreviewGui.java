@@ -6,17 +6,23 @@ import ij.WindowManager;
 import ij.measure.Calibration;
 import ij.plugin.Commands;
 import org.scijava.util.ArrayUtils;
+import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Queue;
 
 public class PreviewGui extends JPanel{
 
@@ -54,15 +60,15 @@ public class PreviewGui extends JPanel{
     private double pxSizeMicron;
     private double frameRate;
 
-    private boolean setDisplayRange = false;
+    private static File settingsFile = null;
 
-    // creates the panel that contains the buttons boxlayout vertical aligned
-    private JPanel buttonBox = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    private boolean setDisplayRange = false;
 
     // tabbed pane
     private JTabbedPane tabbedPane = new JTabbedPane();
 
     // settings for spot segmentation
+    Box boxSpotSeg = new Box(BoxLayout.Y_AXIS);
     private JList list;
     private SpinnerModel doubleSpinnerLoGSpot;
     private SpinnerModel doubleSpinnerProminenceSpot;
@@ -77,12 +83,15 @@ public class PreviewGui extends JPanel{
     private SpinnerModel doubleSpinnerHighCirc;
 
     // settings for background segmentation
+    Box boxBackground = new Box(BoxLayout.Y_AXIS);
     private SpinnerModel doubleSpinBack1;
     private JComboBox<String> thresholdListBack;
     private SpinnerModel doubleSpinBack2;
     private SpinnerModel doubleSpinBack3;
 
     // experimental settings
+    Box batchBox = new Box(BoxLayout.Y_AXIS);
+    Box boxSettings = new Box(BoxLayout.Y_AXIS);
     private SpinnerModel doubleSpinnerPixelSize;
     private JCheckBox checkCalibration;
     private SpinnerModel doubleSpinnerFrameRate;
@@ -91,9 +100,6 @@ public class PreviewGui extends JPanel{
     private Border blackline;
 
     private void setUpSpotTab() {
-
-        // Setup Interactions for Segment Boutons
-        Box boxSpotSeg = new Box(BoxLayout.Y_AXIS);
 
         //box with titled borders
         Box detectionBox = new Box(BoxLayout.Y_AXIS);
@@ -210,14 +216,9 @@ public class PreviewGui extends JPanel{
         previewSpot.addActionListener(new MyPreviewSpotListener());
         boxSpotSeg.add(previewSpot);
 
-        // create tabbed panes
-        tabbedPane.addTab("Boutons", boxSpotSeg);
     }
 
     private void setUpBackTab() {
-
-        // Setup Interactions for Segment Background
-        Box boxBackground = new Box(BoxLayout.Y_AXIS);
 
         // box with titled borders
         Box segmentationBox = new Box(BoxLayout.Y_AXIS);
@@ -274,17 +275,13 @@ public class PreviewGui extends JPanel{
         previewButton.addActionListener(new MyPreviewBackListener());
         boxBackground.add(previewButton);
 
-        tabbedPane.addTab("Background", boxBackground);
-
     }
 
     private void setUpSettingsTab(){
-
-        // Setup Interactions for experimental settings
-        Box boxSettings = new Box(BoxLayout.Y_AXIS);
+        // creates the panel that contains the buttons boxlayout vertical aligned
 
         JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
-        buttonBox.add(settingsLabel);
+        boxSettings.add(settingsLabel);
 
         doubleSpinnerPixelSize = new SpinnerNumberModel(pxSizeMicron, 0.000,1.000, 0.001);
         String pixelSizeLabel = "Pixel size: ";
@@ -308,8 +305,10 @@ public class PreviewGui extends JPanel{
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
         boxSettings.add(boxStimulationFrame);
 
-        buttonBox.add(boxSettings);
+        JButton batchButton = new JButton("Batch Process");
+        batchButton.addActionListener(new MyBatchListener());
 
+        boxSettings.add(batchButton);
     }
 
     private JScrollPane setUpFileList(ArrayList<String> aListOfFiles) {
@@ -333,15 +332,6 @@ public class PreviewGui extends JPanel{
         return scroller;
     }
 
-    private void setUpButtons() {
-
-        JButton batchButton = new JButton("Batch Process");
-        batchButton.addActionListener(new MyBatchListener());
-        buttonBox.add(batchButton);
-        buttonBox.setPreferredSize(new Dimension(270, 100));
-
-    }
-
     void setUpGui() {
 
         JFrame theFrame;
@@ -358,23 +348,42 @@ public class PreviewGui extends JPanel{
         background.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         setUpSpotTab();
+        // create tabbed panes
+        tabbedPane.addTab("Boutons", boxSpotSeg);
+
         setUpBackTab();
+        tabbedPane.addTab("Background", boxBackground);
+
         setUpSettingsTab();
+        batchBox.add(boxSettings);
+
         JScrollPane scroller = setUpFileList(fileList);
-        setUpButtons();
+
 
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setPreferredSize(new Dimension(290, 100));
 
+        // Setup Interactions for Segment Boutons
+        Box saveLoadBox = new Box(BoxLayout.X_AXIS);
+
         // setup Buttons
         JButton  saveButton = new JButton("Save settings");
         saveButton.addActionListener(new MySaveListener());
+        saveLoadBox.add(saveButton);
+
+        JButton loadButton = new JButton("Load settings");
+        loadButton.addActionListener(new MyLoadListener());
+        saveLoadBox.add(loadButton);
+
+        JButton resetButton = new JButton("Reset Processing Settings");
+        resetButton.addActionListener(new MyResetListener());
+        saveLoadBox.add(resetButton);
 
         // add boxes to panel and frame
         background.add(BorderLayout.WEST, tabbedPane);
-        background.add(BorderLayout.EAST, buttonBox);
+        background.add(BorderLayout.EAST, batchBox);
         background.add(BorderLayout.CENTER, scroller);
-        background.add(BorderLayout.SOUTH, saveButton);
+        background.add(BorderLayout.SOUTH, saveLoadBox);
         theFrame.getContentPane().add(background);
 
         theFrame.setSize(1000,500);
@@ -973,6 +982,135 @@ public class PreviewGui extends JPanel{
                     minSizeBack, maxSizeBack,
                     stimFrame, calibrationSetting, pxSizeMicron, frameRate);
 
+        }
+    }
+
+    public class MyLoadListener extends Component implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            FileNameExtensionFilter xmlfilter = new FileNameExtensionFilter(
+                    "xml files (*.xml)", "xml");
+
+            JFileChooser settingsFileChooser = new JFileChooser();
+            settingsFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            settingsFileChooser.setFileFilter(xmlfilter);
+
+            int option = settingsFileChooser.showOpenDialog(this);
+
+            if (option == JFileChooser.APPROVE_OPTION) {
+
+                settingsFile = settingsFileChooser.getSelectedFile();
+                String settingsFileString = settingsFile.toString();
+                IJ.log("Loading xml: " + settingsFileString);
+
+                try {
+
+                    XmlHandler readMyXml = new XmlHandler();
+                    readMyXml.xmlReader(settingsFileString);
+
+                    projMethod = readMyXml.readProjMethod;
+
+                    sigmaLoG = readMyXml.readSigmaLoG;
+                    prominence = readMyXml.readProminence;
+                    sigmaSpots = readMyXml.readSigmaSpots;
+                    rollingSpots = readMyXml.readRollingSpots;
+                    thresholdSpots = readMyXml.readThresholdSpots;
+                    spotErosionSetting = readMyXml.readSpotErosion;
+                    radiusGradient = readMyXml.readRadiusGradient;
+                    minSizeSpot = readMyXml.readMinSizeSpot;
+                    maxSizeSpot = readMyXml.readMaxSizeSpot;
+                    lowCirc = readMyXml.readLowCirc;
+                    highCirc = readMyXml.readHighCirc;
+
+                    sigmaBackground = readMyXml.readSigmaBackground;
+                    thresholdBackground = readMyXml.readThresholdBackground;
+                    minSizeBack = readMyXml.readMinSizeBack;
+                    maxSizeBack =  readMyXml.readMaxSizeBack;
+
+                    calibrationSetting = readMyXml.readCalibrationSetting;
+                    stimFrame = readMyXml.readStimFrame;
+                    pxSizeMicron = readMyXml.readPxSizeMicron;
+                    frameRate = readMyXml.readFrameRate;
+
+
+                } catch (ParserConfigurationException ex) {
+
+                    ex.printStackTrace();
+                    IJ.log("ERROR: XML reader, Parser Configuration exception");
+                    IJ.error("Please select a valid .xml or leave empty");
+                    settingsFile = null;
+
+                } catch (IOException ex) {
+
+                    ex.printStackTrace();
+                    IJ.log("ERROR: XML reader, IOException");
+                    IJ.error("Please select a valid .xml or leave empty");
+                    settingsFile = null;
+
+                } catch (SAXException ex) {
+
+                    ex.printStackTrace();
+                    IJ.log("ERROR: XML reader, SAXException");
+                    IJ.error("Please select a valid .xml or leave empty");
+                    settingsFile = null;
+
+                }
+
+                boxSpotSeg.removeAll();
+                setUpSpotTab();
+                tabbedPane.addTab("Boutons", boxSpotSeg);
+
+                boxBackground.removeAll();
+                setUpBackTab();
+                tabbedPane.addTab("Background", boxBackground);
+
+                boxSettings.removeAll();
+                setUpSettingsTab();
+                batchBox.add(boxSettings);
+
+            } else {
+
+                settingsFile = null;
+                IJ.error("Invalid settings file");
+
+            }
+        }
+    }
+
+    public class MyResetListener extends Component implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            // Projection Method
+            //projMethod = "median";
+            projMethod = "max";
+
+            sigmaLoG = 0.5;
+            prominence = 0.005;
+            sigmaSpots = 1.0;
+            rollingSpots = 30.0;
+            thresholdSpots = "Triangle";
+            spotErosionSetting = false;
+            radiusGradient = 3;
+            minSizeSpot = 0.0;
+            maxSizeSpot = 1000.0;
+            lowCirc = 0.0;
+            highCirc = 1.0;
+
+            sigmaBackground = 4.0;
+            thresholdBackground = "MinError";
+            minSizeBack = 0.0;
+            maxSizeBack =  10000.0;
+
+            boxSpotSeg.removeAll();
+            setUpSpotTab();
+            // create tabbed panes
+            tabbedPane.addTab("Boutons", boxSpotSeg);
+
+            boxBackground.removeAll();
+            setUpBackTab();
+            tabbedPane.addTab("Background", boxBackground);
         }
     }
 

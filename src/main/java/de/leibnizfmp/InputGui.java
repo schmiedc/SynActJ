@@ -17,10 +17,10 @@ class InputGui {
 
     private static JTextField inputDir;
     private static JTextField outputDir;
-    private static JTextField settingsFilePath;
     private static File inputFolder = null;
     private static File outputFolder = null;
     private static File settingsFile = null;
+    private static JTextField settingsFilePath;
     private static JFrame frame;
 
     void createWindow() {
