@@ -13,14 +13,14 @@ import trainableSegmentation.ImageScience;
 
 import static inra.ijpb.morphology.Morphology.externalGradient;
 
-public class SpotSegmenter {
+class SpotSegmenter {
 
-    public ByteProcessor detectSpots(ImagePlus diffImage, double simgaLoG, double prominence) {
+    ByteProcessor detectSpots(ImagePlus diffImage, double simgaLoG, double prominence) {
 
-        IJ.log("Applying a LoG filter with sigma: " + Double.toString(simgaLoG));
+        IJ.log("Applying a LoG filter with sigma: " + simgaLoG);
         ImagePlus logImage = ImageScience.computeLaplacianImage(simgaLoG, diffImage);
 
-        IJ.log("Detecting Minima with prominence: " + Double.toString(prominence));
+        IJ.log("Detecting Minima with prominence: " + prominence);
         ImageProcessor getMaxima = logImage.getProcessor().convertToFloatProcessor();
 
         getMaxima.invert();
@@ -32,14 +32,14 @@ public class SpotSegmenter {
 
     }
 
-    public ByteProcessor segmentSpots(ImagePlus image, double gauss, double rolling, String threshold, boolean spotErosion){
+    ByteProcessor segmentSpots(ImagePlus image, double gauss, double rolling, String threshold, boolean spotErosion){
 
         ImageProcessor processImage = image.getProcessor().convertToShortProcessor();
 
-        IJ.log("Applying Guassian blur with sigma: " + Double.toString(gauss));
+        IJ.log("Applying Guassian blur with sigma: " + gauss);
         processImage.blurGaussian(gauss);
 
-        IJ.log("Background subtraction with radius: " + Double.toString(rolling));
+        IJ.log("Background subtraction with radius: " + rolling);
         BackgroundSubtracter backSubtract = new BackgroundSubtracter();
         backSubtract.rollingBallBackground(processImage, rolling, false, false, false, false, false);
 
@@ -64,7 +64,7 @@ public class SpotSegmenter {
 
     }
 
-    public ImagePlus watershed(ImagePlus inputImage, ByteProcessor marker, ByteProcessor mask, int radius){
+    ImagePlus watershed(ImagePlus inputImage, ByteProcessor marker, ByteProcessor mask, int radius){
 
         IJ.log("Performing watershed object separation...");
         Strel strel = Strel.Shape.DISK.fromRadius( radius );

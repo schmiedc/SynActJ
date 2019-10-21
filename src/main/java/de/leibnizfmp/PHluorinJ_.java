@@ -13,7 +13,6 @@ import ij.ImageJ;
 
 import java.util.ArrayList;
 import ij.plugin.PlugIn;
-import javafx.scene.effect.GaussianBlur;
 
 /**
  * pHluorin image analysis workflow

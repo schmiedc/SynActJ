@@ -5,14 +5,14 @@ import ij.ImagePlus;
 import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
 
-public class DifferenceImage {
+class DifferenceImage {
 
-    String projMethod;
-    int frameUp;
-    int frameDown;
+    private String projMethod;
+    private int frameUp;
+    private int frameDown;
 
 
-    public ImagePlus createDiffImage(ImagePlus image, int stimulationFrame) {
+    ImagePlus createDiffImage(ImagePlus image, int stimulationFrame) {
 
         int startBefore = stimulationFrame - frameDown;
         int endBefore = stimulationFrame - 1;
@@ -31,7 +31,7 @@ public class DifferenceImage {
 
     }
 
-    public DifferenceImage(){
+    DifferenceImage(){
 
         projMethod = "median";
         frameUp = 4;
@@ -41,7 +41,7 @@ public class DifferenceImage {
 
     }
 
-    public DifferenceImage(String method){
+    DifferenceImage(String method){
 
         projMethod = method;
         frameUp = 4;
@@ -50,7 +50,7 @@ public class DifferenceImage {
 
     }
 
-    public DifferenceImage (String method, int downProj, int upProj) {
+    DifferenceImage (String method, int downProj, int upProj) {
 
         projMethod = method;
         frameDown = downProj;

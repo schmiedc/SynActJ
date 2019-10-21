@@ -1,9 +1,6 @@
 package de.leibnizfmp;
 
 import ij.IJ;
-
-import javax.sound.midi.SysexMessage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

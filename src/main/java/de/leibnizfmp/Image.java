@@ -42,27 +42,23 @@ public class Image {
 
     ImagePlus projectImage(ImagePlus image, String method) {
 
-        ImagePlus maxProjectImage = ZProjector.run(image, method);
-
-        return maxProjectImage;
+        return ZProjector.run(image, method);
 
     }
 
     static int calculateMinSizePx(Double pxSize, Double minSize) {
 
         double pxArea = pxSize * pxSize;
-        int minSizePx = (int)Math.round(minSize / pxArea);
 
-        return minSizePx;
+        return (int)Math.round(minSize / pxArea);
 
     }
 
     static int calculateMaxSizePx(Double pxSize, Double maxSize) {
 
         double pxArea = pxSize * pxSize;
-        int maxSizePx = (int)Math.round(maxSize  / pxArea);
 
-        return maxSizePx;
+        return (int)Math.round(maxSize  / pxArea);
 
     }
 
