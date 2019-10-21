@@ -56,8 +56,8 @@ public class PHluorinJ_ implements PlugIn {
 		new ImageJ();
 
 		// show something in the status bar
-		String testDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/Test_Kristine/";
-		String testOut = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/TestOut/";
+		String testDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/NewTestIn/";
+		String testOut = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/NewTestOut/";
 
 		FileList getFileList = new FileList();
 		ArrayList<String> fileList = getFileList.getFileList(testDir);

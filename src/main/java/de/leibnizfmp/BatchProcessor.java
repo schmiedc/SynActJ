@@ -2,6 +2,7 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.io.FileSaver;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
 import ij.plugin.filter.ParticleAnalyzer;
@@ -50,6 +51,8 @@ class BatchProcessor {
         int minSizePxBack;
         int maxSizePxBack;
 
+        Calibration calibration;
+
         IJ.showStatus("Running pHlourin Batch processing...");
 
         for (String image : fileList) {
@@ -62,7 +65,9 @@ class BatchProcessor {
 
             if (calibrationSetting) {
 
-                batchImage.calibrate();
+                calibration = batchImage.calibrate();
+
+                imageToProcess.setCalibration(calibration);
                 minSizePxSpot = Image.calculateMinSizePx(pxSizeMicron, minSizeSpot);
                 maxSizePxSpot = Image.calculateMaxSizePx(pxSizeMicron, maxSizeSpot);
 
@@ -75,7 +80,7 @@ class BatchProcessor {
 
             } else {
 
-                Calibration calibration = imageToProcess.getCalibration();
+                calibration = imageToProcess.getCalibration();
                 Double pxSizeFromImage = calibration.pixelWidth;
                 minSizePxSpot = Image.calculateMinSizePx(pxSizeFromImage, minSizeSpot);
                 maxSizePxSpot = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeSpot);
@@ -110,9 +115,26 @@ class BatchProcessor {
 
         ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-        RoiManager manager = new RoiManager();
+        RoiManager manager = new RoiManager(false);
+        ParticleAnalyzer.setRoiManager(manager);
         ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePxSpot, maxSizePxSpot, lowCirc, highCirc );
         analyzer.analyze(watershed);
+
+        FileSaver saveDiffImage = new FileSaver(diffImage);
+
+        try {
+
+            manager.runCommand("Save", outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_spot.zip");
+            saveDiffImage.saveAsTiff( outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_spot.tif");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("Unable to save image");
+
+        }
+
+
 
         // setup measurements
         ResultsTable table;
@@ -163,11 +185,26 @@ class BatchProcessor {
         BackgroundSegmenter back = new BackgroundSegmenter();
         ByteProcessor background = back.segmentBackground(inputImage, sigmaBackground, thresholdBackground);
 
-        RoiManager manager = new RoiManager();
+        RoiManager manager = new RoiManager(false);
+        ParticleAnalyzer.setRoiManager(manager);
         ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePxBack, maxSizePxBack);
 
         ImagePlus testBack = new ImagePlus("test", background);
         backAnalyzer.analyze(testBack);
+
+        FileSaver saveDiffImage = new FileSaver(inputImage);
+
+        try {
+
+            manager.runCommand("Save", outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_back.zip");
+            saveDiffImage.saveAsTiff(outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_background.tif");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("Unable to save image");
+
+        }
 
         // setup measurements
         ResultsTable table;
@@ -301,6 +338,5 @@ class BatchProcessor {
         frameRate = setFrameRate;
 
     }
-
 
 }
