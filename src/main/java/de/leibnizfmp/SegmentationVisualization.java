@@ -30,11 +30,9 @@ class SegmentationVisualization {
         ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePx, maxSizePx, lowCirc, highCirc );
         analyzer.analyze(watershed);
 
-        manager.moveRoisToOverlay(watershed);
-        Overlay overlay = watershed.getOverlay();
+        manager.moveRoisToOverlay(originalImage);
+        Overlay overlay = originalImage.getOverlay();
         overlay.drawLabels(false);
-
-        originalImage.setOverlay(overlay);
 
         if (setDisplayRange) {
 
@@ -48,7 +46,6 @@ class SegmentationVisualization {
         }
 
         originalImage.show();
-        //diffImage.show();
 
         manager.reset();
         manager.close();
@@ -71,11 +68,9 @@ class SegmentationVisualization {
         ImagePlus testBack = new ImagePlus("test", background);
         backAnalyzer.analyze(testBack);
 
-        manager.moveRoisToOverlay(testBack);
-        Overlay overlay = testBack.getOverlay();
+        manager.moveRoisToOverlay(originalImage);
+        Overlay overlay = originalImage.getOverlay();
         overlay.drawLabels(false);
-
-        originalImage.setOverlay(overlay);
         originalImage.setTitle(titleOriginal);
 
         if (setDisplayRange) {
