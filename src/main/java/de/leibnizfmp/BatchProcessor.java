@@ -102,6 +102,70 @@ class BatchProcessor {
         IJ.showStatus("pHlourin Batch processing finished!");
         IJ.log("Finished batch Processing");
 
+        IJ.selectWindow("Log");
+
+        try  {
+
+            String logName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
+            IJ.saveAs("Text", outputDir + File.separator + logName + "_Log.txt");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("WARNING: saving of log file failed");
+
+        }
+
+    }
+
+    private void measureROI(ImagePlus imageMeasure, ImagePlus binaryImage, String saveDir, ParticleAnalyzer particleAnalyzer, String measureName) {
+
+        // setup ROI manager
+        RoiManager manager = new RoiManager(false);
+        ParticleAnalyzer.setRoiManager(manager);
+
+        // setup measurements
+        IJ.run("Set Measurements...", "area mean standard modal min integrated median redirect=None decimal=3");
+
+        // get ROIs
+        particleAnalyzer.analyze(binaryImage);
+
+        // save ROIs
+        try {
+
+            manager.runCommand("Save", saveDir + File.separator + imageMeasure.getShortTitle().replace(File.separator, "_") + "_" + measureName + ".zip");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("Unable to save ROI(s)");
+
+         }
+
+        // get count of ROIs
+        int roiCount = manager.getCount();
+        IJ.log("There are " + roiCount + " ROI(s) for " + measureName);
+
+        for (int roi = 0; roi <= roiCount; roi++ ) {
+
+            manager.select(roi);
+            ResultsTable results = manager.multiMeasure(imageMeasure);
+
+            try  {
+
+                results.saveAs(saveDir + imageMeasure.getShortTitle().replace(File.separator, "_") + "_Roi-" + String.format("%03d", roi) + "_" + measureName + ".csv");
+
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+                IJ.log("Could not save spot measurement results: " + imageMeasure.getShortTitle().replace(File.separator, "_"));
+
+            }
+
+        }
+
+        IJ.log("Measuring intensities for " + measureName + " finished.");
+
     }
 
     private void spotAnalysis(ImagePlus inputImage, int minSizePxSpot, int maxSizePxSpot) {
@@ -115,16 +179,13 @@ class BatchProcessor {
 
         ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-        RoiManager manager = new RoiManager(false);
-        ParticleAnalyzer.setRoiManager(manager);
         ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePxSpot, maxSizePxSpot, lowCirc, highCirc );
-        analyzer.analyze(watershed);
+        measureROI(inputImage, watershed, outputDir, analyzer, "Spot");
 
         FileSaver saveDiffImage = new FileSaver(diffImage);
 
         try {
 
-            manager.runCommand("Save", outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_spot.zip");
             saveDiffImage.saveAsTiff( outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_spot.tif");
 
         } catch (Exception ex) {
@@ -134,134 +195,28 @@ class BatchProcessor {
 
         }
 
-
-
-        // setup measurements
-        ResultsTable table;
-        IJ.run("Set Measurements...", "area mean standard modal min integrated median redirect=None decimal=3");
-
-        // loop over original image
-        int frameNumber = inputImage.getNFrames();
-        IJ.log("There are " + frameNumber + " frames");
-
-        for (int frame = 1; frame <= frameNumber; frame++ ) {
-
-            inputImage.setT(frame);
-            manager.runCommand(inputImage, "Select All");
-            manager.runCommand(inputImage, "Measure");
-            table = ResultsTable.getResultsTable();
-
-            try  {
-
-                table.save(outputDir + inputImage.getShortTitle().replace(File.separator, "_") + "_" + String.format("%03d", frame) + "_signal.csv");
-
-            } catch (Exception ex) {
-
-                ex.printStackTrace();
-                IJ.log("Could not save spot measurement results: " + inputImage.getShortTitle().replace(File.separator, "_"));
-
-            }
-
-            if ( IJ.isResultsWindow() ){
-
-                IJ.selectWindow("Results");
-                IJ.run("Close");
-
-            }
-
-        }
-
-        if ( IJ.isResultsWindow() ){
-            IJ.selectWindow("Results");
-            IJ.run("Close");
-        }
-
-        manager.close();
-        IJ.log("Measuring intensities in spots finished.");
     }
 
     private void backgroundAnalysis(ImagePlus inputImage, int minSizePxBack, int maxSizePxBack) {
 
         BackgroundSegmenter back = new BackgroundSegmenter();
         ByteProcessor background = back.segmentBackground(inputImage, sigmaBackground, thresholdBackground);
+        ImagePlus backgroundImage = new ImagePlus("background", background);
 
-        RoiManager manager = new RoiManager(false);
-        ParticleAnalyzer.setRoiManager(manager);
         ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePxBack, maxSizePxBack);
 
-        ImagePlus testBack = new ImagePlus("test", background);
-        backAnalyzer.analyze(testBack);
+        measureROI(inputImage, backgroundImage, outputDir, backAnalyzer, "background");
 
-        FileSaver saveDiffImage = new FileSaver(inputImage);
+        FileSaver saveBackImage = new FileSaver(inputImage);
 
         try {
 
-            manager.runCommand("Save", outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_back.zip");
-            saveDiffImage.saveAsTiff(outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_background.tif");
+            saveBackImage.saveAsTiff(outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_background.tif");
 
         } catch (Exception ex) {
 
             ex.printStackTrace();
             IJ.log("Unable to save image");
-
-        }
-
-        // setup measurements
-        ResultsTable table;
-        //TextWindow tableWindow = table.getResultsWindow();
-        //tableWindow.setSize(1,1);
-
-        IJ.run("Set Measurements...", "area mean standard modal min integrated median redirect=None decimal=3");
-
-        // loop over original image
-        int frameNumber = inputImage.getNFrames();
-        IJ.log("There are " + frameNumber + " frames");
-
-        for (int frame = 1; frame <= frameNumber; frame++ ) {
-
-            inputImage.setT(frame);
-            manager.runCommand(inputImage, "Select All");
-            manager.runCommand(inputImage, "Measure");
-            table = ResultsTable.getResultsTable();
-
-            try  {
-
-                table.saveAs(outputDir + inputImage.getShortTitle().replace(File.separator, "_") + "_" + String.format("%03d", frame) + "_background.csv");
-
-            } catch (IOException ex) {
-
-                ex.printStackTrace();
-                IJ.log("Could not save background measurement results: " + inputImage.getShortTitle().replace(File.separator, "_"));
-
-            }
-
-
-            if ( IJ.isResultsWindow() ){
-                IJ.selectWindow("Results");
-                IJ.run("Close");
-            }
-
-        }
-
-        if ( IJ.isResultsWindow() ){
-            IJ.selectWindow("Results");
-            IJ.run("Close");
-        }
-
-        manager.close();
-        IJ.log("Measuring intensities in background finished.");
-
-        IJ.selectWindow("Log");
-
-        try  {
-
-            String logName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
-            IJ.saveAs("Text", outputDir + File.separator + logName + "_Log.txt");
-
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-            IJ.log("WARNING: saving of log file failed");
 
         }
 
