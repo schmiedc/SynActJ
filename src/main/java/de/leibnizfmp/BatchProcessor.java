@@ -10,7 +10,6 @@ import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

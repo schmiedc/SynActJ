@@ -16,6 +16,7 @@ class SegmentationVisualization {
 
         // set the specified calibration
         originalImage.setCalibration(calibration);
+        originalImage.setOverlay(null);
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
         ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
@@ -58,6 +59,7 @@ class SegmentationVisualization {
 
         // set the specified calibration
         originalImage.setCalibration(calibration);
+        originalImage.setOverlay(null);
 
         BackgroundSegmenter back = new BackgroundSegmenter();
         ByteProcessor background = back.segmentBackground(forBackSegmentation, sigmaBackground, thresholdBackground);
