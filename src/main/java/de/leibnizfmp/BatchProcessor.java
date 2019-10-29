@@ -129,42 +129,52 @@ class BatchProcessor {
         // get ROIs
         particleAnalyzer.analyze(binaryImage);
 
-        // save ROIs
-        try {
-
-            manager.runCommand("Save", saveDir + File.separator + imageMeasure.getShortTitle().replace(File.separator, "_") + "_" + measureName + ".zip");
-
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-            IJ.log("Unable to save ROI(s)");
-
-         }
 
         // get count of ROIs
+
         int roiCount = manager.getCount();
         IJ.log("There are " + roiCount + " ROI(s) for " + measureName);
 
-        for (int roi = 0; roi <= roiCount; roi++ ) {
+        if (roiCount == 0) {
 
-            manager.select(roi);
-            ResultsTable results = manager.multiMeasure(imageMeasure);
+            IJ.log("WARNING: Skipping Measurements for " + measureName);
 
-            try  {
+        } else {
 
-                results.saveAs(saveDir + imageMeasure.getShortTitle().replace(File.separator, "_") + "_Roi-" + String.format("%03d", roi) + "_" + measureName + ".csv");
+            // save ROIs
+            try {
+
+                manager.runCommand("Save", saveDir + File.separator + imageMeasure.getShortTitle().replace(File.separator, "_") + "_" + measureName + ".zip");
 
             } catch (Exception ex) {
 
                 ex.printStackTrace();
-                IJ.log("Could not save spot measurement results: " + imageMeasure.getShortTitle().replace(File.separator, "_"));
+                IJ.log("Unable to save ROI(s)");
 
             }
 
+
+            for (int roi = 0; roi <= roiCount; roi++) {
+
+                manager.select(roi);
+                ResultsTable results = manager.multiMeasure(imageMeasure);
+
+                try {
+
+                    results.saveAs(saveDir + imageMeasure.getShortTitle().replace(File.separator, "_") + "_Roi-" + String.format("%03d", roi) + "_" + measureName + ".csv");
+
+                } catch (Exception ex) {
+
+                    ex.printStackTrace();
+                    IJ.log("Could not save spot measurement results: " + imageMeasure.getShortTitle().replace(File.separator, "_"));
+
+                }
+
+            }
+
+            IJ.log("Measuring intensities for " + measureName + " finished.");
+
         }
-
-        IJ.log("Measuring intensities for " + measureName + " finished.");
-
     }
 
     private void spotAnalysis(ImagePlus inputImage, int minSizePxSpot, int maxSizePxSpot) {
