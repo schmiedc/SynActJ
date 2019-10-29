@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -227,7 +228,7 @@ class XmlHandler {
 
 
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(filePath));
+            StreamResult result = new StreamResult(new FileOutputStream(filePath));
 
             // create transformer factory
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
