@@ -4,3 +4,4 @@
 /target/
 /.attach_pid*
 /out/artifacts/PHluorinJ__jar/PHluorinJ_.jar
+/.idea/$PRODUCT_WORKSPACE_FILE$
