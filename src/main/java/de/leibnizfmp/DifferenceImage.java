@@ -5,13 +5,27 @@ import ij.ImagePlus;
 import ij.plugin.ImageCalculator;
 import ij.plugin.ZProjector;
 
+/**
+ * This class creates a difference image to enhance objects in the movie
+ * that change their intensity upon electro stimulation
+ * A projection after the stimulation is divided by the projection before the stimulation.
+ *
+ * @author christopher schmied
+ * @version 1.0.0
+ */
 class DifferenceImage {
 
     private String projMethod;
     private int frameUp;
     private int frameDown;
 
-
+    /**
+     * enhances objects that change intensity in movie
+     *
+     * @param image movie
+     * @param stimulationFrame time point where stimulation happens
+     * @return difference image
+     */
     ImagePlus createDiffImage(ImagePlus image, int stimulationFrame) {
 
         int startBefore = stimulationFrame - frameDown;
@@ -31,30 +45,16 @@ class DifferenceImage {
 
     }
 
-    DifferenceImage(){
-
-        projMethod = "median";
-        frameUp = 4;
-        frameDown = 4;
-        IJ.log("Projection Method set to: " + projMethod);
-
-
-    }
-
+    /**
+     * Difference image contructor
+     *
+     * @param method projection method
+     */
     DifferenceImage(String method){
 
         projMethod = method;
         frameUp = 4;
         frameDown = 4;
-        IJ.log("Projection Method set to: " + projMethod);
-
-    }
-
-    DifferenceImage (String method, int downProj, int upProj) {
-
-        projMethod = method;
-        frameDown = downProj;
-        frameUp = upProj;
         IJ.log("Projection Method set to: " + projMethod);
 
     }

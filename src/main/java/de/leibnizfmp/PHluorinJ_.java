@@ -17,7 +17,8 @@ import ij.plugin.PlugIn;
 /**
  * pHluorin image analysis workflow
  *
- * @author Christopher Schmied
+ * @author Christopher Schmied,
+ * @version 1.0.0
  */
 public class PHluorinJ_ implements PlugIn {
 

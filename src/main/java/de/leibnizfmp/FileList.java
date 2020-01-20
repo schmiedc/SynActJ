@@ -10,21 +10,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * class creates the file list from input directory for batch processing
+ *
+ * @author christopher schmied
+ * @version 1.0.0
+ */
 class FileList {
 
-    // getFileList based on Files.walk
+    /**
+     * walks through input directory
+     * filters file for file suffix and writes string into an array
+     *
+     * @param inputDir input directory
+     * @return list containing file names as string for processing
+     */
+
     ArrayList<String> getFileList(String inputDir) {
 
         String suffix = "tif";
         List<String> results = null;
         Path inputPath = Paths.get(inputDir);
 
-
-
-
         // opens a stream and walks through file tree of given path
         try(Stream<Path> walk = Files.walk(inputPath)) {
-
 
             // gets the filenames converts them to a string
            results = walk.map(x -> inputPath.relativize(x).toString())
@@ -46,6 +55,13 @@ class FileList {
 
     }
 
+    /**
+     * loops through list1 and compares if items are in list2
+     *
+     * @param list1 first file list
+     * @param list2 second file list
+     * @return intersection
+     */
     ArrayList<String> intersection(ArrayList<String> list1, ArrayList<String> list2) {
 
         ArrayList<String> list = new ArrayList<>();

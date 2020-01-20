@@ -14,6 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class applies the image analysis operations over all loaded images
+ *
+ * @author christopher schmied
+ * @version 1.0.0
+ */
 class BatchProcessor {
 
     private String inputDir;
@@ -42,6 +48,13 @@ class BatchProcessor {
     private double maxSizeBack;
     private int stimFrame;
 
+    /**
+     * loops the following operations over the images in the fileList
+     * creation and opening of image
+     * adjustment of calibration settings
+     * spotAnalysis
+     * backgroundAnalysis
+     */
     void loopOverImages() {
 
         int minSizePxSpot;
@@ -62,6 +75,7 @@ class BatchProcessor {
             Image batchImage = new Image( inputDir, pxSizeMicron, frameRate );
             ImagePlus imageToProcess = batchImage.openImage(image);
 
+            // if true adjusts image calibration using input px size settings
             if (calibrationSetting) {
 
                 calibration = batchImage.calibrate();
@@ -117,24 +131,34 @@ class BatchProcessor {
 
     }
 
-    private void measureROI(ImagePlus imageMeasure, ImagePlus binaryImage, String saveDir, ParticleAnalyzer particleAnalyzer, String measureName) {
+    /**
+     * performs measurements in ROIs in every frame of the movie
+     *
+     * @param imageMeasure image for measurement
+     * @param binaryImage for creating ROIs
+     * @param saveDir directory for saving results and ROIs
+     * @param particleAnalyzer particle analyzer object that creates ROIs from binary image
+     * @param measureName results name
+     */
+    private void measureROI(ImagePlus imageMeasure, ImagePlus binaryImage, String saveDir,
+                            ParticleAnalyzer particleAnalyzer, String measureName) {
 
         // setup ROI manager
         RoiManager manager = new RoiManager(false);
         ParticleAnalyzer.setRoiManager(manager);
 
         // setup measurements
-        IJ.run("Set Measurements...", "area mean standard modal min integrated median redirect=None decimal=3");
+        IJ.run("Set Measurements...", "area mean standard modal min integrated median" +
+                " redirect=None decimal=3");
 
         // get ROIs
         particleAnalyzer.analyze(binaryImage);
 
-
         // get count of ROIs
-
         int roiCount = manager.getCount();
         IJ.log("There are " + roiCount + " ROI(s) for " + measureName);
 
+        // if no ROIs abort measurement else proceed
         if (roiCount == 0) {
 
             IJ.log("WARNING: Skipping Measurements for " + measureName);
@@ -144,7 +168,9 @@ class BatchProcessor {
             // save ROIs
             try {
 
-                manager.runCommand("Save", saveDir + File.separator + imageMeasure.getShortTitle().replace(File.separator, "_") + "_" + measureName + ".zip");
+                manager.runCommand("Save", saveDir + File.separator +
+                        imageMeasure.getShortTitle().replace(File.separator, "_") + "_" +
+                        measureName + ".zip");
 
             } catch (Exception ex) {
 
@@ -153,7 +179,8 @@ class BatchProcessor {
 
             }
 
-
+            // loops over available ROIs
+            // performs measurements and saved Results
             for (int roi = 0; roi <= roiCount; roi++) {
 
                 manager.select(roi);
@@ -161,12 +188,16 @@ class BatchProcessor {
 
                 try {
 
-                    results.saveAs(saveDir + imageMeasure.getShortTitle().replace(File.separator, "_") + "_Roi-" + String.format("%03d", roi) + "_" + measureName + ".csv");
+                    results.saveAs(saveDir +
+                            imageMeasure.getShortTitle().replace(File.separator, "_") +
+                            "_Roi-" + String.format("%03d", roi) +
+                            "_" + measureName + ".csv");
 
                 } catch (Exception ex) {
 
                     ex.printStackTrace();
-                    IJ.log("Could not save spot measurement results: " + imageMeasure.getShortTitle().replace(File.separator, "_"));
+                    IJ.log("Could not save spot measurement results: " +
+                            imageMeasure.getShortTitle().replace(File.separator, "_"));
 
                 }
 
@@ -177,6 +208,14 @@ class BatchProcessor {
         }
     }
 
+    /**
+     * performs spot segmentation using a marker controlled watershed
+     * calls the spot detection, spot segmentation and watershed
+     *
+     * @param inputImage takes the movie
+     * @param minSizePxSpot minimum spot size considered for segmentation
+     * @param maxSizePxSpot maximum spot size considered for segmentation
+     */
     private void spotAnalysis(ImagePlus inputImage, int minSizePxSpot, int maxSizePxSpot) {
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
@@ -184,18 +223,22 @@ class BatchProcessor {
 
         SpotSegmenter spot = new SpotSegmenter();
         ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
-        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots, rollingSpots, thresholdSpots, spotErosion);
+        ByteProcessor segmentSpots = spot.segmentSpots(diffImage, sigmaSpots,
+                                                        rollingSpots, thresholdSpots, spotErosion);
 
         ImagePlus watershed = spot.watershed(diffImage, detectSpots, segmentSpots, radiusGradient);
 
-        ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePxSpot, maxSizePxSpot, lowCirc, highCirc );
+        ParticleAnalyzer analyzer = new ParticleAnalyzer(2048,0,null, minSizePxSpot,
+                maxSizePxSpot, lowCirc, highCirc );
+
         measureROI(inputImage, watershed, outputDir, analyzer, "Spot");
 
         FileSaver saveDiffImage = new FileSaver(diffImage);
 
         try {
 
-            saveDiffImage.saveAsTiff( outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_spot.tif");
+            saveDiffImage.saveAsTiff( outputDir + File.separator +
+                    inputImage.getShortTitle().replace(File.separator, "_") + "_spot.tif");
 
         } catch (Exception ex) {
 
@@ -206,6 +249,13 @@ class BatchProcessor {
 
     }
 
+    /**
+     * performs the background analysis by calling the backgroundSegmenter
+     *
+     * @param inputImage movie
+     * @param minSizePxBack minimum background region size
+     * @param maxSizePxBack maximum background region size
+     */
     private void backgroundAnalysis(ImagePlus inputImage, int minSizePxBack, int maxSizePxBack) {
 
         BackgroundSegmenter back = new BackgroundSegmenter();
@@ -232,15 +282,20 @@ class BatchProcessor {
 
     }
 
+    /**
+     * Batch processor constructor with default settings
+     *
+     * @param inputDirectory directory for input images
+     * @param outputDirectory directory for saving results
+     * @param filesToProcess list the file names for batch
+     */
     BatchProcessor (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess) {
 
         inputDir = inputDirectory;
         outputDir = outputDirectory;
         fileList = filesToProcess;
 
-        // Projection Method
         projMethod = "median";
-
         sigmaLoG = 0.5;
         prominence = 0.005;
         sigmaSpots = 1.0;
@@ -252,18 +307,43 @@ class BatchProcessor {
         maxSizeSpot = 1000.0;
         lowCirc = 0.0;
         highCirc = 1.0;
-
         sigmaBackground = 4.0;
         thresholdBackground = "MinError";
         minSizeBack = 0.0;
         maxSizeBack = 10000.0;
-
         calibrationSetting = false;
         stimFrame = 5;
         pxSizeMicron = 0.162;
         frameRate = 2.0;
     }
 
+    /**
+     * Batch processor constructor
+     *
+     * @param inputDirectory directory for input images
+     * @param outputDirectory directory for saving results
+     * @param filesToProcess list the file names for batch
+     * @param setProjectionMethod projection method
+     * @param setSigmaLoG sigma for LoG
+     * @param setProminence prominence for spot detection
+     * @param setSigmaSpots sigma for spot segmentation
+     * @param setRollingSpots rolling ball background radius for spot segmentation
+     * @param setThresholdSpots global intensity based threshold for spots
+     * @param setSpotErosion binary mask erosion for spots
+     * @param setRadiusGradient radius for creating gradient image (watershed)
+     * @param setMinSizePxSpot minimum spot size in px
+     * @param setMaxSizePxSpot maximum spot size in px
+     * @param setLowCirc minimum circularity of spots
+     * @param setHighCirc maximum circularity of spots
+     * @param setSigmaBackground sigma gaussian blur for background segmentation
+     * @param setThresholdBackground global intensity threshold for background segmentation
+     * @param setMinSizePxBack minimum background region size
+     * @param setMaxSizePxBack maximum background region size
+     * @param setStimFrame frame when stimulation happens
+     * @param setCalibrationSetting setting if calibration should be changed or not
+     * @param setSizeMicron pixel size in micron
+     * @param setFrameRate frame rate in seconds
+     */
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                           String setProjectionMethod, double setSigmaLoG, double setProminence,
                           double setSigmaSpots, double setRollingSpots, String setThresholdSpots, boolean setSpotErosion,
