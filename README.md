@@ -16,6 +16,7 @@ Installation
 ========================
 
 Download .jar file: https://github.com/schmiedc/pHluorinJ/releases
+
 Copy into Fiji plugin folder.
 
 Datasets
