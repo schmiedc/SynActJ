@@ -81,11 +81,11 @@ class BatchProcessor {
                 calibration = batchImage.calibrate();
 
                 imageToProcess.setCalibration(calibration);
-                minSizePxSpot = Image.calculateMinSizePx(pxSizeMicron, minSizeSpot);
-                maxSizePxSpot = Image.calculateMaxSizePx(pxSizeMicron, maxSizeSpot);
+                minSizePxSpot = Image.calculateSizePx(pxSizeMicron, minSizeSpot);
+                maxSizePxSpot = Image.calculateSizePx(pxSizeMicron, maxSizeSpot);
 
-                minSizePxBack = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                maxSizePxBack = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                minSizePxBack = Image.calculateSizePx(pxSizeMicron, minSizeBack);
+                maxSizePxBack = Image.calculateSizePx(pxSizeMicron, maxSizeBack);
 
                 IJ.log("Metadata will be overwritten.");
                 IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -95,11 +95,11 @@ class BatchProcessor {
 
                 calibration = imageToProcess.getCalibration();
                 Double pxSizeFromImage = calibration.pixelWidth;
-                minSizePxSpot = Image.calculateMinSizePx(pxSizeFromImage, minSizeSpot);
-                maxSizePxSpot = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeSpot);
+                minSizePxSpot = Image.calculateSizePx(pxSizeFromImage, minSizeSpot);
+                maxSizePxSpot = Image.calculateSizePx(pxSizeFromImage, maxSizeSpot);
 
-                minSizePxBack = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                maxSizePxBack = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                minSizePxBack = Image.calculateSizePx(pxSizeFromImage, minSizeBack);
+                maxSizePxBack = Image.calculateSizePx(pxSizeFromImage, maxSizeBack);
 
                 IJ.log("Metadata will no be overwritten");
 

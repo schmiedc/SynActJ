@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Queue;
 
 public class PreviewGui extends JPanel{
 
@@ -560,8 +559,8 @@ public class PreviewGui extends JPanel{
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                            minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeMicron);
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
                             IJ.log("Frame rate set to: " + frameRate);
@@ -573,8 +572,8 @@ public class PreviewGui extends JPanel{
                             originalImage = previewImage.openImage(selectedFile);
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                            minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeMicron);
 
                             IJ.log("Metadata will no be overwritten");
                             IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
@@ -605,8 +604,8 @@ public class PreviewGui extends JPanel{
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                            minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeMicron);
+                            maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeMicron);
 
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -618,8 +617,8 @@ public class PreviewGui extends JPanel{
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                            minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeMicron);
+                            maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeMicron);
 
                             IJ.log("Metadata will no be overwritten");
                             IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
@@ -650,8 +649,8 @@ public class PreviewGui extends JPanel{
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeMicron);
-                        maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeMicron);
+                        minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeMicron);
+                        maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeMicron);
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
                         IJ.log("Frame rate set to: " + frameRate);
@@ -662,8 +661,8 @@ public class PreviewGui extends JPanel{
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeMicron);
-                        maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeMicron);
+                        minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeMicron);
+                        maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeMicron);
 
                         IJ.log("Metadata will no be overwritten");
                         IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
@@ -772,8 +771,8 @@ public class PreviewGui extends JPanel{
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                            minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeBack);
 
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -786,8 +785,8 @@ public class PreviewGui extends JPanel{
                             ImagePlus originalImage = previewImage.openImage(selectedFile);
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                            minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeBack);
 
                             IJ.log("Metadata will no be overwritten");
                             IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
@@ -820,8 +819,8 @@ public class PreviewGui extends JPanel{
                         if (calibrationSetting) {
 
                             calibration = previewImage.calibrate();
-                            minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                            minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeBack);
+                            maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeBack);
 
                             IJ.log("Metadata will be overwritten.");
                             IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -833,8 +832,8 @@ public class PreviewGui extends JPanel{
 
                             calibration = originalImage.getCalibration();
                             Double pxSizeFromImage = calibration.pixelWidth;
-                            minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                            maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                            minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeBack);
+                            maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeBack);
 
                             IJ.log("Metadata will no be overwritten");
                             IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
@@ -867,8 +866,8 @@ public class PreviewGui extends JPanel{
                     if (calibrationSetting) {
 
                         calibration = previewImage.calibrate();
-                        minSizePx = Image.calculateMinSizePx(pxSizeMicron, minSizeBack);
-                        maxSizePx = Image.calculateMaxSizePx(pxSizeMicron, maxSizeBack);
+                        minSizePx = Image.calculateSizePx(pxSizeMicron, minSizeBack);
+                        maxSizePx = Image.calculateSizePx(pxSizeMicron, maxSizeBack);
 
                         IJ.log("Metadata will be overwritten.");
                         IJ.log("Pixel size set to: " + pxSizeMicron);
@@ -879,8 +878,8 @@ public class PreviewGui extends JPanel{
 
                         calibration = originalImage.getCalibration();
                         Double pxSizeFromImage = calibration.pixelWidth;
-                        minSizePx = Image.calculateMinSizePx(pxSizeFromImage, minSizeBack);
-                        maxSizePx = Image.calculateMaxSizePx(pxSizeFromImage, maxSizeBack);
+                        minSizePx = Image.calculateSizePx(pxSizeFromImage, minSizeBack);
+                        maxSizePx = Image.calculateSizePx(pxSizeFromImage, maxSizeBack);
 
                         IJ.log("Metadata will no be overwritten");
                         IJ.log("MinSizePx " + minSizePx + " MaxSizePx " + maxSizePx);
