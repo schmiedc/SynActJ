@@ -62,12 +62,12 @@ The workflow will save a <Date><Time>-settings.xml as well as a <Date><Time>-Log
 Please attach the log and settings file in bug reports.
   
 The workflow will save the input image as well as the segmentation as ImageJ ROIs for later review in the output folder
-`<filename>_spot.tif`
-`<filename>_Spot.zip`
-`<filename>_background.tif`
-`<filename>_background.zip`
+`<filename>_spot.tif
+<filename>_Spot.zip
+<filename>_background.tif
+<filename>_background.zip`
 To review the segmentation drag & drop the input image and the ROI into ImageJ.
  
 The measurements for the background as well as the bouton intensity over time are saved as .csv files for each ROI.
-`<filename>_ROI-<number>_background.csv`
-`<filename>_ROI-<number>_Spot.csv`
+`<filename>_ROI-<number>_background.csv
+<filename>_ROI-<number>_Spot.csv`
