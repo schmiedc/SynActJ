@@ -262,7 +262,8 @@ class BatchProcessor {
         ByteProcessor background = back.segmentBackground(inputImage, sigmaBackground, thresholdBackground);
         ImagePlus backgroundImage = new ImagePlus("background", background);
 
-        ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null, minSizePxBack, maxSizePxBack);
+        ParticleAnalyzer backAnalyzer = new ParticleAnalyzer(2048,0,null,
+                minSizePxBack, maxSizePxBack);
 
         measureROI(inputImage, backgroundImage, outputDir, backAnalyzer, "background");
 
@@ -270,7 +271,8 @@ class BatchProcessor {
 
         try {
 
-            saveBackImage.saveAsTiff(outputDir + File.separator + inputImage.getShortTitle().replace(File.separator, "_") + "_background.tif");
+            saveBackImage.saveAsTiff(outputDir + File.separator +
+                    inputImage.getShortTitle().replace(File.separator, "_") + "_background.tif");
 
         } catch (Exception ex) {
 
@@ -340,14 +342,14 @@ class BatchProcessor {
      * @param setMinSizePxBack minimum background region size
      * @param setMaxSizePxBack maximum background region size
      * @param setStimFrame frame when stimulation happens
-     * @param setCalibrationSetting setting if calibration should be changed or not
+     * @param setCalibrationSetting image calibration setting
      * @param setSizeMicron pixel size in micron
      * @param setFrameRate frame rate in seconds
      */
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                           String setProjectionMethod, double setSigmaLoG, double setProminence,
-                          double setSigmaSpots, double setRollingSpots, String setThresholdSpots, boolean setSpotErosion,
-                          int setRadiusGradient,
+                          double setSigmaSpots, double setRollingSpots, String setThresholdSpots,
+                          boolean setSpotErosion, int setRadiusGradient,
                           double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
                           double setSigmaBackground, String setThresholdBackground,
                           double setMinSizePxBack, double setMaxSizePxBack,

@@ -15,8 +15,16 @@ import java.util.ArrayList;
 import ij.plugin.PlugIn;
 
 /**
- * pHluorin image analysis workflow
- *
+ * ImageJ plugin for the analysis of vesicle release and recycling dynamics
+ * using the Synapto-pHluorin method
+ * <p>
+ * Expected input files are tif files containing movies of cultured neurons
+ * In one frame an electro stimulation has been applied to the cultures
+ * The active neurons that show intensity change upon stimulation and are enhanced using a difference image
+ * Synaptic boutons are segmented using a seeded watershed
+ * fluorescent intensity traces over time are extracted to measure synaptic
+ * vesicle release and recycling dynamics
+ * </p>
  * @author Christopher Schmied,
  * @version 1.0.0
  */

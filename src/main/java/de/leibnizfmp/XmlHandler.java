@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * implements reading, writing of the xml settings file
+ */
 class XmlHandler {
 
     String readProjMethod;
@@ -45,6 +48,14 @@ class XmlHandler {
     double readFrameRate;
     int readStimFrame;
 
+    /**
+     * reads the xml settings file
+     *
+     * @param filePath for the xml settings file
+     * @throws ParserConfigurationException if xml cannot be parsed
+     * @throws IOException if xml cannot be read
+     * @throws SAXException error message
+     */
     void xmlReader(String filePath) throws ParserConfigurationException, IOException, SAXException {
 
         File xmlFile = new File(filePath);
@@ -56,49 +67,55 @@ class XmlHandler {
 
         // get nodes of tag name
         readProjMethod = doc.getElementsByTagName("projMethod").item(0).getTextContent();
-
         readSigmaLoG = Double.parseDouble(doc.getElementsByTagName("sigmaLoG").item(0).getTextContent());
-
         readProminence= Double.parseDouble(doc.getElementsByTagName("prominence").item(0).getTextContent());
-
         readSigmaSpots = Double.parseDouble(doc.getElementsByTagName("sigmaSpots").item(0).getTextContent());
-
         readRollingSpots = Double.parseDouble(doc.getElementsByTagName("rollingSpots").item(0).getTextContent());
-
         readThresholdSpots = doc.getElementsByTagName("thresholdSpots").item(0).getTextContent();
-
         readSpotErosion = Boolean.parseBoolean(doc.getElementsByTagName("spotErosion").item(0).getTextContent());
-
         readRadiusGradient = Integer.parseInt(doc.getElementsByTagName("radiusGradient").item(0).getTextContent());
-
         readMinSizeSpot = Double.parseDouble(doc.getElementsByTagName("minSizeSpot").item(0).getTextContent());
-
         readMaxSizeSpot= Double.parseDouble(doc.getElementsByTagName("maxSizeSpot").item(0).getTextContent());
-
         readLowCirc = Double.parseDouble(doc.getElementsByTagName("lowCirc").item(0).getTextContent());
-
         readHighCirc = Double.parseDouble(doc.getElementsByTagName("highCirc").item(0).getTextContent());
-
         readSigmaBackground = Double.parseDouble(doc.getElementsByTagName("sigmaBackground").item(0).getTextContent());
-
         readThresholdBackground = doc.getElementsByTagName("thresholdBackground").item(0).getTextContent();
-
         readMinSizeBack = Double.parseDouble(doc.getElementsByTagName("minSizeBack").item(0).getTextContent());
-
         readMaxSizeBack = Double.parseDouble(doc.getElementsByTagName("maxSizeBack").item(0).getTextContent());
-
         readCalibrationSetting = Boolean.parseBoolean(doc.getElementsByTagName("calibrationSetting").item(0).getTextContent());
-
         readPxSizeMicron = Double.parseDouble(doc.getElementsByTagName("pxSizeMicron").item(0).getTextContent());
-
         readFrameRate= Double.parseDouble(doc.getElementsByTagName("frameRate").item(0).getTextContent());
-
         readStimFrame = Integer.parseInt(doc.getElementsByTagName("stimFrame").item(0).getTextContent());
 
         IJ.log("Loaded settings file from: " + filePath);
 
     }
 
+    /**
+     * writes xml settings file
+     *
+     * @param outputPath directory for saving results
+     * @param getProjectionMethod projection method
+     * @param getSigmaLoG sigma for LoG
+     * @param getProminence prominence for spot detection
+     * @param getSigmaSpots sigma for spot segmentation
+     * @param getRollingSpots rolling ball background radius for spot segmentation
+     * @param getThresholdSpots global intensity based threshold for spots
+     * @param getSpotErosion binary mask erosion for spots
+     * @param getRadiusGradient radius for creating gradient image (watershed)
+     * @param getMinSizePxSpot minimum spot size in px
+     * @param getMaxSizePxSpot maximum spot size in px
+     * @param getLowCirc minimum circularity of spots
+     * @param getHighCirc maximum circularity of spots
+     * @param getSigmaBackground sigma gaussian blur for background segmentation
+     * @param getThresholdBackground global intensity threshold for background segmentation
+     * @param getMinSizePxBack minimum background region size
+     * @param getMaxSizePxBack maximum background region size
+     * @param getStimFrame frame when stimulation happens
+     * @param getCalibrationSetting image calibration setting
+     * @param getSizeMicron pixel size in micron
+     * @param getFrameRate frame rate in seconds
+     */
     void xmlWriter(String outputPath, String getProjectionMethod,
                    double getSigmaLoG, double getProminence,
                    double getSigmaSpots, double getRollingSpots, String getThresholdSpots, boolean getSpotErosion,

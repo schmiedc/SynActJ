@@ -13,8 +13,19 @@ import trainableSegmentation.ImageScience;
 
 import static inra.ijpb.morphology.Morphology.externalGradient;
 
+/**
+ * class implements the marker controlled watershed for the spot segmentation
+ */
 class SpotSegmenter {
 
+    /**
+     * spot detection for creating the marker image
+     *
+     * @param diffImage difference image that contains the enhanced objects of interest
+     * @param simgaLoG sigma for laplacian of gaussian
+     * @param prominence for maximum detection
+     * @return binary image containing the marker one pixel marks the spot
+     */
     ByteProcessor detectSpots(ImagePlus diffImage, double simgaLoG, double prominence) {
 
         IJ.log("Applying a LoG filter with sigma: " + simgaLoG);
@@ -32,6 +43,16 @@ class SpotSegmenter {
 
     }
 
+    /**
+     * segments the spot area using a global intensity threshold
+     *
+     * @param image difference image
+     * @param gauss sigma for gaussian blur
+     * @param rolling radius for rolling ball background subtraction
+     * @param threshold global intensity based threshold for segmentation
+     * @param spotErosion if the generated mask should be eroded or not
+     * @return binary image the contains the segmented spot area
+     */
     ByteProcessor segmentSpots(ImagePlus image, double gauss, double rolling, String threshold, boolean spotErosion){
 
         ImageProcessor processImage = image.getProcessor().convertToShortProcessor();
@@ -41,7 +62,8 @@ class SpotSegmenter {
 
         IJ.log("Background subtraction with radius: " + rolling);
         BackgroundSubtracter backSubtract = new BackgroundSubtracter();
-        backSubtract.rollingBallBackground(processImage, rolling, false, false, false, false, false);
+        backSubtract.rollingBallBackground(processImage, rolling, false, false,
+                false, false, false);
 
         IJ.log("Autothreshold with method: " + threshold);
         processImage.setAutoThreshold(threshold, true, 1);
@@ -64,15 +86,29 @@ class SpotSegmenter {
 
     }
 
+    /**
+     * generates the gradient image and performs the marker controlled watershed
+     *
+     * @param inputImage difference image
+     * @param marker binary image marking the single spots
+     * @param mask binary image containing the segmented spots
+     * @param radius for the generating the gradient image
+     * @return binary image containing the mask for the separated spots
+     */
     ImagePlus watershed(ImagePlus inputImage, ByteProcessor marker, ByteProcessor mask, int radius){
 
-        IJ.log("Performing watershed object separation...");
+
+
+        // generates the gradient image for the watershed
+        IJ.log("Generating gradient image...");
         Strel strel = Strel.Shape.DISK.fromRadius( radius );
         ImageProcessor extGradient = externalGradient(inputImage.getProcessor(), strel);
+
         ImagePlus extImage = new ImagePlus("input", extGradient);
         ImagePlus markerImage = new ImagePlus("marker", marker);
         ImagePlus maskImage = new ImagePlus("mask", mask);
 
+        IJ.log("Performing watershed object separation...");
         ImagePlus marker1 = BinaryImages.componentsLabeling(markerImage, 8, 32);
         ImagePlus resultImage = Watershed.computeWatershed(extImage, marker1, maskImage, 8, true );
 

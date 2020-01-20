@@ -23,6 +23,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * class implements the previewGUI that allows the adjust the segmentation for the workflow
+ *
+ * @author christopher schmied
+ * @version 1.0.0
+ */
 public class PreviewGui extends JPanel{
 
     private String[] thresholdString = { "Default", "Huang", "IJ_IsoData", "Intermodes",
@@ -98,6 +104,9 @@ public class PreviewGui extends JPanel{
 
     private Border blackline;
 
+    /**
+     * creates the tab for adjusting the spot segmentation settings
+     */
     private void setUpSpotTab() {
 
         //box with titled borders
@@ -217,6 +226,9 @@ public class PreviewGui extends JPanel{
 
     }
 
+    /**
+     * creates the tab for adjusting the background segmentation settings
+     */
     private void setUpBackTab() {
 
         // box with titled borders
@@ -276,8 +288,10 @@ public class PreviewGui extends JPanel{
 
     }
 
+    /**
+     * creates the tab that allows to change the image settings
+     */
     private void setUpSettingsTab(){
-        // creates the panel that contains the buttons boxlayout vertical aligned
 
         JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
         boxSettings.add(settingsLabel);
@@ -310,6 +324,12 @@ public class PreviewGui extends JPanel{
         boxSettings.add(batchButton);
     }
 
+    /**
+     * sets up the center JList for showing the file names
+     *
+     * @param aListOfFiles list of file name strings
+     * @return
+     */
     private JScrollPane setUpFileList(ArrayList<String> aListOfFiles) {
 
         // setup List
@@ -331,6 +351,9 @@ public class PreviewGui extends JPanel{
         return scroller;
     }
 
+    /**
+     * creates the PreviewGui
+     */
     void setUpGui() {
 
         JFrame theFrame;
@@ -390,6 +413,13 @@ public class PreviewGui extends JPanel{
 
     }
 
+    /**
+     * creates a labeled text field
+     * @param label name
+     * @param field field for inputs
+     * @param unit label
+     * @return a box with the labeled textField
+     */
     static protected Box addLabeledTextField(String label, JTextField field, String unit) {
 
         Box textBox = new Box(BoxLayout.X_AXIS);
@@ -406,6 +436,13 @@ public class PreviewGui extends JPanel{
         return textBox;
     }
 
+    /**
+     * creates a labeled spinner
+     * @param label name
+     * @param model for which spinner
+     * @param unit label after spinner
+     * @return box with labeled spinner
+     */
     private static Box addLabeledSpinnerUnit(String label,
                                              SpinnerModel model,
                                              String unit) {
@@ -427,6 +464,13 @@ public class PreviewGui extends JPanel{
         return spinnerLabelBox;
     }
 
+    /**
+     * creates a 5 digit spinner
+     * @param label name
+     * @param model for spinner
+     * @param unit label after the spinner box
+     * @return box with labeled spinner with 5 digits
+     */
     private static Box addLabeledSpinner5Digit(String label,
                                              SpinnerModel model,
                                              String unit) {
@@ -451,7 +495,9 @@ public class PreviewGui extends JPanel{
         return spinnerLabelBox;
     }
 
-    // Upon pressing the start button call buildTrackAndStart() method
+    /**
+     * starts spot segmentation visualization
+     */
     public class MyPreviewSpotListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
@@ -687,7 +733,9 @@ public class PreviewGui extends JPanel{
 
     } // close inner class
 
-    // Upon pressing the start button call buildTrackAndStart() method
+    /**
+     * starts background segmentation visualization
+     */
     public class MyPreviewBackListener implements ActionListener {
 
         public void actionPerformed(ActionEvent a) {
@@ -904,6 +952,9 @@ public class PreviewGui extends JPanel{
 
     } // close inner class
 
+    /**
+     * listener that executes the saving of the settings in the PreviewGUI to an xml file
+     */
     public class MySaveListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
@@ -984,6 +1035,9 @@ public class PreviewGui extends JPanel{
         }
     }
 
+    /**
+     * loads settings from the specified xml file
+     */
     public class MyLoadListener extends Component implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1077,6 +1131,9 @@ public class PreviewGui extends JPanel{
         }
     }
 
+    /**
+     * resets the settings to default values
+     */
     public class MyResetListener extends Component implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -1113,7 +1170,9 @@ public class PreviewGui extends JPanel{
         }
     }
 
-    // upon pressing the stop button call sequencer.stop() method
+    /**
+     * Starts the batch processing of all the files in the FileList
+     */
     public class MyBatchListener implements ActionListener {
         public void actionPerformed(ActionEvent a) {
 
@@ -1205,7 +1264,12 @@ public class PreviewGui extends JPanel{
 
     } // close inner class
 
-    // PreviewGui constructor
+    /**
+     * Constructor for PreviewGui using default settings
+     * @param inputDirectory from InputGui
+     * @param outputDirectory from InputGui
+     * @param filesToProcess from InputGui
+     */
     PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess){
 
         inputDir = inputDirectory;
@@ -1240,9 +1304,37 @@ public class PreviewGui extends JPanel{
 
     }
 
+    /**
+     * Constructor for PreviewGui with settings from the select settings file
+     *
+     * @param inputDirectory directory for input images
+     * @param outputDirectory directory for saving results
+     * @param filesToProcess list the file names for batch
+     * @param projectionMethod projection method
+     * @param getSigmaLoG sigma for LoG
+     * @param getProminence prominence for spot detection
+     * @param getSigmaSpots sigma for spot segmentation
+     * @param getRollingSpots rolling ball background radius for spot segmentation
+     * @param getThresholdSpots global intensity based threshold for spots
+     * @param getSpotErosion binary mask erosion for spots
+     * @param getRadiusGradient radius for creating gradient image (watershed)
+     * @param getMinSizePxSpot minimum spot size in px
+     * @param getMaxSizePxSpot maximum spot size in px
+     * @param getLowCirc minimum circularity of spots
+     * @param getHighCirc maximum circularity of spots
+     * @param getSigmaBackground sigma gaussian blur for background segmentation
+     * @param getThresholdBackground global intensity threshold for background segmentation
+     * @param getMinSizePxBack minimum background region size
+     * @param getMaxSizePxBack maximum background region size
+     * @param getStimFrame frame when stimulation happens
+     * @param getCalibrationSetting image calibration setting
+     * @param getSizeMicron pixel size in micron
+     * @param getFrameRate frame rate in seconds
+     */
     PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
                        String projectionMethod, double getSigmaLoG, double getProminence,
-                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots, boolean getSpotErosion, int getRadiusGradient,
+                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots,
+                      boolean getSpotErosion, int getRadiusGradient,
                        double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
                        double getSigmaBackground, String getThresholdBackground,
                        double getMinSizePxBack, double getMaxSizePxBack,

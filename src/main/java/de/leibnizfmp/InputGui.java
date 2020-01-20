@@ -13,6 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * class implements the first gui interaction
+ * user specifies directories for input files and output files
+ * as well as a path to the settings
+ *
+ * @author christopher schmied
+ * @version 1.0.0
+ */
 class InputGui {
 
     private static JTextField inputDir;
@@ -23,6 +31,9 @@ class InputGui {
     private static JTextField settingsFilePath;
     private static JFrame frame;
 
+    /**
+     * instantiates the setup dialog window
+     */
     void createWindow() {
 
         frame = new JFrame("Setup dialog");
@@ -34,6 +45,11 @@ class InputGui {
 
     }
 
+    /**
+     * creates the user interface for specifying the input, output, settings file path
+     *
+     * @param frame with a title
+     */
     private void createUI(final JFrame frame) {
 
         JPanel panelChooser = new JPanel();
@@ -87,6 +103,14 @@ class InputGui {
 
     }
 
+    /**
+     * creates a labeled dialog for a directory with a text field and a button
+     *
+     * @param button label
+     * @param label for box
+     * @param directory text field
+     * @return the new input box
+     */
     private Box createInputDialog(JButton button,JLabel label, JTextField directory){
 
         Box box= new Box(BoxLayout.X_AXIS);
@@ -98,11 +122,20 @@ class InputGui {
 
     }
 
+    /**
+     * checks inputString for trailing slash if not adds the file separator to it
+     *
+     * @param inputString input string
+     * @return input string with trailing slash for OS
+     */
     private static String checkTrailingSlash(String inputString) {
 
         return inputString.endsWith(File.separator) ? inputString : inputString + File.separator;
     }
 
+    /**
+     * Listener for choosing an input directory
+     */
     public static class InputListener extends Component implements ActionListener {
 
         @Override
@@ -128,6 +161,9 @@ class InputGui {
         }
     }
 
+    /**
+     * Listener for choosing an output directory
+     */
     public static class OutputListener extends Component implements ActionListener {
 
         @Override
@@ -150,6 +186,9 @@ class InputGui {
         }
     }
 
+    /**
+     * Listener for choosing the settings file
+     */
     public static class SettingsListener extends Component implements ActionListener {
 
         @Override
@@ -181,6 +220,9 @@ class InputGui {
         }
     }
 
+    /**
+     * Listener for starting the preview GUI when Preview button is pressed
+     */
     public static class PreviewListener implements ActionListener {
 
         @Override
@@ -209,19 +251,28 @@ class InputGui {
 
                     try {
 
+                        // reads settings file
                         readMyXml.xmlReader(settingsFileString);
 
-                        PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString) , checkTrailingSlash(outputFileString), fileList,
-                                readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
-                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots, readMyXml.readThresholdSpots, readMyXml.readSpotErosion,
+                        // Constructs the preview GUI with the loaded settings from the settings file
+                        PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString),
+                                checkTrailingSlash(outputFileString),
+                                fileList, readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
+                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots,
+                                readMyXml.readThresholdSpots, readMyXml.readSpotErosion,
                                 readMyXml.readRadiusGradient,
-                                readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,readMyXml.readLowCirc,readMyXml.readHighCirc,
+                                readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,
+                                readMyXml.readLowCirc,readMyXml.readHighCirc,
                                 readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
                                 readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,
-                                readMyXml.readStimFrame, readMyXml.readCalibrationSetting, readMyXml.readPxSizeMicron, readMyXml.readFrameRate
+                                readMyXml.readStimFrame, readMyXml.readCalibrationSetting,
+                                readMyXml.readPxSizeMicron, readMyXml.readFrameRate
                         );
 
+                        // sets InputGUI to invisible
                         frame.setVisible(false);
+
+                        // instantiates previewGui
                         previewGui.setUpGui();
 
                     } catch (ParserConfigurationException ex) {
@@ -250,9 +301,15 @@ class InputGui {
                 } else {
 
                     IJ.log("Did no find xml settings file using default values");
-                    PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString), checkTrailingSlash(outputFileString), fileList);
 
+                    // constructs previewGui from default settings since no valid settings file was given
+                    PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString),
+                            checkTrailingSlash(outputFileString), fileList);
+
+                    // sets InputGUI to invisible
                     frame.setVisible(false);
+
+                    // instantiates previewGui
                     previewGui.setUpGui();
 
                 }
@@ -263,7 +320,6 @@ class InputGui {
             }
 
         }
-
 
     }
 
