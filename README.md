@@ -45,7 +45,9 @@ To test the segmentation select an image title in the middle pane of the window.
 Then select the segmentation type by selecting the tab for either ***Boutons*** or ***Background***.
 The settings are structured according to the image processing that is performed. 
 Change the parameters you want to test and the press ***Preview***.
-A new image window will appear showing the movie overlayed with the segmentation based on the specified segmentation parameters. **IMPORTANT:** please make sure that the calibration is correct in the right window and override the existing metadata if necessary. Otherwise the segmentation might not work.
+A new image window will appear showing the movie overlayed with the segmentation based on the specified segmentation parameters. 
+
+**IMPORTANT:** please make sure that the calibration is correct in the right window and override the existing metadata if necessary. Otherwise the segmentation might not work.
 
 Once you are happy with the segmentation you can execute the batch processing.
 This will perform the segmentation of the boutons as well as the background. 
