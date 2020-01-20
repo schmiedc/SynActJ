@@ -15,7 +15,8 @@ http://fiji.sc/Marker-controlled_Watershed
 Installation
 ========================
 
-Download .jar file. Copy into Fiji plugin folder.
+Download .jar file: https://github.com/schmiedc/pHluorinJ/releases
+Copy into Fiji plugin folder.
 
 Datasets
 ========================
