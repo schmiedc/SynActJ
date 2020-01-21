@@ -9,9 +9,10 @@
 package de.leibnizfmp;
 
 import ij.IJ;
-import ij.ImageJ;
 
 import java.util.ArrayList;
+
+import ij.ImageJ;
 import ij.plugin.PlugIn;
 
 /**
@@ -35,7 +36,10 @@ public class PHluorinJ_ implements PlugIn {
 
 		//System.setProperty("scijava.log.level", "debug");
 		IJ.log("Starting pHlourin plugin");
-		InputGui start = new InputGui();
+		//InputGui start = new InputGui();
+		//start.createWindow();
+
+		InputGuiFiji start = new InputGuiFiji();
 		start.createWindow();
 
 	}
@@ -64,19 +68,24 @@ public class PHluorinJ_ implements PlugIn {
 		// start imageJ
 		new ImageJ();
 
+
 		// show something in the status bar
-		String testDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestIn/";
-		String testOut = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestOut/";
+		String testInDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestIn/";
+		String testOutDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestOut/";
+		String settings = "setting";
 
 		FileList getFileList = new FileList();
-		ArrayList<String> fileList = getFileList.getFileList(testDir);
+		ArrayList<String> fileList = getFileList.getFileList(testInDir);
 
 		for (String file : fileList) {
 			System.out.println(file);
 		}
 
-		PreviewGui guiTest = new PreviewGui(testDir, testOut, fileList);
-		guiTest.setUpGui();
+		InputGuiFiji setup = new InputGuiFiji(testInDir, testOutDir, settings);
+		setup.createWindow();
+
+		//PreviewGui guiTest = new PreviewGui(testDir, testOut, fileList);
+		//guiTest.setUpGui();
 
 		//InputGui guiTestFull = new InputGui();
 		//guiTestFull.createWindow();
