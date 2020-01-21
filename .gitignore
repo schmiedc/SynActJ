@@ -1,3 +1,7 @@
+
+.idea*
+.idea/PHluorinJ__jar.xml
+.idea/uiDesigner.xml
 /.classpath
 /.project
 /.settings/

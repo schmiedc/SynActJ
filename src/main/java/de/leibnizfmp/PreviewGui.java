@@ -104,6 +104,8 @@ public class PreviewGui extends JPanel{
 
     private Border blackline;
 
+    JFrame theFrame;
+
     /**
      * creates the tab for adjusting the spot segmentation settings
      */
@@ -328,7 +330,7 @@ public class PreviewGui extends JPanel{
      * sets up the center JList for showing the file names
      *
      * @param aListOfFiles list of file name strings
-     * @return
+     * @return a scroller that contains a file list
      */
     private JScrollPane setUpFileList(ArrayList<String> aListOfFiles) {
 
@@ -355,8 +357,6 @@ public class PreviewGui extends JPanel{
      * creates the PreviewGui
      */
     void setUpGui() {
-
-        JFrame theFrame;
 
         // sets up the frame
         theFrame = new JFrame("pHluorin Processing");
@@ -400,6 +400,10 @@ public class PreviewGui extends JPanel{
         JButton resetButton = new JButton("Reset Processing Settings");
         resetButton.addActionListener(new MyResetListener());
         saveLoadBox.add(resetButton);
+
+        JButton resetDirButton = new JButton("Reset Directories");
+        resetDirButton.addActionListener(new MyResetDirectoryListener());
+        saveLoadBox.add(resetDirButton);
 
         // add boxes to panel and frame
         background.add(BorderLayout.WEST, tabbedPane);
@@ -1131,6 +1135,31 @@ public class PreviewGui extends JPanel{
         }
     }
 
+    public class MyResetDirectoryListener extends Component implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            Boolean checkDir = IJ.showMessageWithCancel("Warning!", "Reset Directories?");
+
+            if ( checkDir ){
+
+                //theFrame.set
+                theFrame.dispose();
+                InputGuiFiji start = new InputGuiFiji();
+                start.createWindow();
+                IJ.log("Resetting directories...");
+
+            } else {
+
+                IJ.log("Directory reset canceled");
+
+            }
+
+        }
+
+    }
+
     /**
      * resets the settings to default values
      */
@@ -1138,35 +1167,47 @@ public class PreviewGui extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            // Projection Method
-            //projMethod = "median";
-            projMethod = "max";
+            Boolean checkResetSettings = IJ.showMessageWithCancel("Warning!", "Reset Directories?");
 
-            sigmaLoG = 0.5;
-            prominence = 0.005;
-            sigmaSpots = 1.0;
-            rollingSpots = 30.0;
-            thresholdSpots = "Triangle";
-            spotErosionSetting = false;
-            radiusGradient = 3;
-            minSizeSpot = 0.0;
-            maxSizeSpot = 1000.0;
-            lowCirc = 0.0;
-            highCirc = 1.0;
+            if ( checkResetSettings ) {
 
-            sigmaBackground = 4.0;
-            thresholdBackground = "MinError";
-            minSizeBack = 0.0;
-            maxSizeBack =  10000.0;
+                IJ.log("Resetting settings to default parameters");
 
-            boxSpotSeg.removeAll();
-            setUpSpotTab();
-            // create tabbed panes
-            tabbedPane.addTab("Boutons", boxSpotSeg);
+                // Projection Method
+                //projMethod = "median";
+                projMethod = "max";
 
-            boxBackground.removeAll();
-            setUpBackTab();
-            tabbedPane.addTab("Background", boxBackground);
+                sigmaLoG = 0.5;
+                prominence = 0.005;
+                sigmaSpots = 1.0;
+                rollingSpots = 30.0;
+                thresholdSpots = "Triangle";
+                spotErosionSetting = false;
+                radiusGradient = 3;
+                minSizeSpot = 0.0;
+                maxSizeSpot = 1000.0;
+                lowCirc = 0.0;
+                highCirc = 1.0;
+
+                sigmaBackground = 4.0;
+                thresholdBackground = "MinError";
+                minSizeBack = 0.0;
+                maxSizeBack = 10000.0;
+
+                boxSpotSeg.removeAll();
+                setUpSpotTab();
+                // create tabbed panes
+                tabbedPane.addTab("Boutons", boxSpotSeg);
+
+                boxBackground.removeAll();
+                setUpBackTab();
+                tabbedPane.addTab("Background", boxBackground);
+
+            } else {
+
+                IJ.log("Canceled resetting of processing settings!");
+
+            }
         }
     }
 
