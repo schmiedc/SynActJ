@@ -20,8 +20,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * class implements the previewGUI that allows the adjust the segmentation for the workflow
@@ -105,6 +107,82 @@ public class PreviewGui extends JPanel{
     private Border blackline;
 
     JFrame theFrame;
+
+    private void saveSettings(String name) {
+        IJ.log("Saving settings");
+
+        // get current settings for spot segmentation
+        // get all the values from the GUI
+        double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
+        IJ.log("Spot LoG sigma: " + sigmaLoG);
+
+        double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
+        IJ.log("Spot prominence: " + prominence);
+
+        double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
+        IJ.log("Spot gauss sigma: " + sigmaSpots);
+
+        double rollingSpots = (Double) doubleSpinnerRollingBallSpot.getValue();
+        IJ.log("Spot rolling ball radius: " + rollingSpots);
+
+        String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
+        IJ.log("Spot threshold: " + thresholdSpots);
+
+        // check if erosion is applied
+        boolean spotErosion;
+        if (erosionCheckBox.isSelected()) spotErosion = true;
+        else spotErosion = false;
+        IJ.log("Spot erosion: " + spotErosion);
+
+        int radiusGradient = (Integer) intSpinnerGradient.getValue();
+        IJ.log("Spot gradient Radius: " + radiusGradient);
+
+        double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
+        double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
+        IJ.log("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²");
+
+        double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
+        double highCirc = (Double) doubleSpinnerHighCirc.getValue();
+        IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
+
+        // get current settings for background segmentation
+        double sigmaBackground = (Double) doubleSpinBack1.getValue();
+        IJ.log("Background sigma: " + sigmaBackground);
+
+        String thresholdBackground = (String) thresholdListBack.getSelectedItem();
+        IJ.log("Background threshold: " + thresholdBackground);
+
+        double minSizeBack = (Double) doubleSpinBack2.getValue();
+        double maxSizeBack = (Double) doubleSpinBack3.getValue();
+        IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²");
+
+        // check if calibration needs to be overwritten
+        boolean calibrationSetting;
+
+        if (checkCalibration.isSelected()) calibrationSetting = true;
+        else calibrationSetting = false;
+        IJ.log("Calibration override: " + calibrationSetting);
+
+        double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
+        IJ.log("Calibration: " + pxSizeMicron + " µm");
+
+        double frameRate = (Double) doubleSpinnerFrameRate.getValue();
+        IJ.log("Calibration: " + frameRate + " sec");
+
+        int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
+        IJ.log("Stimulation frame: " + stimFrame);
+
+        XmlHandler writeToXml = new XmlHandler();
+
+        writeToXml.xmlWriter(outputDir, name, projMethod,
+                sigmaLoG, prominence,
+                sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
+                radiusGradient,
+                minSizeSpot, maxSizeSpot, lowCirc, highCirc,
+                sigmaBackground, thresholdBackground,
+                minSizeBack, maxSizeBack,
+                stimFrame, calibrationSetting, pxSizeMicron, frameRate);
+    }
 
     /**
      * creates the tab for adjusting the spot segmentation settings
@@ -960,81 +1038,12 @@ public class PreviewGui extends JPanel{
      * listener that executes the saving of the settings in the PreviewGUI to an xml file
      */
     public class MySaveListener implements ActionListener {
+
         public void actionPerformed(ActionEvent a) {
 
-            IJ.log("Saving settings");
+            String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
 
-            // get current settings for spot segmentation
-            // get all the values from the GUI
-            double sigmaLoG = (Double) doubleSpinnerLoGSpot.getValue();
-            IJ.log("Spot LoG sigma: " + sigmaLoG);
-
-            double prominence = (Double) doubleSpinnerProminenceSpot.getValue();
-            IJ.log("Spot prominence: " + prominence);
-
-            double sigmaSpots = (Double) doubleSpinnerGaussSpot.getValue();
-            IJ.log("Spot gauss sigma: " + sigmaSpots);
-
-            double rollingSpots = (Double) doubleSpinnerRollingBallSpot.getValue();
-            IJ.log("Spot rolling ball radius: " + rollingSpots);
-
-            String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
-            IJ.log("Spot threshold: " + thresholdSpots);
-
-            // check if erosion is applied
-            boolean spotErosion;
-            if (erosionCheckBox.isSelected()) spotErosion = true;
-            else spotErosion = false;
-            IJ.log("Spot erosion: " + spotErosion);
-
-            int radiusGradient = (Integer) intSpinnerGradient.getValue();
-            IJ.log("Spot gradient Radius: " + radiusGradient);
-
-            double minSizeSpot = (Double) doubleSpinnerMinSize.getValue();
-            double maxSizeSpot = (Double) doubleSpinnerMaxSize.getValue();
-            IJ.log("Spots size from: " + minSizeSpot + " to " + maxSizeSpot + " µm²");
-
-            double lowCirc = (Double) doubleSpinnerLowCirc.getValue();
-            double highCirc = (Double) doubleSpinnerHighCirc.getValue();
-            IJ.log("Spots circ. from: " + lowCirc + " to " + highCirc);
-
-            // get current settings for background segmentation
-            double sigmaBackground = (Double) doubleSpinBack1.getValue();
-            IJ.log("Background sigma: " + sigmaBackground);
-
-            String thresholdBackground = (String) thresholdListBack.getSelectedItem();
-            IJ.log("Background threshold: " + thresholdBackground);
-
-            double minSizeBack = (Double) doubleSpinBack2.getValue();
-            double maxSizeBack = (Double) doubleSpinBack3.getValue();
-            IJ.log("Background size from: " + minSizeBack + " to " + maxSizeBack + " µm²");
-
-            // check if calibration needs to be overwritten
-            boolean calibrationSetting;
-
-            if (checkCalibration.isSelected()) calibrationSetting = true;
-            else calibrationSetting = false;
-            IJ.log("Calibration override: " + calibrationSetting);
-
-            double pxSizeMicron = (Double) doubleSpinnerPixelSize.getValue();
-            IJ.log("Calibration: " + pxSizeMicron + " µm");
-
-            double frameRate = (Double) doubleSpinnerFrameRate.getValue();
-            IJ.log("Calibration: " + frameRate + " sec");
-
-            int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
-            IJ.log("Stimulation frame: " + stimFrame);
-
-            XmlHandler writeToXml = new XmlHandler();
-
-            writeToXml.xmlWriter(outputDir, projMethod,
-                    sigmaLoG, prominence,
-                    sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
-                    radiusGradient,
-                    minSizeSpot, maxSizeSpot, lowCirc, highCirc,
-                    sigmaBackground, thresholdBackground,
-                    minSizeBack, maxSizeBack,
-                    stimFrame, calibrationSetting, pxSizeMicron, frameRate);
+            saveSettings(fileName);
 
         }
     }
@@ -1145,9 +1154,17 @@ public class PreviewGui extends JPanel{
             if ( checkDir ){
 
                 //theFrame.set
+
+                String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
+                saveSettings(fileName);
+
+                String settingFilePath = outputDir + File.separator + fileName;
+
                 theFrame.dispose();
-                InputGuiFiji start = new InputGuiFiji();
+                InputGuiFiji start = new InputGuiFiji( settingFilePath, false);
+
                 start.createWindow();
+
                 IJ.log("Resetting directories...");
 
             } else {
@@ -1237,13 +1254,11 @@ public class PreviewGui extends JPanel{
             String thresholdSpots = (String) thresholdListSpot.getSelectedItem();
             IJ.log("Threshold: " + thresholdSpots);
 
-
             // check if erosion is applied
             boolean spotErosion;
             if (erosionCheckBox.isSelected()) spotErosion = true;
             else spotErosion = false;
             IJ.log("Spot erosion: " + spotErosion);
-
 
             int radiusGradient = (Integer) intSpinnerGradient.getValue();
             IJ.log("Gradient Radius: " + radiusGradient);
@@ -1279,16 +1294,9 @@ public class PreviewGui extends JPanel{
             int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
 
-            XmlHandler writeToXml = new XmlHandler();
+            String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
 
-            writeToXml.xmlWriter(outputDir, projMethod,
-                    sigmaLoG, prominence,
-                    sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
-                    radiusGradient,
-                    minSizeSpot, maxSizeSpot, lowCirc, highCirc,
-                    sigmaBackground, thresholdBackground,
-                    minSizeBack, maxSizeBack,
-                    stimFrame, calibrationSetting, pxSizeMicron, frameRate);
+            saveSettings(fileName);
 
             BatchProcessor batch = new BatchProcessor(inputDir, outputDir, fileList, projMethod,
                     sigmaLoG, prominence, sigmaSpots, rollingSpots, thresholdSpots, spotErosion,

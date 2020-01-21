@@ -116,7 +116,7 @@ class XmlHandler {
      * @param getSizeMicron pixel size in micron
      * @param getFrameRate frame rate in seconds
      */
-    void xmlWriter(String outputPath, String getProjectionMethod,
+    void xmlWriter(String outputPath, String fileName, String getProjectionMethod,
                    double getSigmaLoG, double getProminence,
                    double getSigmaSpots, double getRollingSpots, String getThresholdSpots, boolean getSpotErosion,
                    int getRadiusGradient,
@@ -126,8 +126,6 @@ class XmlHandler {
                    int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
 
         // Write the content into XML file
-        String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
-
         String filePath = outputPath + fileName;
 
         try

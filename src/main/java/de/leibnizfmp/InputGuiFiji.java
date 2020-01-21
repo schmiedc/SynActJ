@@ -8,23 +8,38 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 class InputGuiFiji {
 
     private static File inputDirectory = null;
     private static File outputDirectory = null;
-    private static File settingsFile = null;
+    private File settingsFile;
 
     String defaultInputDirectory;
     String defaultOutputDirectory;
     String defaultSettingsFile;
+    Boolean showSettingsSwitch;
 
     InputGuiFiji() {
 
         defaultInputDirectory = "Choose Directory";
         defaultOutputDirectory = "Choose Directory";
         defaultSettingsFile = "Choose a File or leave empty";
+        settingsFile = null;
+        showSettingsSwitch = true;
+    }
 
+    InputGuiFiji(String SettingsFile, Boolean showSettings) {
+
+        defaultInputDirectory = "Choose Directory";
+        defaultOutputDirectory = "Choose Directory";
+        defaultSettingsFile = SettingsFile;
+        settingsFile = new File(SettingsFile);
+        showSettingsSwitch = false;
+
+        IJ.log("Taking settings from previous preview:");
+        IJ.log(SettingsFile);
     }
 
     InputGuiFiji(String InputDir, String OutputDir, String SettingsFile ) {
@@ -32,6 +47,8 @@ class InputGuiFiji {
         defaultInputDirectory = InputDir;
         defaultOutputDirectory = OutputDir;
         defaultSettingsFile = SettingsFile;
+        settingsFile = null;
+        showSettingsSwitch = true;
 
     }
 
@@ -55,7 +72,17 @@ class InputGuiFiji {
 
         gdPlus.addDirectoryField("Input directory: ", defaultInputDirectory, 50);
         gdPlus.addDirectoryField("Output directory: ", defaultOutputDirectory, 50);
-        gdPlus.addFileField("Settings File", defaultSettingsFile, 50);
+
+        if ( !showSettingsSwitch ) {
+
+            IJ.log("Hidding Settings File option");
+
+        } else {
+
+            gdPlus.addFileField("Settings File", defaultSettingsFile, 50);
+
+        }
+
 
         gdPlus.showDialog();
 
@@ -68,7 +95,10 @@ class InputGuiFiji {
 
             inputDirectory = new File( defaultInputDirectory = gdPlus.getNextString() );
             outputDirectory = new File( defaultOutputDirectory = gdPlus.getNextString() );
-            settingsFile = new File( defaultSettingsFile = gdPlus.getNextString() );
+
+            if ( showSettingsSwitch ) {
+                settingsFile = new File(defaultSettingsFile = gdPlus.getNextString());
+            }
 
             // display error message if there is no input and output directory
             if (!inputDirectory.exists() || !outputDirectory.exists()) {
@@ -94,69 +124,79 @@ class InputGuiFiji {
                 // generates the file list that is fed to the preview GUI
                 ArrayList<String> fileList = getFileList.getFileList(checkTrailingSlash(inputFileString));
 
-                if ( settingsFile != null && settingsFile.exists() ) {
+                if (fileList.isEmpty()) {
 
-                    String settingsFileString = settingsFile.toString();
+                    IJ.error("No suitable files found for processing! Choose another directory!");
+                    IJ.log("No suitable files found for processing!");
+                    this.createWindow();
 
-                    IJ.log("Found xml settings file: " + settingsFileString);
-                    XmlHandler readMyXml = new XmlHandler();
+                } else {
 
-                    try {
+                    if ( settingsFile != null && settingsFile.exists() ) {
 
-                        // reads settings file
-                        readMyXml.xmlReader(settingsFileString);
+                        String settingsFileString = settingsFile.toString();
 
-                        // Constructs the preview GUI with the loaded settings from the settings file
+                        IJ.log("Found xml settings file: " + settingsFileString);
+                        XmlHandler readMyXml = new XmlHandler();
+
+                        try {
+
+                            // reads settings file
+                            readMyXml.xmlReader(settingsFileString);
+
+                            // Constructs the preview GUI with the loaded settings from the settings file
+                            PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString),
+                                    checkTrailingSlash(outputFileString),
+                                    fileList, readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
+                                    readMyXml.readSigmaSpots, readMyXml.readRollingSpots,
+                                    readMyXml.readThresholdSpots, readMyXml.readSpotErosion,
+                                    readMyXml.readRadiusGradient,
+                                    readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,
+                                    readMyXml.readLowCirc,readMyXml.readHighCirc,
+                                    readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
+                                    readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,
+                                    readMyXml.readStimFrame, readMyXml.readCalibrationSetting,
+                                    readMyXml.readPxSizeMicron, readMyXml.readFrameRate
+                            );
+
+                            // instantiates previewGui
+                            previewGui.setUpGui();
+
+                        } catch (ParserConfigurationException ex) {
+
+                            ex.printStackTrace();
+                            IJ.log("ERROR: XML reader, Parser Configuration exception");
+                            IJ.error("Please select a valid .xml or leave empty");
+                            settingsFile = null;
+
+                        } catch (IOException ex) {
+
+                            ex.printStackTrace();
+                            IJ.log("ERROR: XML reader, IOException");
+                            IJ.error("Please select a valid .xml or leave empty");
+                            settingsFile = null;
+
+                        } catch (SAXException ex) {
+
+                            ex.printStackTrace();
+                            IJ.log("ERROR: XML reader, SAXException");
+                            IJ.error("Please select a valid .xml or leave empty");
+                            settingsFile = null;
+
+                        }
+
+                    } else {
+
+                        IJ.log("Did no find xml settings file using default values");
+
+                        // constructs previewGui from default settings since no valid settings file was given
                         PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString),
-                                checkTrailingSlash(outputFileString),
-                                fileList, readMyXml.readProjMethod, readMyXml.readSigmaLoG, readMyXml.readProminence,
-                                readMyXml.readSigmaSpots, readMyXml.readRollingSpots,
-                                readMyXml.readThresholdSpots, readMyXml.readSpotErosion,
-                                readMyXml.readRadiusGradient,
-                                readMyXml.readMinSizeSpot, readMyXml.readMaxSizeSpot,
-                                readMyXml.readLowCirc,readMyXml.readHighCirc,
-                                readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
-                                readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,
-                                readMyXml.readStimFrame, readMyXml.readCalibrationSetting,
-                                readMyXml.readPxSizeMicron, readMyXml.readFrameRate
-                        );
+                                checkTrailingSlash(outputFileString), fileList);
 
                         // instantiates previewGui
                         previewGui.setUpGui();
 
-                    } catch (ParserConfigurationException ex) {
-
-                        ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, Parser Configuration exception");
-                        IJ.error("Please select a valid .xml or leave empty");
-                        settingsFile = null;
-
-                    } catch (IOException ex) {
-
-                        ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, IOException");
-                        IJ.error("Please select a valid .xml or leave empty");
-                        settingsFile = null;
-
-                    } catch (SAXException ex) {
-
-                        ex.printStackTrace();
-                        IJ.log("ERROR: XML reader, SAXException");
-                        IJ.error("Please select a valid .xml or leave empty");
-                        settingsFile = null;
-
                     }
-
-                } else {
-
-                    IJ.log("Did no find xml settings file using default values");
-
-                    // constructs previewGui from default settings since no valid settings file was given
-                    PreviewGui previewGui = new PreviewGui(checkTrailingSlash(inputFileString),
-                            checkTrailingSlash(outputFileString), fileList);
-
-                    // instantiates previewGui
-                    previewGui.setUpGui();
 
                 }
 
