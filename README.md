@@ -37,6 +37,7 @@ The image calibration can be changed in the workflow.
 A settings file can be provided but can also be created later.
 
 A small example file is provided here: https://github.com/schmiedc/pHluorinJ/blob/master/testInput/testMovie.tif
+
 The default segmentation parameters should work.
 
 Usage
