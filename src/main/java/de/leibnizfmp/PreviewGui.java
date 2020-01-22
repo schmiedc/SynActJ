@@ -197,13 +197,13 @@ public class PreviewGui extends JPanel{
         detectionBox.setBorder(titleDetection);
 
         // Spinner for some number input
-        doubleSpinnerLoGSpot = new SpinnerNumberModel(sigmaLoG, 0.0,5.0, 0.1);
+        doubleSpinnerLoGSpot = new SpinnerNumberModel(sigmaLoG, 0.0,20.0, 0.1);
         String spinLabelSpot1 = "LoG sigma: ";
         String spinUnitSpot1 = "µm";
         Box spinSpot1 = addLabeledSpinnerUnit(spinLabelSpot1, doubleSpinnerLoGSpot, spinUnitSpot1);
         detectionBox.add(spinSpot1);
 
-        doubleSpinnerProminenceSpot = new SpinnerNumberModel(prominence, 0.0,1.0, 0.0001);
+        doubleSpinnerProminenceSpot = new SpinnerNumberModel(prominence, 0.0,1000.0, 0.0001);
         String spinLabelSpot2 = "Prominence: ";
         String spinUnitSpot2 = "";
         Box spinSpot2 = addLabeledSpinner5Digit(spinLabelSpot2, doubleSpinnerProminenceSpot, spinUnitSpot2);
@@ -219,7 +219,7 @@ public class PreviewGui extends JPanel{
         titleSegmentation = BorderFactory.createTitledBorder(blackline, "Segment: size & number of spots");
         segmentationBox.setBorder(titleSegmentation);
 
-        doubleSpinnerGaussSpot = new SpinnerNumberModel(sigmaSpots, 0.0,10.0, 0.1);
+        doubleSpinnerGaussSpot = new SpinnerNumberModel(sigmaSpots, 0.0,50.0, 0.1);
         String spinLabelSpot3 = "Gauss sigma: ";
         String spinUnitSpot3 = "px";
         Box spinSpot3 = addLabeledSpinnerUnit(spinLabelSpot3, doubleSpinnerGaussSpot, spinUnitSpot3);
@@ -258,7 +258,7 @@ public class PreviewGui extends JPanel{
         titleSplitting = BorderFactory.createTitledBorder(blackline, "Split spots: separation of spots");
         splittingBox.setBorder(titleSplitting);
 
-        intSpinnerGradient = new SpinnerNumberModel(radiusGradient,0,10,1);
+        intSpinnerGradient = new SpinnerNumberModel(radiusGradient,0,50,1);
         String spinLabelSpot5 = "Gradient radius: ";
         String spinUnitSpot5 = "px";
         Box spinSpot5 = addLabeledSpinnerUnit(spinLabelSpot5, intSpinnerGradient, spinUnitSpot5);
@@ -273,13 +273,13 @@ public class PreviewGui extends JPanel{
         titleFilter = BorderFactory.createTitledBorder(blackline, "Filter spots: size and circ.");
         filterBox.setBorder(titleFilter);
 
-        doubleSpinnerMinSize = new SpinnerNumberModel(minSizeSpot, 0.0,10000, 0.1);
+        doubleSpinnerMinSize = new SpinnerNumberModel(minSizeSpot, 0.0,1000000, 0.1);
         String labelMinSize = "Minimum spot size: ";
         String unitMinSize = "µm²";
         Box minSizeBox = addLabeledSpinnerUnit(labelMinSize , doubleSpinnerMinSize, unitMinSize);
         filterBox.add(minSizeBox);
 
-        doubleSpinnerMaxSize = new SpinnerNumberModel(maxSizeSpot, 0.0,10000, 0.1);
+        doubleSpinnerMaxSize = new SpinnerNumberModel(maxSizeSpot, 0.0,1000000, 0.1);
         String labelMaxSize = "Maximum spot size: ";
         String unitMaxSize = "µm²";
         Box maxSizeBox = addLabeledSpinnerUnit(labelMaxSize , doubleSpinnerMaxSize, unitMaxSize);
@@ -318,7 +318,7 @@ public class PreviewGui extends JPanel{
         titleSegmentation = BorderFactory.createTitledBorder(blackline, "Segmentation: size of background");
         segmentationBox.setBorder(titleSegmentation);
 
-        doubleSpinBack1 = new SpinnerNumberModel(sigmaBackground, 0.0,20.0, 0.1);
+        doubleSpinBack1 = new SpinnerNumberModel(sigmaBackground, 0.0,50.0, 0.1);
         String spinBackLabel1 = "Gauss sigma: ";
         String spinBackUnit1 = "px";
         Box spinnerBack1 = addLabeledSpinnerUnit(spinBackLabel1, doubleSpinBack1, spinBackUnit1);
@@ -376,13 +376,13 @@ public class PreviewGui extends JPanel{
         JLabel settingsLabel = new JLabel("Specify experimental Settings: ");
         boxSettings.add(settingsLabel);
 
-        doubleSpinnerPixelSize = new SpinnerNumberModel(pxSizeMicron, 0.000,1.000, 0.001);
+        doubleSpinnerPixelSize = new SpinnerNumberModel(pxSizeMicron, 0.000,10.000, 0.001);
         String pixelSizeLabel = "Pixel size: ";
         String pixelSizeUnit = "µm";
         Box boxPixelSize = addLabeledSpinnerUnit(pixelSizeLabel,doubleSpinnerPixelSize, pixelSizeUnit);
         boxSettings.add(boxPixelSize);
 
-        doubleSpinnerFrameRate = new SpinnerNumberModel(frameRate, 0.0,10.0, 1.0);
+        doubleSpinnerFrameRate = new SpinnerNumberModel(frameRate, 0.0,100.0, 1.0);
         String frameRateLabel = "Frame rate: ";
         String frameRateUnit = "s";
         Box boxFrameRate = addLabeledSpinnerUnit(frameRateLabel, doubleSpinnerFrameRate, frameRateUnit);
@@ -392,7 +392,7 @@ public class PreviewGui extends JPanel{
         checkCalibration.setSelected(calibrationSetting);
         boxSettings.add(checkCalibration);
 
-        integerSpinnerStimulationFrame = new SpinnerNumberModel(stimFrame, 0,10, 1);
+        integerSpinnerStimulationFrame = new SpinnerNumberModel(stimFrame, 0,1000, 1);
         String stimulationFrameLabel = "Stimulation Frame: ";
         String stimulationFrameUnit = "";
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
