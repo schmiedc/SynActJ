@@ -44,13 +44,14 @@ A log file and a Setup dialog will appear.
 Specify the input and output directory.
 A settings file can be provided or left empty.
 
-Start the Preview by pressing ***Start Preview***.
+Start the Preview by pressing ***OK***.
 
-The Preview GUI dialog with the title pHluorin Processing will appear.
-The right section allows to test different segmentation settings for the boutons and the background.
-In the middle the available files can be selected. 
-In the left the experimental settings (image calibration, stimulation frame) can be specified and the batch processing can be executed. 
-At the bottom one can save, load and reset the settings. 
+The Preview GUI dialog with the title pHluorin Processing will appear:
+
+*Left section:* contains tabs and allows to test different settings for the segmentation of the Boutons and the Background.  
+*Middle section:* the available files can be selected.  
+*Right section:* experimental settings such as image calibration, stimulation frame can be specified and the batch processing can be executed.  
+*Bottom section:* save, load and reset the settings as well as reset the directories.  
 
 To test the segmentation select an image title in the middle pane of the window. 
 Then select the segmentation type by selecting the tab for either ***Boutons*** or ***Background***.
