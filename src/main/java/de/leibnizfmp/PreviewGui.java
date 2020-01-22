@@ -1149,7 +1149,8 @@ public class PreviewGui extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Boolean checkDir = IJ.showMessageWithCancel("Warning!", "Reset Directories?");
+            Boolean checkDir = IJ.showMessageWithCancel("Warning!", "Do you want to reset Directories? \n \n " +
+                    "Settings will remain the same!");
 
             if ( checkDir ){
 
@@ -1184,7 +1185,7 @@ public class PreviewGui extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Boolean checkResetSettings = IJ.showMessageWithCancel("Warning!", "Reset Directories?");
+            Boolean checkResetSettings = IJ.showMessageWithCancel("Warning!", "Reset Segmentation Settings?");
 
             if ( checkResetSettings ) {
 

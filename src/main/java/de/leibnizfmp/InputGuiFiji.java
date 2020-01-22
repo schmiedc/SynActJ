@@ -8,8 +8,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
 
+/**
+ * implements the setup dialog for the input output directories using ImageJ's inbuilt dialogs
+ * thus now enable to drag and drop folders
+ * also the code is simpler in this version compared to the old InputGui
+ */
 class InputGuiFiji {
 
     private static File inputDirectory = null;
@@ -21,6 +25,9 @@ class InputGuiFiji {
     String defaultSettingsFile;
     Boolean showSettingsSwitch;
 
+    /**
+     * default constructor
+     */
     InputGuiFiji() {
 
         defaultInputDirectory = "Choose Directory";
@@ -30,23 +37,38 @@ class InputGuiFiji {
         showSettingsSwitch = true;
     }
 
-    InputGuiFiji(String SettingsFile, Boolean showSettings) {
+    /**
+     * Constructor to change only the directories
+     * The option for selecting a settingsFile are hidden
+     *
+     * @param settingsFileString name of the xml file that stores the analysis settings
+     * @param showSettings boolean that switches the settingsFile dialog on or off
+     */
+    InputGuiFiji(String settingsFileString, Boolean showSettings) {
 
         defaultInputDirectory = "Choose Directory";
         defaultOutputDirectory = "Choose Directory";
-        defaultSettingsFile = SettingsFile;
-        settingsFile = new File(SettingsFile);
-        showSettingsSwitch = false;
+        defaultSettingsFile = settingsFileString;
+        settingsFile = new File(settingsFileString);
+        showSettingsSwitch = showSettings;
 
         IJ.log("Taking settings from previous preview:");
-        IJ.log(SettingsFile);
+        IJ.log(settingsFileString);
     }
 
-    InputGuiFiji(String InputDir, String OutputDir, String SettingsFile ) {
+    /**
+     * Constructor that takes inputs for input and output directories
+     * as well as a settingsFile for testing the workflow
+     *
+     * @param inputDir location for test files
+     * @param outputDir location for writing the test outputs
+     * @param settingsFileString location of test settingsFile
+     */
+    InputGuiFiji(String inputDir, String outputDir, String settingsFileString ) {
 
-        defaultInputDirectory = InputDir;
-        defaultOutputDirectory = OutputDir;
-        defaultSettingsFile = SettingsFile;
+        defaultInputDirectory = inputDir;
+        defaultOutputDirectory = outputDir;
+        defaultSettingsFile = settingsFileString;
         settingsFile = null;
         showSettingsSwitch = true;
 
