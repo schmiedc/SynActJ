@@ -392,7 +392,7 @@ public class PreviewGui extends JPanel{
         checkCalibration.setSelected(calibrationSetting);
         boxSettings.add(checkCalibration);
 
-        integerSpinnerStimulationFrame = new SpinnerNumberModel(stimFrame, 0,1000, 1);
+        integerSpinnerStimulationFrame = new SpinnerNumberModel(stimFrame, 0,10000, 1);
         String stimulationFrameLabel = "Stimulation Frame: ";
         String stimulationFrameUnit = "";
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
