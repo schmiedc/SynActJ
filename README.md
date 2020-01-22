@@ -38,7 +38,7 @@ A settings file can be provided but can also be created later.
 
 A small example file is provided here: https://github.com/schmiedc/pHluorinJ/blob/master/testInput/testMovie.tif
 
-The default segmentation parameters should work.
+The default segmentation parameters should work for this example file.
 
 Usage
 ========================
