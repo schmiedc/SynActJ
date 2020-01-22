@@ -9,8 +9,15 @@ segmentation parameters for the end user.
 
 Based on the ImageJ 1.x plugin example: https://github.com/imagej/example-legacy-plugin
 
-Uses the marker controlled watershed by Ignacio Arganda-Carreras, David Legland:
-http://fiji.sc/Marker-controlled_Watershed
+Uses the following plugins:
+
+Marker controlled watershed: http://fiji.sc/Marker-controlled_Watershed
+
+David Legland, Ignacio Arganda-Carreras, Philippe Andrey; MorphoLibJ: integrated library and plugins for mathematical morphology with ImageJ. Bioinformatics 2016; 32 (22): 3532-3534. doi: 10.1093/bioinformatics/btw413 
+
+LoG3D plugin: http://bigwww.epfl.ch/sage/soft/LoG3D/ 
+
+D. Sage, F.R. Neumann, F. Hediger, S.M. Gasser, M. Unser, "Automatic Tracking of Individual Fluorescence Particles: Application to the Study of Chromosome Dynamics," IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005. 
 
 Installation
 ========================
