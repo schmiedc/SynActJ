@@ -3,14 +3,21 @@ pHlourinJ - ImageJ 1.x plugin.
 
 Synapto-pHluorin allows to measure synaptic vesicle release and recycling in cultured neurons. 
 This ImageJ plugin segments synaptic boutons in noisy and background rich images.
-It is using a seeded watershed and extract fluorescent intensity traces over time.
+It is using a seeded watershed and extracts fluorescent intensity traces over time.
 The key advantage of this plugins is the easy and interactive adjustment of the 
 segmentation parameters for the end user. 
 
 Based on the ImageJ 1.x plugin example: https://github.com/imagej/example-legacy-plugin
 
-Uses the marker controlled watershed by Ignacio Arganda-Carreras, David Legland:
-http://fiji.sc/Marker-controlled_Watershed
+Uses the following plugins:
+
+Marker controlled watershed: http://fiji.sc/Marker-controlled_Watershed
+
+David Legland, Ignacio Arganda-Carreras, Philippe Andrey; MorphoLibJ: integrated library and plugins for mathematical morphology with ImageJ. Bioinformatics 2016; 32 (22): 3532-3534. doi: 10.1093/bioinformatics/btw413 
+
+LoG3D plugin: http://bigwww.epfl.ch/sage/soft/LoG3D/ 
+
+D. Sage, F.R. Neumann, F. Hediger, S.M. Gasser, M. Unser, "Automatic Tracking of Individual Fluorescence Particles: Application to the Study of Chromosome Dynamics," IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005. 
 
 Installation
 ========================
@@ -37,13 +44,14 @@ A log file and a Setup dialog will appear.
 Specify the input and output directory.
 A settings file can be provided or left empty.
 
-Start the Preview by pressing ***Start Preview***.
+Start the Preview by pressing ***OK***.
 
-The Preview GUI dialog with the title pHluorin Processing will appear.
-The right section allows to test different segmentation settings for the boutons and the background.
-In the middle the available files can be selected. 
-In the left the experimental settings (image calibration, stimulation frame) can be specified and the batch processing can be executed. 
-At the bottom one can save, load and reset the settings. 
+The Preview GUI dialog with the title pHluorin Processing will appear:
+
+*Left section:* contains tabs and allows to test different settings for the segmentation of the Boutons and the Background.  
+*Middle section:* the available files can be selected.  
+*Right section:* experimental settings such as image calibration, stimulation frame can be specified and the batch processing can be executed.  
+*Bottom section:* save, load and reset the settings as well as reset the directories.  
 
 To test the segmentation select an image title in the middle pane of the window. 
 Then select the segmentation type by selecting the tab for either ***Boutons*** or ***Background***.
