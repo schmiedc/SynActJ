@@ -40,7 +40,7 @@ A small example file is provided here: https://github.com/schmiedc/pHluorinJ/blo
 
 The default segmentation parameters should work for this example file.
 
-Usage
+Quick start guide
 ========================
 Execute the plugin via: ***Plugins > pHluorinJ***.
 
