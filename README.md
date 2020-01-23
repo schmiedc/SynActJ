@@ -89,3 +89,6 @@ To review the segmentation drag & drop the input image and the ROI into ImageJ.
 The measurements for the background as well as the bouton intensity over time are saved as .csv files for each ROI.
 `<filename>_ROI-<number>_background.csv
 <filename>_ROI-<number>_Spot.csv`
+
+The processing and analysis of the result files can be achieved using the following R scripts:
+https://github.com/schmiedc/pHluorin-Rscripts
