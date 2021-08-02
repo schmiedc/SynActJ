@@ -274,19 +274,19 @@ public class PreviewGui extends JPanel{
         filterBox.setBorder(titleFilter);
 
         doubleSpinnerMinSize = new SpinnerNumberModel(minSizeSpot, 0.0,1000000, 0.1);
-        String labelMinSize = "Minimum spot size: ";
+        String labelMinSize = "Min. spot size: ";
         String unitMinSize = "µm²";
         Box minSizeBox = addLabeledSpinnerUnit(labelMinSize , doubleSpinnerMinSize, unitMinSize);
         filterBox.add(minSizeBox);
 
         doubleSpinnerMaxSize = new SpinnerNumberModel(maxSizeSpot, 0.0,1000000, 0.1);
-        String labelMaxSize = "Maximum spot size: ";
+        String labelMaxSize = "Max. spot size: ";
         String unitMaxSize = "µm²";
         Box maxSizeBox = addLabeledSpinnerUnit(labelMaxSize , doubleSpinnerMaxSize, unitMaxSize);
         filterBox.add(maxSizeBox);
 
         doubleSpinnerLowCirc = new SpinnerNumberModel(lowCirc, 0.0,1.0, 0.01);
-        String labelLowCirc = "Minimum spot circ.: ";
+        String labelLowCirc = "Min. spot circ.: ";
         String unitLowCirc = "";
         Box lowCirc = addLabeledSpinnerUnit(labelLowCirc , doubleSpinnerLowCirc, unitLowCirc);
         filterBox.add(lowCirc);
@@ -1149,7 +1149,7 @@ public class PreviewGui extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Boolean checkDir = IJ.showMessageWithCancel("Warning!", "Do you want to reset Directories? \n \n " +
+            boolean checkDir = IJ.showMessageWithCancel("Warning!", "Do you want to reset Directories? \n \n " +
                     "Settings will remain the same!");
 
             if ( checkDir ){
@@ -1185,7 +1185,7 @@ public class PreviewGui extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Boolean checkResetSettings = IJ.showMessageWithCancel("Warning!", "Reset Segmentation Settings?");
+            boolean checkResetSettings = IJ.showMessageWithCancel("Warning!", "Reset Segmentation Settings?");
 
             if ( checkResetSettings ) {
 
