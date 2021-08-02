@@ -14,7 +14,7 @@
 
 	<groupId>de.leibniz-fmp</groupId>
 	<artifactId>PHluorinJ_</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 
 	<name>pHluorin workflow</name>
 	<description>A Maven project implementing an ImageJ 1.x plugin.</description>
