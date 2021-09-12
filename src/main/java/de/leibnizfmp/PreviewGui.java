@@ -437,7 +437,7 @@ public class PreviewGui extends JPanel{
     void setUpGui() {
 
         // sets up the frame
-        theFrame = new JFrame("pHluorin Processing");
+        theFrame = new JFrame("SynActJ Processing");
         // needs to set to dispose otherwise it also closes Fiji
         theFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         BorderLayout layout = new BorderLayout();
