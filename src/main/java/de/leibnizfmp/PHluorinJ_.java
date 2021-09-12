@@ -68,11 +68,10 @@ public class PHluorinJ_ implements PlugIn {
 		// start imageJ
 		new ImageJ();
 
-
 		// show something in the status bar
 		String testInDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestIn/";
 		String testOutDir = "/home/schmiedc/Desktop/Projects/pHlorin_Review_TS/New TestOut/";
-		String settings = "setting";
+		String settings = "Load setting .xml or leave empty";
 
 		FileList getFileList = new FileList();
 		ArrayList<String> fileList = getFileList.getFileList(testInDir);
