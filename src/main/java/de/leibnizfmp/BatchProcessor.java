@@ -65,7 +65,7 @@ class BatchProcessor {
 
         Calibration calibration;
 
-        IJ.showStatus("Running pHlourin Batch processing...");
+        IJ.showStatus("Running SynActJ Batch processing...");
 
         for (String image : fileList) {
 
@@ -112,7 +112,7 @@ class BatchProcessor {
 
         }
 
-        IJ.showStatus("pHlourin Batch processing finished!");
+        IJ.showStatus("SynActJ Batch processing finished!");
         IJ.log("Finished batch Processing");
 
         IJ.selectWindow("Log");

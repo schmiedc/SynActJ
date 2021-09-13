@@ -35,7 +35,7 @@ public class SynActJ_ implements PlugIn {
 	public void run(String s) {
 
 		//System.setProperty("scijava.log.level", "debug");
-		IJ.log("Starting pHlourin plugin");
+		IJ.log("Starting SynActJ plugin");
 		//InputGui start = new InputGui();
 		//start.createWindow();
 
