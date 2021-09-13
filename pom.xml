@@ -13,7 +13,7 @@
 	</parent>
 
 	<groupId>de.leibniz-fmp</groupId>
-	<artifactId>PHluorinJ_</artifactId>
+	<artifactId>SynActJ_</artifactId>
 	<version>0.1.1-SNAPSHOT</version>
 
 	<name>pHluorin workflow</name>
@@ -65,7 +65,7 @@
 
 	<properties>
 		<package-name>de.leibnizfmp</package-name>
-		<main-class>de.leibnizfmp.PHluorinJ_</main-class>
+		<main-class>de.leibnizfmp.SynActJ_</main-class>
 		<license.licenseName>MIT</license.licenseName>
 		<license.copyrightOwners>FMP-Berlin</license.copyrightOwners>
 		<imagej.app.directory>/data1/FMP_Docs/DevelopmentEnv/Fiji/Fiji.app</imagej.app.directory>

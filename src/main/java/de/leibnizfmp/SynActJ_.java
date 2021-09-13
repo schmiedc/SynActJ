@@ -29,7 +29,7 @@ import ij.plugin.PlugIn;
  * @author Christopher Schmied,
  * @version 1.0.0
  */
-public class PHluorinJ_ implements PlugIn {
+public class SynActJ_ implements PlugIn {
 
 	@Override
 	public void run(String s) {
@@ -55,7 +55,7 @@ public class PHluorinJ_ implements PlugIn {
 	public static void main(String[] args) throws Exception {
 		// set the plugins.dir property to make the plugin appear in the Plugins menu
 		// see: https://stackoverflow.com/a/7060464/1207769
-		Class <?> main_class = PHluorinJ_.class;
+		Class <?> main_class = SynActJ_.class;
 		java.net.URL url = main_class.getProtectionDomain().getCodeSource().getLocation();
 		java.io.File fileDir = new java.io.File(url.toURI());
 		System.setProperty("plugins.dir", fileDir.getAbsolutePath());
