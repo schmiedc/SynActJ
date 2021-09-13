@@ -14,10 +14,10 @@
 
 	<groupId>de.leibniz-fmp</groupId>
 	<artifactId>SynActJ_</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.2.1-SNAPSHOT</version>
 
-	<name>pHluorin workflow</name>
-	<description>A Maven project implementing an ImageJ 1.x plugin.</description>
+	<name>SynActJ workflow</name>
+	<description>Synaptic Activity in ImageJ (SynActJ) is an image and data analysis workflow that allows to analyze synaptic activity. </description>
 	<url>https://www.leibniz-fmp.de/core-facilities/cellular-imaging/lehmann/research.html</url>
 	<inceptionYear>2019</inceptionYear>
 	<organization>
@@ -37,10 +37,22 @@
 			<name>Christopher Schmied</name>
 			<url>https://github.com/schmiedc</url>
 			<roles>
+				<role>founder</role>
+				<role>lead</role>
 				<role>developer</role>
+				<role>debugger</role>
+				<role>reviewer</role>
+				<role>support</role>
+				<role>maintainer</role>
 			</roles>
 		</developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>none</name>
+		</contributor>
+	</contributors>
 
 	<mailingLists>
 		<mailingList>
