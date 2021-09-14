@@ -77,7 +77,7 @@ R Version 4.1.0<br/>
 Select version 4.1.0
 
 
-RStudio 1.4.17117<br/>
+RStudio 1.4.1717<br/>
 [Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
 
 
