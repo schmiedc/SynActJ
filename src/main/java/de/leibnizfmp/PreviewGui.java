@@ -8,6 +8,7 @@ import ij.plugin.Commands;
 import org.scijava.util.ArrayUtils;
 import org.xml.sax.SAXException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -17,8 +18,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -402,6 +405,28 @@ public class PreviewGui extends JPanel{
         batchButton.addActionListener(new MyBatchListener());
 
         boxSettings.add(batchButton);
+
+        boxSettings.add(Box.createRigidArea(new Dimension(0, 60)));
+
+        URL url = getClass().getResource("/LogoSynActJ1.png");
+
+        if (url == null)
+            System.out.println( "Could not find image!" );
+        else {
+            System.out.println( "Could find image!" );
+
+            try {
+
+                final BufferedImage myLogo = ImageIO.read(url);
+                JLabel logoLabel = new JLabel(new ImageIcon(myLogo));
+                boxSettings.add(logoLabel);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     /**
