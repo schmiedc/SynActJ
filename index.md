@@ -82,3 +82,6 @@ RStudio 1.4.17117<br/>
 
 
 # User tutorials
+
+## - [SynActJ Fiji Plugin](pages/Fiji_Plugin.html)
+## - [SynActJ R Shiny App](pages/SynActJ_Shiny.html)
