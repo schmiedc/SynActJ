@@ -1,37 +1,84 @@
-## Welcome to GitHub Pages
+---
+layout: default
+title: Start
+---
+# Automated analysis of synaptic activity
 
-You can use the [editor on GitHub](https://github.com/schmiedc/pHluorinJ/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Synaptic Activity in ImageJ (SynActJ) is an image and data analysis workflow that allows to analyze synaptic activity. It is based on a Fiji plugin and a R Shiny App that implement the automated image analysis of active synapses in time-lapse movies. We tested the workflow with movies of pHluorin or calcium sensors.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Core features
 
-### Markdown
+- Java Swing based graphical user interface
+- Interactive adjustment over entire dataset
+- Batch processing executed from main interface
+- Saving and loading of processing settings
+- Shiny App for data processing
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+[Link to SynActJ repository](https://github.com/schmiedc/SynActJ)<br>
+[Link to SynActJ Shiny repository](https://github.com/schmiedc/SynActJ_Shiny)
 
-```markdown
-Syntax highlighted code block
+## Methods overview
+ 
+**1. Detection & Segmentation**
+- Average projections are performed before and after the specified stimulation frame
+- The projection after the stimulation is divided by the projection before the stimulation
+- A Laplacian of Gaussian is performed to enhance Blob-like structures and a maximum detection is performed
+- An intensity threshold is used to segment the blob area
+- The detection and the segmentation is fed into a seeded watershed to compute regions of interest (ROI) per detection and separate touching objects
 
-# Header 1
-## Header 2
-### Header 3
+**2. Background segmentation**
+- Maximum intensity projection over movie
+- Intensity based threshold
+- Invert mask
 
-- Bulleted
-- List
+**3. Image measurements**
+- Mean signal per ROI is extracted for each frame
+- Other parameters such as area are measured per ROI
 
-1. Numbered
-2. List
+**4. Data processing**
+- Average signal and background is computed
+- Background is subtracted from average signal
+- Signal is surface normalized
+- Signal is peak normalized
 
-**Bold** and _Italic_ and `Code` text
+### Fiji methods used
 
-[Link](url) and ![Image](src)
-```
+[Marker controlled watershed:](http://fiji.sc/Marker-controlled_Watershed)<br>
+David Legland, Ignacio Arganda-Carreras, Philippe Andrey; MorphoLibJ: integrated library and plugins for mathematical morphology with ImageJ. Bioinformatics 2016; 32 (22): 3532-3534. doi: 10.1093/bioinformatics/btw413
+<br>
+<br>
+[LoG3D plugin:](http://bigwww.epfl.ch/sage/soft/LoG3D/)<br>
+D. Sage, F.R. Neumann, F. Hediger, S.M. Gasser, M. Unser, "Automatic Tracking of Individual Fluorescence Particles: Application to the Study of Chromosome Dynamics," IEEE Transactions on Image Processing, vol. 14, no. 9, pp. 1372-1383, September 2005.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Accepted Datasets
 
-### Jekyll Themes
+Expected are 2D single channel .tif files containing multiple frames. At a specific frame the cultured neurons were stimulated and active boutons show an increase in intensity. The image calibration can be changed in the workflow. A settings file can be provided but can also be created later.
+<br>
+<br>
+A small example file is provided here: [Link to example data](https://github.com/schmiedc/pHluorinJ/blob/master/testInput/testMovie.tif)
+<br>
+The default segmentation parameters should work for this example file.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/schmiedc/pHluorinJ/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Installation
 
-### Support or Contact
+For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).<br/>
+The plugin is available via an update site. Add the Cellular-Imaging site:
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+1. Select **Help › Update…** from the menu bar. This will install potential updates and open a new window.
+2. Click on **Manage update sites**. Which opens the Manage update sites dialog.
+3. Press **Add update site** a new line in the Manage update sites dialog appears.
+4. Add https://sites.imagej.net/Cellular-Imaging/ as url.
+5. Add an optional name such as Cellular-Imaging.
+6. Press **Close** and then **Apply** changes.
+
+
+R Version 4.1.0<br/>
+[Link to R](https://cran.r-project.org/bin/windows/base/)<br/>
+Select version 4.1.0
+
+
+RStudio 1.4.17117<br/>
+[Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+
+# User tutorials
