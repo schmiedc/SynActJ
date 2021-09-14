@@ -6,6 +6,8 @@ title: Start
 
 Synaptic Activity in ImageJ (SynActJ) is an image and data analysis workflow that allows to analyze synaptic activity. It is based on a Fiji plugin and a R Shiny App that implement the automated image analysis of active synapses in time-lapse movies. We tested the workflow with movies of pHluorin or calcium sensors.
 
+<img src="../images/teaser.png" alt="teaser" class="inline"/>
+
 ## Core features
 
 - Java Swing based graphical user interface
