@@ -29,7 +29,7 @@ The default segmentation parameters should work for this example file.
 
 ### Image analysis - Fiji plugin
 
-For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).
+For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).<br>
 The plugin is available via an update site. Add the Cellular-Imaging site:
 
 1. Select **Help › Update…** from the menu bar. This will install potential updates and open a new window.
@@ -42,14 +42,14 @@ The plugin is available via an update site. Add the Cellular-Imaging site:
 
 ### Data analysis - Shiny app
 
-Repository for RShiny app: [Link to Repo](https://github.com/schmiedc/SynActJ_Shiny)
+Repository for RShiny app: [Link to Repo](https://github.com/schmiedc/SynActJ_Shiny)<br>
 Tutorial for Shiny app: [Link to tutorial](https://schmiedc.github.io/SynActJ/pages/SynActJ_Shiny.html)
 
-For the data analysis you need to download R and RStudio: R Version 4.1.0
-[Link to R](https://cran.r-project.org/bin/windows/base/)
+For the data analysis you need to download R and RStudio: R Version 4.1.0<br>
+[Link to R](https://cran.r-project.org/bin/windows/base/)<br>
 Select version 4.1.0
 
-RStudio 1.4.1717
+RStudio 1.4.1717<br>
 [Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
 
 1. Download the contents of the repository: SynActJ Shiny
