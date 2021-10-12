@@ -42,7 +42,7 @@ The plugin is available via an update site. Add the Cellular-Imaging site:
 
 ### Data analysis - Shiny app
 
-Repository for RShiny app: [Link to Repo](https://github.com/schmiedc/SynActJ_Shiny)<br>
+Repository for Shiny app: [Link to Repo](https://github.com/schmiedc/SynActJ_Shiny)<br>
 Tutorial for Shiny app: [Link to tutorial](https://schmiedc.github.io/SynActJ/pages/SynActJ_Shiny.html)
 
 For the data analysis you need to download R and RStudio: R Version 4.1.0<br>
