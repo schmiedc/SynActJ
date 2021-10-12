@@ -22,7 +22,7 @@ Synaptic Activity in ImageJ (SynActJ) is an image and data analysis workflow tha
 ## Methods overview
  
 **1. Detection & Segmentation**
-- Average projections are performed before and after the specified stimulation frame
+- Maximum intensity projections are performed before and after the specified stimulation frame
 - The projection after the stimulation is divided by the projection before the stimulation
 - A Laplacian of Gaussian is performed to enhance Blob-like structures and a maximum detection is performed
 - An intensity threshold is used to segment the blob area
