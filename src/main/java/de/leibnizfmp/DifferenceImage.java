@@ -46,7 +46,7 @@ class DifferenceImage {
     }
 
     /**
-     * Difference image contructor
+     * Difference image constructor
      *
      * @param method projection method
      */

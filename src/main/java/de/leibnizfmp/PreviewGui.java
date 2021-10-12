@@ -1217,7 +1217,6 @@ public class PreviewGui extends JPanel{
                 IJ.log("Resetting settings to default parameters");
 
                 // Projection Method
-                //projMethod = "median";
                 projMethod = "max";
 
                 sigmaLoG = 0.5;
@@ -1352,7 +1351,6 @@ public class PreviewGui extends JPanel{
         fileList= filesToProcess;
 
         // Projection Method
-        //projMethod = "median";
         projMethod = "max";
 
         sigmaLoG = 0.5;

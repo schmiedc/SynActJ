@@ -285,41 +285,6 @@ class BatchProcessor {
     }
 
     /**
-     * Batch processor constructor with default settings
-     *
-     * @param inputDirectory directory for input images
-     * @param outputDirectory directory for saving results
-     * @param filesToProcess list the file names for batch
-     */
-    BatchProcessor (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess) {
-
-        inputDir = inputDirectory;
-        outputDir = outputDirectory;
-        fileList = filesToProcess;
-
-        projMethod = "median";
-        sigmaLoG = 0.5;
-        prominence = 0.005;
-        sigmaSpots = 1.0;
-        rollingSpots = 30.0;
-        thresholdSpots = "Triangle";
-        spotErosion = false;
-        radiusGradient = 3;
-        minSizeSpot = 0.0;
-        maxSizeSpot = 1000.0;
-        lowCirc = 0.0;
-        highCirc = 1.0;
-        sigmaBackground = 4.0;
-        thresholdBackground = "MinError";
-        minSizeBack = 0.0;
-        maxSizeBack = 10000.0;
-        calibrationSetting = false;
-        stimFrame = 5;
-        pxSizeMicron = 0.162;
-        frameRate = 2.0;
-    }
-
-    /**
      * Batch processor constructor
      *
      * @param inputDirectory directory for input images
