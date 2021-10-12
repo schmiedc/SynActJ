@@ -63,25 +63,39 @@ The default segmentation parameters should work for this example file.
 
 ## Installation
 
+### Image analysis - Fiji plugin
+
 For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).<br/>
 The plugin is available via an update site. Add the Cellular-Imaging site:
 
 1. Select **Help › Update…** from the menu bar. This will install potential updates and open a new window.
 2. Click on **Manage update sites**. Which opens the Manage update sites dialog.
-3. Press **Add update site** a new line in the Manage update sites dialog appears.
-4. Add https://sites.imagej.net/Cellular-Imaging/ as url.
-5. Add an optional name such as Cellular-Imaging.
-6. Press **Close** and then **Apply** changes.
+3. Search for the **Cellular Imaging** update site in the list.
+4. Add the update site by setting the tick box.
+5. Press **Close** and then **Apply** changes.
+6. The SynActJ should appear with the Status: **Install it**.
+7. Press **Apply changes** wait for download to finish and restart Fiji.
 
+### Data analysis - Rshiny app
 
+For the data analysis you need to download R and RStudio:
 R Version 4.1.0<br/>
 [Link to R](https://cran.r-project.org/bin/windows/base/)<br/>
 Select version 4.1.0
 
-
 RStudio 1.4.1717<br/>
 [Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
 
+1. Download the contents of the repository:
+  [SynActJ Shiny](https://github.com/schmiedc/SynActJ_Shiny)<br>
+  Click on the green button: **Code**.<br>
+  Press **Download ZIP** to download the scripts.
+2. Unzip the script to a location of your choice.
+3. Open the *app.R* file in RStudio.
+4. Start the application:  press **Run App** -  top right corner of RStudio.
+5. RStudio may ask to install or load extra packages - Download will take some time.
+6. Once these packages are installed and loaded the RShiny GUI should pop up.
+7. Optional: Press **Open in Browser** for a better rendering of the GUI.
 
 # User tutorials
 

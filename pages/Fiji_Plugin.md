@@ -3,7 +3,20 @@ layout: default
 title: Fiji_Plugin
 ---
 
-# Fiji Plugin Execution
+# Fiji Plugin
+
+## Installation
+
+For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).<br/>
+The plugin is available via an update site. Add the Cellular-Imaging site:
+
+1. Select **Help › Update…** from the menu bar. This will install potential updates and open a new window.
+2. Click on **Manage update sites**. Which opens the Manage update sites dialog.
+3. Search for the **Cellular Imaging** update site in the list.
+4. Add the update site by setting the tick box.
+5. Press **Close** and then **Apply** changes.
+6. The SynActJ should appear with the Status: **Install it**.
+7. Press **Apply changes** wait for download to finish and restart Fiji.
 
 ## Start and loading data
 1. Start Fiji
