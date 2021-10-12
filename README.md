@@ -52,8 +52,8 @@ Select version 4.1.0
 RStudio 1.4.1717<br>
 [Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
 
-1. Download the contents of the repository: SynActJ Shiny
-  Click on the green button: **Code**.
+1. Download the contents of the repository: SynActJ Shiny<br>
+  Click on the green button: **Code**.<br>
   Press **Download ZIP** to download the scripts.
 2. Unzip the script to a location of your choice.
 3. Open the app.R file in RStudio.
