@@ -27,15 +27,38 @@ The default segmentation parameters should work for this example file.
 
 ## Installation
 
-For the image analysis you need to download and install Fiji: [https://fiji.sc/](https://fiji.sc/)
+### Image analysis - Fiji plugin
+
+For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).
 The plugin is available via an update site. Add the Cellular-Imaging site:
 
-1. Select **_Help  › Update...</strong>_** from the menu bar.
-2. Click on Manage update sites. Which opens the **_Manage update sites_** dialog.
-3. Press **_Add update size_** a new line in the Manage update sites dialog appears
-4. Add **_https://sites.imagej.net/Cellular-Imaging/_** as url
-5. Add an optional name such as Cellular-Imaging
-6. Press **_Close_** and then **_Apply changes_**
+1. Select **Help › Update…** from the menu bar. This will install potential updates and open a new window.
+2. Click on **Manage update sites**. Which opens the Manage update sites dialog.
+3. Search for the **Cellular Imaging** update site in the list.
+4. Add the update site by setting the tick box.
+5. Press **Close** and then **Apply** changes.
+6. The SynActJ should appear with the Status: **Install it**.
+7. Press **Apply** changes wait for download to finish and restart Fiji.
 
-For the data anaylsis you need to install R: [https://www.r-project.org/](https://www.r-project.org/)<br>
-As an R editor I recommend to use RStudio: [https://rstudio.com/products/rstudio/download/](https://rstudio.com/products/rstudio/download/)
+### Data analysis - Shiny app
+
+Repository for RShiny app: [Link to Repo](https://github.com/schmiedc/SynActJ_Shiny)
+Tutorial for Shiny app: [Link to tutorial](https://schmiedc.github.io/SynActJ/pages/SynActJ_Shiny.html)
+
+For the data analysis you need to download R and RStudio: R Version 4.1.0
+[Link to R](https://cran.r-project.org/bin/windows/base/)
+Select version 4.1.0
+
+RStudio 1.4.1717
+[Link to RStudio](https://www.rstudio.com/products/rstudio/download/)
+
+1. Download the contents of the repository: SynActJ Shiny
+  Click on the green button: **Code**.
+  Press **Download ZIP** to download the scripts.
+2. Unzip the script to a location of your choice.
+3. Open the app.R file in RStudio.
+4. Start the application: press **Run App** - top right corner of RStudio.
+5. RStudio may ask to install or load extra packages - Download will take some time.
+6. Once these packages are installed and loaded the RShiny GUI should pop up.
+7. Optional: Press **Open in Browser** for a better rendering of the GUI.
+
