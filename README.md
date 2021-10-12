@@ -29,6 +29,8 @@ The default segmentation parameters should work for this example file.
 
 ### Image analysis - Fiji plugin
 
+Tutorial for Shiny app: [Link to tutorial](https://schmiedc.github.io/SynActJ/pages/Fiji_Plugin.html)
+
 For the image analysis you need to download and install Fiji: [Link to Fiji](https://fiji.sc/).<br>
 The plugin is available via an update site. Add the Cellular-Imaging site:
 
