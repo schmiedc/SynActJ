@@ -36,7 +36,7 @@ import java.util.Date;
  */
 public class PreviewGui extends JPanel{
 
-    private String[] thresholdString = { "Default", "Huang", "IJ_IsoData", "Intermodes",
+    private final String[] thresholdString = { "Default", "Huang", "IJ_IsoData", "Intermodes",
             "IsoData", "Li", "MaxEntropy", "Mean", "MinError", "Minimum",
             "Moments", "Otsu", "Percentile", "RenyiEntropy", "Shanbhag",
             "Triangle","Yen",
@@ -106,6 +106,8 @@ public class PreviewGui extends JPanel{
     private JCheckBox checkCalibration;
     private SpinnerModel doubleSpinnerFrameRate;
     private SpinnerModel integerSpinnerStimulationFrame;
+
+    private JLabel actionLabel;
 
     private Border blackline;
 
@@ -303,10 +305,17 @@ public class PreviewGui extends JPanel{
         boxSpotSeg.add(filterBox);
 
         // Preview Button for Spot segmentation
+        Box previewBox = new Box(BoxLayout.X_AXIS);
         JButton previewSpot = new JButton("Preview");
         previewSpot.addActionListener(new MyPreviewSpotListener());
-        boxSpotSeg.add(previewSpot);
+        previewBox.add(previewSpot);
+        boxSpotSeg.add(previewBox);
 
+        // add a information for the detected count(s)
+        Box messageBox = new Box(BoxLayout.X_AXIS);
+        actionLabel = new JLabel("Press preview for counts");
+        messageBox.add(actionLabel);
+        boxSpotSeg.add(messageBox);
     }
 
     /**
@@ -365,9 +374,11 @@ public class PreviewGui extends JPanel{
         boxBackground.add(filterBox);
 
         // setup Buttons
+        Box previewBox = new Box(BoxLayout.X_AXIS);
         JButton previewButton = new JButton("Preview");
         previewButton.addActionListener(new MyPreviewBackListener());
-        boxBackground.add(previewButton);
+        previewBox.add(previewButton);
+        boxBackground.add(previewBox);
 
     }
 
@@ -611,6 +622,8 @@ public class PreviewGui extends JPanel{
             ImagePlus originalImage;
             Calibration calibration;
 
+            int countBouton;
+
             IJ.log("Starting preview for spot segmentation");
 
             // get all the values from the GUI
@@ -735,11 +748,12 @@ public class PreviewGui extends JPanel{
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                        visualizer.spotVisualization( selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
+                        countBouton = visualizer.spotVisualization(selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
 
+                        actionLabel.setText("Found " + countBouton + " Bouton(s)");
 
                     } else {
 
@@ -780,10 +794,12 @@ public class PreviewGui extends JPanel{
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                        visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                        countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
+
+                        actionLabel.setText("Found " + countBouton + " Bouton(s)");
 
                     }
 
@@ -824,10 +840,15 @@ public class PreviewGui extends JPanel{
 
                     SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                    visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                    countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
                             sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                             radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                             calibration, setDisplayRange);
+
+                    IJ.log("Found " + countBouton + " Bouton(s)");
+
+                    actionLabel.setText("Found " + countBouton + " Bouton(s)");
+
                 }
 
             } else {

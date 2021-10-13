@@ -15,8 +15,7 @@ class SegmentationVisualization {
 
     /**
      * visualization of the spot segmentation
-     *
-     * @param originalImage selected image for vis
+     *  @param originalImage selected image for vis
      * @param projMethod projection method
      * @param stimFrame frame when stimulation happens
      * @param sigmaLoG sigma for LoG
@@ -32,12 +31,13 @@ class SegmentationVisualization {
      * @param highCirc maximum circularity of spots
      * @param calibration image calibration setting
      * @param setDisplayRange sets the display range for vis
+     * @return
      */
-    void spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
-                        double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
-                        boolean spotErosion, int radiusGradient, int minSizePx, int maxSizePx,
-                        double lowCirc, double highCirc,
-                        Calibration calibration, boolean setDisplayRange) {
+    int spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
+                          double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
+                          boolean spotErosion, int radiusGradient, int minSizePx, int maxSizePx,
+                          double lowCirc, double highCirc,
+                          Calibration calibration, boolean setDisplayRange) {
 
         // set the specified calibration
         originalImage.setCalibration(calibration);
@@ -82,6 +82,8 @@ class SegmentationVisualization {
 
         manager.reset();
         manager.close();
+
+        return count;
 
     }
 
