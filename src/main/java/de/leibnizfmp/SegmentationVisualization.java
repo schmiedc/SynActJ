@@ -1,5 +1,6 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
@@ -60,6 +61,8 @@ class SegmentationVisualization {
 
         analyzer.analyze(watershed);
 
+        final int count = manager.getCount();
+        IJ.log("Found " + count + " bouton(s)");
         manager.moveRoisToOverlay(originalImage);
         Overlay overlay = originalImage.getOverlay();
         overlay.drawLabels(false);
