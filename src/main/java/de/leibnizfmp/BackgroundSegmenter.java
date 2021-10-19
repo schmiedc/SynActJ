@@ -1,6 +1,8 @@
 package de.leibnizfmp;
 
+import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
 import ij.plugin.ZProjector;

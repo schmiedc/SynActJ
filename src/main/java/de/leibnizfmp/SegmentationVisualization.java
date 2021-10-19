@@ -2,6 +2,7 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.gui.Overlay;
 import ij.measure.Calibration;
 import ij.plugin.filter.ParticleAnalyzer;
@@ -31,13 +32,21 @@ class SegmentationVisualization {
      * @param highCirc maximum circularity of spots
      * @param calibration image calibration setting
      * @param setDisplayRange sets the display range for vis
-     * @return
+     * @return counts of spots
      */
     int spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
                           double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
                           boolean spotErosion, int radiusGradient, int minSizePx, int maxSizePx,
                           double lowCirc, double highCirc,
                           Calibration calibration, boolean setDisplayRange) {
+
+        // first get original setting
+        boolean backgroundSetting = Prefs.blackBackground;
+        IJ.log("Black background set to: " + backgroundSetting);
+
+        // set background color to black
+        Prefs.blackBackground = true;
+        IJ.log("Black background set to: " + Prefs.blackBackground);
 
         // set the specified calibration
         originalImage.setCalibration(calibration);
@@ -83,6 +92,10 @@ class SegmentationVisualization {
         manager.reset();
         manager.close();
 
+        // restore original setting
+        Prefs.blackBackground = backgroundSetting;
+        IJ.log("Original blackBackground setting restored");
+
         return count;
 
     }
@@ -102,6 +115,14 @@ class SegmentationVisualization {
     void backgroundVisualization(ImagePlus forBackSegmentation, double sigmaBackground, String thresholdBackground,
                         int minSizePx, int maxSizePx, ImagePlus originalImage, String titleOriginal,
                         Calibration calibration, boolean setDisplayRange) {
+
+        // first get original setting
+        boolean backgroundSetting = Prefs.blackBackground;
+        IJ.log("Black background set to: " + backgroundSetting);
+
+        // set background color to black
+        Prefs.blackBackground = true;
+        IJ.log("Black background set to: " + Prefs.blackBackground);
 
         // set the specified calibration
         originalImage.setCalibration(calibration);
@@ -135,6 +156,10 @@ class SegmentationVisualization {
 
         manager.reset();
         manager.close();
+
+        // restore original setting
+        Prefs.blackBackground = backgroundSetting;
+        IJ.log("Original blackBackground setting restored");
 
     }
 }

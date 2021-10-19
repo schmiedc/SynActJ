@@ -2,6 +2,7 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.plugin.filter.BackgroundSubtracter;
 import ij.plugin.filter.MaximumFinder;
 import ij.process.ByteProcessor;
@@ -27,6 +28,8 @@ class SpotSegmenter {
      * @return binary image containing the marker one pixel marks the spot
      */
     ByteProcessor detectSpots(ImagePlus diffImage, double simgaLoG, double prominence) {
+
+        IJ.log("Black bacground set to: " + Prefs.blackBackground);
 
         IJ.log("Applying a LoG filter with sigma: " + simgaLoG);
         ImagePlus logImage = ImageScience.computeLaplacianImage(simgaLoG, diffImage);
