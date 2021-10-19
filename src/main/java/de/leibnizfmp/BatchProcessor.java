@@ -2,6 +2,7 @@ package de.leibnizfmp;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.Prefs;
 import ij.io.FileSaver;
 import ij.measure.Calibration;
 import ij.measure.ResultsTable;
@@ -65,6 +66,14 @@ class BatchProcessor {
 
         Calibration calibration;
 
+        // first get original setting
+        boolean backgroundSetting = Prefs.blackBackground;
+        IJ.log("Black background set to: " + backgroundSetting);
+
+        // set background color to black
+        Prefs.blackBackground = true;
+        IJ.log("Black background set to: " + Prefs.blackBackground);
+
         IJ.showStatus("Running SynActJ Batch processing...");
 
         for (String image : fileList) {
@@ -111,6 +120,10 @@ class BatchProcessor {
             IJ.log("Measurement in image " + image + " finished");
 
         }
+
+        // restore original setting
+        Prefs.blackBackground = backgroundSetting;
+        IJ.log("Original blackBackground setting restored");
 
         IJ.showStatus("SynActJ Batch processing finished!");
         IJ.log("Finished batch Processing");
