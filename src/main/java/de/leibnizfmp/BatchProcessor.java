@@ -9,6 +9,7 @@ import ij.measure.ResultsTable;
 import ij.plugin.filter.ParticleAnalyzer;
 import ij.plugin.frame.RoiManager;
 import ij.process.ByteProcessor;
+import trainableSegmentation.ImageScience;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -252,6 +253,21 @@ class BatchProcessor {
 
             saveDiffImage.saveAsTiff( outputDir + File.separator +
                     inputImage.getShortTitle().replace(File.separator, "_") + "_spot.tif");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+            IJ.log("Unable to save image");
+
+        }
+
+        ImagePlus logImage = ImageScience.computeLaplacianImage(sigmaLoG, diffImage);
+        FileSaver saveLogImage = new FileSaver(logImage);
+
+        try {
+
+            saveLogImage.saveAsTiff( outputDir + File.separator +
+                    inputImage.getShortTitle().replace(File.separator, "_") + "_LoG.tif");
 
         } catch (Exception ex) {
 

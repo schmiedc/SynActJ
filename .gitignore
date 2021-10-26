@@ -1,3 +1,4 @@
+*.jar
 _site
 .sass-cache
 .jekyll-cache
@@ -14,5 +15,4 @@ vendor
 /out/artifacts/PHluorinJ__jar/PHluorinJ_.jar
 /.idea/$PRODUCT_WORKSPACE_FILE$
 /.idea//artifacts/PHluorinJ__jar.xml
-
 /out/artifacts/SynActJ__jar/SynActJ_-0.3.0.jar
