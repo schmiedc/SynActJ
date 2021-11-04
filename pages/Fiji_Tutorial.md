@@ -29,6 +29,8 @@ Key requirements for new data:
 
 <b>2. Sufficient stimulation:</b> The segmentation will depend on the strength of the signal increase upon stimulation. We tested the workflow for a minimum stimulation of 10 Hz for 5s for the pHluorin assay and 10 AP for the calcium imaging.
 
+- **Note:** for analyzing low stimulations one can use a large stimulation for segmentation at the end of the movie, instead of basing the segmentation on the low stimuations.
+
 <b>3. Correct drift and jittering:</b> Further large deformations of the tissue can lead to measurement error.
 
 
@@ -80,13 +82,65 @@ Press **_ok_** to continue.
 
 <img src="../images/plugin/MetaData.png" alt="MetaData" class="inline"/>
 
-<b>3. Permissive initial settings:</b>
+<b>3. Permissive initial settings:</b> A important prerequisite to get a first coarse segmentation that can be easily adjusted and fine tuned is to set the first segmentation settings very permissively. Thus without any size restriction, very low detection threshold and small initial particle sizes. For this tutorial please use the following settings for demonstration:
 
-A important prerequisite to get a first coarse segmentation that can be easily adjusted and fine tuned is to set the first segmentation settings very permissively. Thus without any size restriction, very low detection threshold and small initial particle sizes.
+<img src="../images/tutorial/FirstSetting.png" alt="MetaData" class="inline"/>
 
-## First coarse segmentation
+<b>4. First coarse segmentation:</b> These permissive settings should lead to a slight over segmentation at the first try by pressing ***Preview***:
+
+<img src="../images/tutorial/FirstCoarse.png" alt="FirstCoarse" class="inline"/>
+
+### Getting the first coarse segmentation
+
+If you did not achieve a bit of oversegmentation then proceed with this section. Otherwise you can skip this part and go to fine tuning the segmentation.
+
+The segmentation has two important parts with the indicated key settings:
+  * Detect: number & position of spots - Prominence
+  * Segment: size and number of spots - Select threshold
+
+<b>1. Verify permissive settings:</b> Make sure that the Prominence in the detection is set low. Also choose small values for the LoG sigma and Gauss sigma. The initial aim is to detect and segment small structures and peaks in the signal response upon stimulation.
+
+<b>2. Cycle through the thresholds: </b> Then try to explore different thresholds
+
+Choose a different threshold setting if the entire image is filled with regions of interest:
+
+<img src="../images/tutorial/BadThreshold.png" alt="TooMuch" class="inline"/>
+
+Choose a different threshold setting if there are only a few ROIs with permissive :
+
+<img src="../images/tutorial/BadThreshold2.png" alt="TooLittle" class="inline"/>
+
+With permissive detection settings there should be aover segmentation. Meaning some detections in the background and multiple ROIs should be per object of interest.
+
+<img src="../images/tutorial/Oversegmentation.png" alt="Oversegmentation" class="inline"/>
+
+If this is achieved go ahead and start the fine tuning of the segmentation.
 
 ## Fine tuning the segmentation
+
+<b>1. Tune number of detections:</b> Over or under segmentation for this workflow usually a result of too permissive detection settings. This can be easily adjusted by changing the detection. Increase the Prominence value and the LoG sigma to detect bigger objects that have above background signal response.
+
+<img src="../images/tutorial/AdjustDetectionScreen.png" alt="AdjustDetection" class="inline"/>
+
+<img src="../images/tutorial/Adjust1.png" alt="AdjustDetection1" class="inline"/>
+
+Make sure you use the slider to verify that detected objects are actual sginal responses visually.
+
+<b>2. Size of segmentations:</b> Once the detection finds and locates the objects properly you can fine tune the size of the ROIs via the segmentation parameters: ***Gauss sigma*** and ***RollingBall Radius***.
+
+<img src="../images/tutorial/AdjustSizeScreen.png" alt="AdjustSizeScreen" class="inline"/>
+
+<img src="../images/tutorial/AdjustSize.png" alt="AdjustSize" class="inline"/>
+
+<b>3. Splitting of objects:</b> Sometimes objects are not split correctly. Then it you can try to adjust the ***Gradient radius option***:
+
+<img src="../images/tutorial/GradientRadiusScreen.png" alt="SplittingScreen" class="inline"/>
+
+<img src="../images/tutorial/GradientRadius.png" alt="Splitting" class="inline"/>
+
+<b>4. Filter size of objects:</b> Finally you can adjust the size and shape of the objects via the
+
+<img src="../images/tutorial/SizeAndShape.png" alt="Splitting" class="inline"/>
 
 ## Verify over different movies
 
@@ -97,4 +151,4 @@ Since the quality of the movies can vary due to the sample or the acquisition we
 
 Once you are satisfied with the performance of the segmentation you can proceed with the batch processing.
 
-## Verification of segmentation results
+***NOTE:*** If you want to repeat the batch processing with different settings please create a new output directory.
