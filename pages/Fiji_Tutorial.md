@@ -138,7 +138,7 @@ Make sure you use the slider to verify that detected objects are actual sginal r
 
 <img src="../images/tutorial/GradientRadius.png" alt="Splitting" class="inline"/>
 
-<b>4. Filter size of objects:</b> Finally you can adjust the size and shape of the objects via the
+<b>4. Filter size of objects:</b> Finally you can adjust the size and shape of the objects via the *Filter spots: size and circ.* interface
 
 <img src="../images/tutorial/SizeAndShape.png" alt="Splitting" class="inline"/>
 
