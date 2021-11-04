@@ -97,7 +97,8 @@ RStudio 1.4.1717<br/>
 6. Once these packages are installed and loaded the RShiny GUI should pop up.
 7. Optional: Press **Open in Browser** for a better rendering of the GUI.
 
-# User tutorials
+# Documentation and tutorials
 
-## - [SynActJ Fiji Plugin](pages/Fiji_Plugin.html)
+## - [SynActJ Plugin Overview](pages/Fiji_Plugin.html)
+## - [SynActJ Plugin Tutorial](pages/Fiji_Tutorial.html)
 ## - [SynActJ R Shiny App](pages/SynActJ_Shiny.html)

@@ -3,7 +3,7 @@ layout: default
 title: Fiji_Plugin
 ---
 
-# Fiji Plugin
+# SynActJ Plugin in Fiji
 
 ## Installation
 
@@ -29,7 +29,6 @@ The plugin is available via an update site. Add the Cellular-Imaging site:
 A log file and a Setup dialog will appear. Specify the input and output directory. A settings file can be provided or left empty.
 
 Press **_ok_** to continue.
-
 
 ## SynActJ Processing
 
@@ -82,6 +81,10 @@ Change the parameters you want to optimize and the press **Preview**. A new imag
 <img src="../images/plugin/BoutonPreview.png" alt="BoutonPreview" class="inline"/>
 
 **IMPORTANT:** please make sure that the calibration is correct in the right window and override the existing metadata if necessary. Otherwise the segmentation might not work.
+
+For a detailed introduction of the segmentation usage please head to:
+[SynActJ Fiji Plugin Tutorial](pages/Fiji_Tutorial.html)
+
 
 ## Preview Background segmentation
 
