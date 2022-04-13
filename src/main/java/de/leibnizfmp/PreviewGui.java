@@ -69,6 +69,7 @@ public class PreviewGui extends JPanel{
     private int stimFrame;
     private double pxSizeMicron;
     private double frameRate;
+    private boolean invertDetection;
 
     private static File settingsFile = null;
 
@@ -108,6 +109,12 @@ public class PreviewGui extends JPanel{
     private SpinnerModel integerSpinnerStimulationFrame;
 
     private JLabel actionLabel;
+
+    // settings for detection type
+    JPanel panelButtons = new JPanel();
+    JRadioButton detectIncrease;
+    JRadioButton detectDecrease;
+    ButtonGroup detectionType;
 
     private Border blackline;
 
@@ -412,9 +419,34 @@ public class PreviewGui extends JPanel{
         Box boxStimulationFrame = addLabeledSpinnerUnit(stimulationFrameLabel, integerSpinnerStimulationFrame, stimulationFrameUnit);
         boxSettings.add(boxStimulationFrame);
 
+        // settings for detection type
+        detectIncrease = new JRadioButton();
+        detectIncrease.setText("increase");
+        detectDecrease = new JRadioButton();
+        detectDecrease.setText("decrease");
+        JLabel detectionTypeLabel = new JLabel("Response:");
+        detectionType = new ButtonGroup();
+
+        BoxLayout radiobuttonpanellayout = new BoxLayout(panelButtons, BoxLayout.X_AXIS);
+        panelButtons.setLayout(radiobuttonpanellayout);
+
+        panelButtons.add(detectionTypeLabel);
+        panelButtons.add(detectIncrease);
+        panelButtons.add(detectDecrease);
+
+        detectionType.add(detectIncrease);
+        detectionType.add(detectDecrease);
+
+        if (invertDetection) {
+            detectDecrease.setSelected(true);
+        } else {
+            detectIncrease.setSelected(true);
+        }
+
+
         JButton batchButton = new JButton("Batch Process");
         batchButton.addActionListener(new MyBatchListener());
-
+        boxSettings.add(panelButtons);
         boxSettings.add(batchButton);
 
         boxSettings.add(Box.createRigidArea(new Dimension(0, 60)));
@@ -667,6 +699,21 @@ public class PreviewGui extends JPanel{
 
             int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
+
+            boolean inversionOfDetection = false;
+
+            // check detection type
+            if (detectIncrease.isSelected()) {
+
+                IJ.log("Signal increases after stimulation");
+                inversionOfDetection = false;
+
+            } else if (detectDecrease.isSelected()) {
+
+                IJ.log("Signal decreases after stimulation");
+                inversionOfDetection  = true;
+
+            }
 
             Image previewImage = new Image(inputDir, pxSizeMicron, frameRate);
 
@@ -1340,6 +1387,21 @@ public class PreviewGui extends JPanel{
             int stimFrame = (Integer) integerSpinnerStimulationFrame.getValue();
             IJ.log("Stimulation frame: " + stimFrame);
 
+            boolean inversionOfDetection = false;
+
+            // check detection type
+            if (detectIncrease.isSelected()) {
+
+                IJ.log("Signal increases after stimulation");
+                inversionOfDetection = false;
+
+            } else if (detectDecrease.isSelected()) {
+
+                IJ.log("Signal decreases after stimulation");
+                inversionOfDetection  = true;
+
+            }
+
             String fileName = new SimpleDateFormat("yyyy-MM-dd'T'HHmmss'-settings.xml'").format(new Date());
 
             saveSettings(fileName);
@@ -1350,7 +1412,8 @@ public class PreviewGui extends JPanel{
                     minSizeSpot, maxSizeSpot, lowCirc, highCirc,
                     sigmaBackground, thresholdBackground,
                     minSizeBack, maxSizeBack,
-                    stimFrame, calibrationSetting, pxSizeMicron, frameRate
+                    stimFrame, calibrationSetting, pxSizeMicron,
+                    frameRate
                     );
 
             batch.loopOverImages();
@@ -1395,13 +1458,13 @@ public class PreviewGui extends JPanel{
         stimFrame = 5;
         pxSizeMicron = 0.162;
         frameRate = 2.0;
+        invertDetection = false;
 
     }
 
     /**
      * Constructor for PreviewGui with settings from the select settings file
-     *
-     * @param inputDirectory directory for input images
+     *  @param inputDirectory directory for input images
      * @param outputDirectory directory for saving results
      * @param filesToProcess list the file names for batch
      * @param projectionMethod projection method
@@ -1424,15 +1487,16 @@ public class PreviewGui extends JPanel{
      * @param getCalibrationSetting image calibration setting
      * @param getSizeMicron pixel size in micron
      * @param getFrameRate frame rate in seconds
+     * @param getDetection
      */
-    PreviewGui (String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
-                       String projectionMethod, double getSigmaLoG, double getProminence,
-                       double getSigmaSpots, double getRollingSpots, String getThresholdSpots,
-                      boolean getSpotErosion, int getRadiusGradient,
-                       double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
-                       double getSigmaBackground, String getThresholdBackground,
-                       double getMinSizePxBack, double getMaxSizePxBack,
-                       int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate ){
+    PreviewGui(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
+               String projectionMethod, double getSigmaLoG, double getProminence,
+               double getSigmaSpots, double getRollingSpots, String getThresholdSpots,
+               boolean getSpotErosion, int getRadiusGradient,
+               double getMinSizePxSpot, double getMaxSizePxSpot, double getLowCirc, double getHighCirc,
+               double getSigmaBackground, String getThresholdBackground,
+               double getMinSizePxBack, double getMaxSizePxBack,
+               int getStimFrame, boolean getCalibrationSetting, double getSizeMicron, double getFrameRate, boolean getDetection){
 
         inputDir = inputDirectory;
         outputDir = outputDirectory;
@@ -1461,7 +1525,7 @@ public class PreviewGui extends JPanel{
         stimFrame = getStimFrame;
         pxSizeMicron = getSizeMicron;
         frameRate = getFrameRate;
-
+        invertDetection = getDetection;
     }
 
 }

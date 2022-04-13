@@ -178,8 +178,8 @@ class InputGuiFiji {
                                     readMyXml.readSigmaBackground, readMyXml.readThresholdBackground,
                                     readMyXml.readMinSizeBack, readMyXml.readMaxSizeBack,
                                     readMyXml.readStimFrame, readMyXml.readCalibrationSetting,
-                                    readMyXml.readPxSizeMicron, readMyXml.readFrameRate
-                            );
+                                    readMyXml.readPxSizeMicron, readMyXml.readFrameRate,
+                                    showSettingsSwitch);
 
                             // instantiates previewGui
                             previewGui.setUpGui();

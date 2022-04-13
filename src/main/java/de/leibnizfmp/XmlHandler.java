@@ -24,6 +24,7 @@ import java.util.Date;
  */
 class XmlHandler {
 
+
     String readProjMethod;
 
     double readSigmaLoG;
@@ -47,6 +48,7 @@ class XmlHandler {
     double readPxSizeMicron;
     double readFrameRate;
     int readStimFrame;
+    boolean readInvertDetection;
 
     /**
      * reads the xml settings file
@@ -86,7 +88,7 @@ class XmlHandler {
         readPxSizeMicron = Double.parseDouble(doc.getElementsByTagName("pxSizeMicron").item(0).getTextContent());
         readFrameRate= Double.parseDouble(doc.getElementsByTagName("frameRate").item(0).getTextContent());
         readStimFrame = Integer.parseInt(doc.getElementsByTagName("stimFrame").item(0).getTextContent());
-
+        readInvertDetection = Boolean.parseBoolean(doc.getElementsByTagName("invertDetection").item(0).getTextContent());
         IJ.log("Loaded settings file from: " + filePath);
 
     }
