@@ -795,7 +795,7 @@ public class PreviewGui extends JPanel{
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                        countBouton = visualizer.spotVisualization(selectedImage, projMethod, stimFrame, sigmaLoG, prominence,
+                        countBouton = visualizer.spotVisualization(selectedImage, projMethod, stimFrame, inversionOfDetection, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
@@ -841,7 +841,7 @@ public class PreviewGui extends JPanel{
 
                         SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                        countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                        countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, inversionOfDetection, sigmaLoG, prominence,
                                 sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                                 radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                                 calibration, setDisplayRange);
@@ -887,7 +887,7 @@ public class PreviewGui extends JPanel{
 
                     SegmentationVisualization visualizer = new SegmentationVisualization();
 
-                    countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, sigmaLoG, prominence,
+                    countBouton = visualizer.spotVisualization(originalImage, projMethod, stimFrame, inversionOfDetection, sigmaLoG, prominence,
                             sigmaSpots, rollingSpots, thresholdSpots, spotErosion,
                             radiusGradient, minSizePx, maxSizePx, lowCirc, highCirc,
                             calibration, setDisplayRange);
@@ -1413,7 +1413,7 @@ public class PreviewGui extends JPanel{
                     sigmaBackground, thresholdBackground,
                     minSizeBack, maxSizeBack,
                     stimFrame, calibrationSetting, pxSizeMicron,
-                    frameRate
+                    frameRate, inversionOfDetection
                     );
 
             batch.loopOverImages();

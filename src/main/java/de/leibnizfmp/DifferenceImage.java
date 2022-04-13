@@ -24,9 +24,10 @@ class DifferenceImage {
      *
      * @param image movie
      * @param stimulationFrame time point where stimulation happens
+     * @param invertDetection
      * @return difference image
      */
-    ImagePlus createDiffImage(ImagePlus image, int stimulationFrame) {
+    ImagePlus createDiffImage(ImagePlus image, int stimulationFrame, boolean invertDetection) {
 
         int startBefore = stimulationFrame - frameDown;
         int endBefore = stimulationFrame - 1;
@@ -38,8 +39,23 @@ class DifferenceImage {
         ImagePlus impBefore = ZProjector.run(image,projMethod,startBefore,endBefore);
         ImagePlus impAfter = ZProjector.run(image,projMethod,startAfter,endAfter);
         ImageCalculator ic = new ImageCalculator();
-        ImagePlus impDiff = ic.run("Divide create 32-bit", impAfter, impBefore );
-        IJ.log("Difference image created.");
+
+        ImagePlus impDiff = null;
+
+        if (!invertDetection) {
+
+            IJ.log("Signal increases as response");
+            impDiff = ic.run("Divide create 32-bit", impAfter, impBefore );
+            IJ.log("Difference image created.");
+
+        } else if (invertDetection) {
+
+            IJ.log("Signal decreases as response");
+            impDiff = ic.run("Divide create 32-bit", impBefore, impAfter);
+            IJ.log("Difference image created.");
+
+        }
+
 
         return impDiff;
 

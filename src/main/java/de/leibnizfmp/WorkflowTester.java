@@ -14,6 +14,7 @@ public class WorkflowTester {
         String projMethod = "median";
         double pixelSize = 0.162;
         double frameRate = 2;
+        boolean invertDetection = false;
 
         FileList getFileList = new FileList();
         ArrayList<String> fileList = getFileList.getFileList(testDir);
@@ -27,7 +28,7 @@ public class WorkflowTester {
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
 
-        ImagePlus diffImage = processImage.createDiffImage(originalImage, 5);
+        ImagePlus diffImage = processImage.createDiffImage(originalImage, 5, invertDetection);
 
         SpotSegmenter spot = new SpotSegmenter();
 

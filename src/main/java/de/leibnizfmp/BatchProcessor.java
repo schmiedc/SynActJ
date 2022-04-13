@@ -49,6 +49,7 @@ class BatchProcessor {
     private double minSizeBack;
     private double maxSizeBack;
     private int stimFrame;
+    private boolean invertDetection;
 
     /**
      * loops the following operations over the images in the fileList
@@ -115,7 +116,7 @@ class BatchProcessor {
 
             }
 
-            spotAnalysis(imageToProcess, minSizePxSpot, maxSizePxSpot);
+            spotAnalysis(imageToProcess, minSizePxSpot, maxSizePxSpot, invertDetection);
 
             backgroundAnalysis(imageToProcess, minSizePxBack, maxSizePxBack);
             IJ.log("Measurement in image " + image + " finished");
@@ -225,15 +226,15 @@ class BatchProcessor {
     /**
      * performs spot segmentation using a marker controlled watershed
      * calls the spot detection, spot segmentation and watershed
-     *
-     * @param inputImage takes the movie
+     *  @param inputImage takes the movie
      * @param minSizePxSpot minimum spot size considered for segmentation
      * @param maxSizePxSpot maximum spot size considered for segmentation
+     * @param invertDetection
      */
-    private void spotAnalysis(ImagePlus inputImage, int minSizePxSpot, int maxSizePxSpot) {
+    private void spotAnalysis(ImagePlus inputImage, int minSizePxSpot, int maxSizePxSpot, boolean invertDetection) {
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
-        ImagePlus diffImage = processImage.createDiffImage(inputImage, stimFrame);
+        ImagePlus diffImage = processImage.createDiffImage(inputImage, stimFrame, invertDetection);
 
         SpotSegmenter spot = new SpotSegmenter();
         ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
@@ -341,13 +342,14 @@ class BatchProcessor {
      * @param setFrameRate frame rate in seconds
      */
     BatchProcessor(String inputDirectory, String outputDirectory, ArrayList<String> filesToProcess,
-                          String setProjectionMethod, double setSigmaLoG, double setProminence,
-                          double setSigmaSpots, double setRollingSpots, String setThresholdSpots,
-                          boolean setSpotErosion, int setRadiusGradient,
-                          double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
-                          double setSigmaBackground, String setThresholdBackground,
-                          double setMinSizePxBack, double setMaxSizePxBack,
-                          int setStimFrame, Boolean setCalibrationSetting, Double setSizeMicron, Double setFrameRate ) {
+                   String setProjectionMethod, double setSigmaLoG, double setProminence,
+                   double setSigmaSpots, double setRollingSpots, String setThresholdSpots,
+                   boolean setSpotErosion, int setRadiusGradient,
+                   double setMinSizePxSpot, double setMaxSizePxSpot, double setLowCirc, double setHighCirc,
+                   double setSigmaBackground, String setThresholdBackground,
+                   double setMinSizePxBack, double setMaxSizePxBack,
+                   int setStimFrame, Boolean setCalibrationSetting, Double setSizeMicron, Double setFrameRate,
+                   boolean setInvertDetection) {
 
         inputDir = inputDirectory;
         outputDir = outputDirectory;
@@ -376,6 +378,7 @@ class BatchProcessor {
         stimFrame = setStimFrame;
         pxSizeMicron = setSizeMicron;
         frameRate = setFrameRate;
+        invertDetection = setInvertDetection;
 
     }
 

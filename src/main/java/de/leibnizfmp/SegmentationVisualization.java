@@ -19,6 +19,7 @@ class SegmentationVisualization {
      *  @param originalImage selected image for vis
      * @param projMethod projection method
      * @param stimFrame frame when stimulation happens
+     * @param invertDetection
      * @param sigmaLoG sigma for LoG
      * @param prominence prominence for spot detection
      * @param sigmaSpots sigma for spot segmentation
@@ -34,7 +35,7 @@ class SegmentationVisualization {
      * @param setDisplayRange sets the display range for vis
      * @return counts of spots
      */
-    int spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, double sigmaLoG,
+    int spotVisualization(ImagePlus originalImage, String projMethod, int stimFrame, boolean invertDetection, double sigmaLoG,
                           double prominence, double sigmaSpots, double rollingSpots, String thresholdSpots,
                           boolean spotErosion, int radiusGradient, int minSizePx, int maxSizePx,
                           double lowCirc, double highCirc,
@@ -53,7 +54,7 @@ class SegmentationVisualization {
         originalImage.setOverlay(null);
 
         DifferenceImage processImage = new DifferenceImage(projMethod);
-        ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame);
+        ImagePlus diffImage = processImage.createDiffImage(originalImage, stimFrame, invertDetection);
 
         SpotSegmenter spot = new SpotSegmenter();
         ByteProcessor detectSpots = spot.detectSpots(diffImage, sigmaLoG, prominence);
