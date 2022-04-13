@@ -80,7 +80,7 @@
 		<main-class>de.leibnizfmp.SynActJ_</main-class>
 		<license.licenseName>MIT</license.licenseName>
 		<license.copyrightOwners>FMP-Berlin</license.copyrightOwners>
-		<imagej.app.directory>/data1/FMP_Docs/DevelopmentEnv/Fiji/Fiji.app</imagej.app.directory>
+		<imagej.app.directory>/home/christopher.schmied/HT_Docs/DevelopmentEnv/Fiji/Fiji.app</imagej.app.directory>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
@@ -88,7 +88,7 @@
 	<repositories>
 		<repository>
 			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
+			<url>https://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
 
