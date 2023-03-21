@@ -4,6 +4,14 @@ SynActJ is an image and data analysis workflow that allows to analyze synaptic a
 
 <img src="https://schmiedc.github.io/SynActJ/images/main/teaser.png" alt="Intro" class="inline"/>
 
+## Citation
+
+This work has been published: [https://doi.org/10.3389/fcomp.2021.777837](https://doi.org/10.3389/fcomp.2021.777837)
+
+Please cite:
+
+Schmied C, Soykan T, Bolz S, Haucke V and Lehmann M (2021) SynActJ: Easy-to-Use Automated Analysis of Synaptic Activity. Front. Comput. Sci. 3:777837. doi: 10.3389/fcomp.2021.777837
+
 ## Documentation
 
 Have a look at the github pages site for more information:<br>
